@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
-
+use App\Http\Controllers\BiodataController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -75,9 +74,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     // User routes
     Route::middleware(['cekRole:user'])->group(function () {
 
-        Route::get('/biodata', function () {
-            return view('user.biodata');
-        })->name('user.biodata');
+        Route::get('/biodata',  [BiodataController::class, 'index'])->name('user.biodata');
         Route::get('/dokumen', function () {
             return view('user.dokumen');
         })->name('user.dokumen');
