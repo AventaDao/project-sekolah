@@ -50,4 +50,36 @@ class Penduduk extends Model
         }
         return $this->tanggal_lahir->age;
     }
+
+    /**
+     * Relasi ke User (jika penduduk memiliki akun)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'nik', 'nik');
+    }
+
+    /**
+     * Check if penduduk has user account
+     */
+    public function hasAccount()
+    {
+        return User::where('nik', $this->nik)->exists();
+    }
+
+    /**
+     * Scope untuk penduduk yang memiliki akun
+     */
+    public function scopeHasUserAccount($query)
+    {
+        return $query->whereIn('nik', User::pluck('nik'));
+    }
+
+    /**
+     * Scope untuk penduduk yang tidak memiliki akun
+     */
+    public function scopeNoUserAccount($query)
+    {
+        return $query->whereNotIn('nik', User::pluck('nik'));
+    }
 }

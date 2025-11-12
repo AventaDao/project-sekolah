@@ -64,7 +64,7 @@ class BeritaDesaController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('berita.index')
+        return redirect()->route('admin.berita.index')
             ->with('success', 'Berita berhasil ditambahkan!');
     }
 
@@ -108,7 +108,7 @@ class BeritaDesaController extends Controller
 
         $beritum->update($validated);
 
-        return redirect()->route('berita.index')
+        return redirect()->route('admin.berita.index')
             ->with('success', 'Berita berhasil diperbarui!');
     }
 
@@ -124,7 +124,7 @@ class BeritaDesaController extends Controller
 
         $beritum->delete();
 
-        return redirect()->route('berita.index')
+        return redirect()->route('admin.berita.index')
             ->with('success', 'Berita berhasil dihapus!');
     }
 }

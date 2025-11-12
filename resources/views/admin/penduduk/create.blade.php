@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('penduduk.index') }}">Data Penduduk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.penduduk.index') }}">Data Penduduk</a></li>
                         <li class="breadcrumb-item" aria-current="page">Tambah Data</li>
                     </ul>
                 </div>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('penduduk.store') }}" method="POST" id="formPenduduk">
+                    <form action="{{ route('admin.penduduk.store') }}" method="POST" id="formPenduduk">
                         @csrf
                         <!-- Step 1: Data Identitas -->
                         <div class="step-content active" data-step="1">
@@ -306,7 +306,7 @@
                                 <i class="ti ti-arrow-left"></i> Sebelumnya
                             </button>
                             <div class="d-flex gap-2">
-                                <a href="{{ route('penduduk.index') }}" class="btn btn-outline-secondary">
+                                <a href="{{ route('admin.penduduk.index') }}" class="btn btn-outline-secondary">
                                     <i class="ti ti-x"></i> Batal
                                 </a>
                                 <button type="button" class="btn btn-primary" id="nextBtn">

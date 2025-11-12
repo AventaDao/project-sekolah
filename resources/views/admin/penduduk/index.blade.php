@@ -24,11 +24,89 @@
 
     <!-- Main Content -->
     <div class="row">
+        <!-- Statistics Cards -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avtar avtar-s bg-light-primary">
+                                <i class="ti ti-users f-20"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Total Penduduk</h6>
+                            <p class="text-muted mb-0">
+                                <strong>{{ \App\Models\Penduduk::where('status_hidup', 'Hidup')->count() }}</strong> orang
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avtar avtar-s bg-light-success">
+                                <i class="ti ti-user-check f-20"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Memiliki Akun</h6>
+                            <p class="text-muted mb-0">
+                                <strong>{{ \App\Models\User::where('role', 'user')->count() }}</strong> orang
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avtar avtar-s bg-light-warning">
+                                <i class="ti ti-user-x f-20"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Belum Punya Akun</h6>
+                            <p class="text-muted mb-0">
+                                <strong>{{ \App\Models\Penduduk::where('status_hidup', 'Hidup')->whereNotIn('nik', \App\Models\User::pluck('nik'))->count() }}</strong> orang
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avtar avtar-s bg-light-danger">
+                                <i class="ti ti-heart-broken f-20"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Meninggal</h6>
+                            <p class="text-muted mb-0">
+                                <strong>{{ \App\Models\Penduduk::where('status_hidup', 'Meninggal')->count() }}</strong> orang
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Daftar Penduduk</h5>
-                    <a href="{{ route('penduduk.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.penduduk.create') }}" class="btn btn-primary">
                         <i class="ti ti-plus"></i> Tambah Penduduk
                     </a>
                 </div>
@@ -39,6 +117,39 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                     @endif
+
+                    <!-- Filter dan Search -->
+                    <form method="GET" action="{{ route('admin.penduduk.index') }}" class="mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-search"></i></span>
+                                    <input type="text" name="search" class="form-control" 
+                                           placeholder="Cari NIK, Nama, atau Alamat..." 
+                                           value="{{ request('search') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="filter_account" class="form-select">
+                                    <option value="">Semua Status Akun</option>
+                                    <option value="has_account" {{ request('filter_account') == 'has_account' ? 'selected' : '' }}>
+                                        ✓ Memiliki Akun Sistem
+                                    </option>
+                                    <option value="no_account" {{ request('filter_account') == 'no_account' ? 'selected' : '' }}>
+                                        ✗ Belum Memiliki Akun
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="ti ti-filter"></i> Filter
+                                </button>
+                                <a href="{{ route('admin.penduduk.index') }}" class="btn btn-secondary">
+                                    <i class="ti ti-refresh"></i> Reset
+                                </a>
+                            </div>
+                        </div>
+                    </form>
 
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -58,21 +169,31 @@
                                 <tr>
                                     <td>{{ $penduduks->firstItem() + $key }}</td>
                                     <td>{{ $penduduk->nik }}</td>
-                                    <td>{{ $penduduk->nama_lengkap }}</td>
+                                    <td>
+                                        {{ $penduduk->nama_lengkap }}
+                                        @php
+                                            $hasAccount = \App\Models\User::where('nik', $penduduk->nik)->exists();
+                                        @endphp
+                                        @if($hasAccount)
+                                            <br><span class="badge bg-success mt-1" title="Memiliki akun sistem">
+                                                <i class="ti ti-user-check"></i> Pengguna Terdaftar
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td>{{ $penduduk->jenis_kelamin }}</td>
                                     <td>{{ $penduduk->tempat_lahir }}, {{ $penduduk->tanggal_lahir->format('d-m-Y') }}</td>
                                     <td>{{ Str::limit($penduduk->alamat, 30) }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('penduduk.show', $penduduk->id) }}" 
+                                            <a href="{{ route('admin.penduduk.show', $penduduk->id) }}" 
                                                class="btn btn-sm btn-info" title="Detail">
                                                 <i class="ti ti-eye"></i>
                                             </a>
-                                            <a href="{{ route('penduduk.edit', $penduduk->id) }}" 
+                                            <a href="{{ route('admin.penduduk.edit', $penduduk->id) }}" 
                                                class="btn btn-sm btn-warning" title="Edit">
                                                 <i class="ti ti-edit"></i>
                                             </a>
-                                            <form action="{{ route('penduduk.destroy', $penduduk->id) }}" 
+                                            <form action="{{ route('admin.penduduk.destroy', $penduduk->id) }}" 
                                                   method="POST" 
                                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')"
                                                   class="d-inline">
@@ -87,15 +208,36 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada data penduduk</td>
+                                    <td colspan="7" class="text-center py-4">
+                                        <div class="mb-3">
+                                            <i class="ti ti-users-off f-40 text-muted"></i>
+                                        </div>
+                                        <p class="text-muted">
+                                            @if(request('search') || request('filter_account'))
+                                                Tidak ada data penduduk dengan kriteria pencarian tersebut
+                                            @else
+                                                Belum ada data penduduk
+                                            @endif
+                                        </p>
+                                        @if(request('search') || request('filter_account'))
+                                            <a href="{{ route('penduduk.index') }}" class="btn btn-secondary btn-sm mt-2">
+                                                <i class="ti ti-refresh"></i> Reset Filter
+                                            </a>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-end mt-3">
-                        {{ $penduduks->links() }}
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Menampilkan {{ $penduduks->firstItem() ?? 0 }} - {{ $penduduks->lastItem() ?? 0 }} dari {{ $penduduks->total() }} data
+                        </div>
+                        <div>
+                            {{ $penduduks->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

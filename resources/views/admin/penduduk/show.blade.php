@@ -10,8 +10,8 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('penduduk.index') }}">Data Penduduk</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Detail Data</li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.penduduk.index') }}">Data Penduduk</a></li>
+                        <li class="breadcrumb-item" aria-current="page">Detail Penduduk</li>
                     </ul>
                 </div>
             </div>
@@ -25,15 +25,39 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Detail Data Penduduk</h5>
                     <div>
-                        <a href="{{ route('penduduk.edit', $penduduk->id) }}" class="btn btn-warning btn-sm">
+                        <a href="{{ route('admin.penduduk.edit', $penduduk->id) }}" class="btn btn-warning btn-sm">
                             <i class="ti ti-edit"></i> Edit
                         </a>
-                        <a href="{{ route('penduduk.index') }}" class="btn btn-secondary btn-sm">
+                        <a href="{{ route('admin.penduduk.index') }}" class="btn btn-secondary btn-sm">
                             <i class="ti ti-arrow-left"></i> Kembali
                         </a>
                     </div>
                 </div>
                 <div class="card-body">
+                    @php
+                        $userAccount = \App\Models\User::where('nik', $penduduk->nik)->first();
+                    @endphp
+
+                    <!-- Status Akun -->
+                    @if($userAccount)
+                    <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                        <i class="ti ti-user-check f-24 me-3"></i>
+                        <div>
+                            <strong>Status Akun: Terdaftar</strong>
+                            <p class="mb-0">Penduduk ini telah memiliki akun sistem dengan email: <strong>{{ $userAccount->email ?? 'Tidak ada email' }}</strong></p>
+                            <small class="text-muted">Role: {{ ucfirst($userAccount->role) }} | Verifikasi: {{ $userAccount->is_verified ? 'Terverifikasi' : 'Belum Terverifikasi' }}</small>
+                        </div>
+                    </div>
+                    @else
+                    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                        <i class="ti ti-user-x f-24 me-3"></i>
+                        <div>
+                            <strong>Status Akun: Belum Terdaftar</strong>
+                            <p class="mb-0">Penduduk ini belum memiliki akun sistem</p>
+                        </div>
+                    </div>
+                    @endif
+
                     <!-- Data Identitas -->
                     <h5 class="mb-3 text-primary border-bottom pb-2">Data Identitas</h5>
                     <div class="row mb-4">
@@ -220,6 +244,13 @@
                                     <td>:</td>
                                     <td>{{ $penduduk->updated_at->format('d F Y H:i') }} WIB</td>
                                 </tr>
+                                @if($userAccount)
+                                <tr>
+                                    <td class="text-muted">Akun Dibuat</td>
+                                    <td>:</td>
+                                    <td>{{ $userAccount->created_at->format('d F Y H:i') }} WIB</td>
+                                </tr>
+                                @endif
                             </table>
                         </div>
                     </div>

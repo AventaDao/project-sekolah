@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('penduduk.index') }}">Data Penduduk</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.penduduk.index') }}">Data Penduduk</a></li>
                         <li class="breadcrumb-item" aria-current="page">Edit Data</li>
                     </ul>
                 </div>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('penduduk.update', $penduduk->id) }}" method="POST" id="formPenduduk">
+                    <form action="{{ route('admin.penduduk.update', $penduduk->id) }}" method="POST" id="formPenduduk">
                         @csrf
                         @method('PUT')
                         
@@ -308,7 +308,8 @@
                                 <i class="ti ti-arrow-left"></i> Sebelumnya
                             </button>
                             <div>
-                                <a href="{{ route('penduduk.index') }}" class="btn btn-outline-secondary me-2">
+                                                        <div class="d-flex gap-2">
+                                <a href="{{ route('admin.penduduk.index') }}" class="btn btn-outline-secondary me-2">
                                     <i class="ti ti-x"></i> Batal
                                 </a>
                                 <button type="button" class="btn btn-primary" id="nextBtn">

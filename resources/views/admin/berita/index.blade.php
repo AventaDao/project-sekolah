@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Daftar Berita Desa</h5>
-                    <a href="{{ route('berita.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.berita.create') }}" class="btn btn-primary">
                         <i class="ti ti-plus"></i> Tambah Berita
                     </a>
                 </div>
@@ -86,15 +86,15 @@
                                     <td>{{ $berita->user->name }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('berita.show', $berita->id) }}" 
+                                            <a href="{{ route('admin.berita.show', $berita->id) }}" 
                                                class="btn btn-sm btn-info" title="Detail">
                                                 <i class="ti ti-eye"></i>
                                             </a>
-                                            <a href="{{ route('berita.edit', $berita->id) }}" 
+                                            <a href="{{ route('admin.berita.edit', $berita->id) }}" 
                                                class="btn btn-sm btn-warning" title="Edit">
                                                 <i class="ti ti-edit"></i>
                                             </a>
-                                            <form action="{{ route('berita.destroy', $berita->id) }}" 
+                                            <form action="{{ route('admin.berita.destroy', $berita->id) }}" 
                                                   method="POST" 
                                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')"
                                                   class="d-inline">
@@ -114,7 +114,7 @@
                                             <i class="ti ti-news-off f-40 text-muted"></i>
                                         </div>
                                         <p class="text-muted">Belum ada berita</p>
-                                        <a href="{{ route('berita.create') }}" class="btn btn-primary btn-sm mt-2">
+                                            <a href="{{ route('admin.berita.create') }}" class="btn btn-primary btn-sm mt-2">
                                             <i class="ti ti-plus"></i> Tambah Berita
                                         </a>
                                     </td>

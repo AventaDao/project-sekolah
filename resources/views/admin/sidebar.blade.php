@@ -1,16 +1,16 @@
 <li class="pc-item {{ request()->is('admin/berita*') ? 'active' : '' }}">
-    <a href="{{ route('berita.index') }}" class="pc-link">
+    <a href="{{ route('admin.berita.index') }}" class="pc-link">
         <span class="pc-micon"><i class="ti ti-news"></i></span>
         <span class="pc-mtext">Kelola Berita</span>
     </a>
 </li>
-<li class="pc-item {{ request()->is('penduduk*') ? 'active' : '' }}">
-    <a href="{{ route('penduduk.index') }}" class="pc-link">
+<li class="pc-item {{ request()->is('admin/penduduk*') ? 'active' : '' }}">
+    <a href="{{ route('admin.penduduk.index') }}" class="pc-link">
         <span class="pc-micon"><i class="ti ti-users"></i></span>
         <span class="pc-mtext">Data Penduduk</span>
     </a>
 </li>
-<li class="pc-item {{ request()->is('pengajuan-surat*') ? 'active' : '' }}">
+<li class="pc-item {{ request()->is('admin/pengajuan-surat*') ? 'active' : '' }}">
     <a href="{{ route('admin.pengajuan-surat.index') }}" class="pc-link">
         <span class="pc-micon"><i class="ti ti-file-text"></i></span>
         <span class="pc-mtext">Pengajuan Surat</span>

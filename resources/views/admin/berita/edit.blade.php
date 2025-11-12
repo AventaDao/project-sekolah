@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('berita.index') }}">Kelola Berita</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.berita.index') }}">Kelola Berita</a></li>
                         <li class="breadcrumb-item" aria-current="page">Edit Berita</li>
                     </ul>
                 </div>
@@ -36,7 +36,7 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('berita.update', $beritum->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.berita.update', $beritum->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         
@@ -115,7 +115,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="ti ti-device-floppy"></i> Update Berita
                             </button>
-                            <a href="{{ route('berita.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.berita.index') }}" class="btn btn-secondary">
                                 <i class="ti ti-arrow-left"></i> Kembali
                             </a>
                         </div>

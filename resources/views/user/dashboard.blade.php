@@ -1,6 +1,254 @@
-<div class="row justify-content-center">
+<div class="row">
+    <!-- Statistik Desa -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="avtar avtar-s bg-light-primary">
+                            <i class="ti ti-users f-24"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-0 text-muted">Total Penduduk Desa</h6>
+                        <h3 class="mb-0 mt-2">{{ number_format($stats['total_penduduk']) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="avtar avtar-s bg-light-success">
+                            <i class="ti ti-file-check f-24"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-0 text-muted">Surat Disetujui</h6>
+                        <h3 class="mb-0 mt-2">{{ number_format($stats['surat_disetujui']) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="avtar avtar-s bg-light-info">
+                            <i class="ti ti-circle-check f-24"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-0 text-muted">Pengaduan Selesai</h6>
+                        <h3 class="mb-0 mt-2">{{ number_format($stats['pengaduan_selesai']) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistik Personal User -->
+    <div class="col-12 mt-4">
+        <h5 class="mb-3"><i class="ti ti-user me-2"></i>Statistik Aktivitas Saya</h5>
+    </div>
+
+    <!-- Pengajuan Surat Saya -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="ti ti-file-text me-2"></i>Pengajuan Surat Saya</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="p-3">
+                            <h4 class="mb-1 text-warning">{{ $stats['my_pengajuan_menunggu'] }}</h4>
+                            <p class="mb-0 text-muted">Menunggu</p>
+                        </div>
+                    </div>
+                    <div class="col-4 border-start border-end">
+                        <div class="p-3">
+                            <h4 class="mb-1 text-info">{{ $stats['my_pengajuan_diproses'] }}</h4>
+                            <p class="mb-0 text-muted">Diproses</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3">
+                            <h4 class="mb-1 text-success">{{ $stats['my_pengajuan_selesai'] }}</h4>
+                            <p class="mb-0 text-muted">Selesai</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-top">
+                    <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="ti ti-eye me-1"></i>Lihat Semua Pengajuan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pengaduan Saya -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="ti ti-message-report me-2"></i>Pengaduan Saya</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="p-3">
+                            <h4 class="mb-1 text-warning">{{ $stats['my_pengaduan_menunggu'] }}</h4>
+                            <p class="mb-0 text-muted">Menunggu</p>
+                        </div>
+                    </div>
+                    <div class="col-6 border-start">
+                        <div class="p-3">
+                            <h4 class="mb-1 text-success">{{ $stats['my_pengaduan_selesai'] }}</h4>
+                            <p class="mb-0 text-muted">Selesai</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-top">
+                    <a href="{{ route('pengaduan.index') }}" class="btn btn-outline-info btn-sm w-100">
+                        <i class="ti ti-eye me-1"></i>Lihat Semua Pengaduan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafik Demografi Penduduk -->
+    <div class="col-lg-6 mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="ti ti-chart-pie me-2"></i>Demografi Berdasarkan Jenis Kelamin</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="genderChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="ti ti-chart-donut me-2"></i>Demografi Berdasarkan Agama</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="agamaChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pengajuan Surat Terbaru -->
+    @if($recent_pengajuan->count() > 0)
+    <div class="col-12 mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="ti ti-file-text me-2"></i>Pengajuan Surat Terbaru</h6>
+                <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nomor Pengajuan</th>
+                                <th>Jenis Surat</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recent_pengajuan as $pengajuan)
+                            <tr>
+                                <td><strong>{{ $pengajuan->nomor_pengajuan }}</strong></td>
+                                <td>{{ $pengajuan->jenis_surat }}</td>
+                                <td>{{ $pengajuan->created_at->format('d M Y') }}</td>
+                                <td>
+                                    <span class="badge {{ $pengajuan->status_badge }}">
+                                        {{ $pengajuan->status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('pengajuan-surat.show', $pengajuan->id) }}" class="btn btn-sm btn-info">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Pengaduan Terbaru -->
+    @if($recent_pengaduan->count() > 0)
+    <div class="col-12 mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="ti ti-message-report me-2"></i>Pengaduan Terbaru</h6>
+                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-info">Lihat Semua</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nomor Pengaduan</th>
+                                <th>Kategori</th>
+                                <th>Judul</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recent_pengaduan as $pengaduan)
+                            <tr>
+                                <td><strong>{{ $pengaduan->nomor_pengaduan }}</strong></td>
+                                <td>
+                                    <span class="badge bg-light text-dark">
+                                        <i class="ti {{ $pengaduan->kategori_icon }} me-1"></i>
+                                        {{ Str::limit($pengaduan->kategori, 15) }}
+                                    </span>
+                                </td>
+                                <td>{{ Str::limit($pengaduan->judul, 30) }}</td>
+                                <td>{{ $pengaduan->created_at->format('d M Y') }}</td>
+                                <td>
+                                    <span class="badge {{ $pengaduan->status_badge }}">
+                                        {{ $pengaduan->status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('pengaduan.show', $pengaduan->id) }}" class="btn btn-sm btn-info">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Berita Desa Section -->
-    <div class="col-12 mb-4">
+    <div class="col-12 mt-4">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="ti ti-news me-2"></i>Berita Terbaru Desa</h5>
@@ -121,7 +369,7 @@
     </div>
 
     <!-- Welcome Section -->
-    <div class="col-12">
+    <div class="col-12 mt-4">
         <div class="card shadow-sm border-0">
             <div class="card-body text-center">
                 <h2 class="mb-3 text-primary">
@@ -152,42 +400,47 @@
 
                 <p class="lead mb-4">
                     Ini adalah <span class="fw-bold text-success">Dashboard Sistem Informasi Desa Candi</span>.  
-                    Gunakan menu di samping untuk mengelola dan memantau berbagai data desa seperti <span class="text-info">kelahiran, kematian, dan pengaduan warga</span>.
+                    Gunakan menu di samping untuk mengelola pengajuan surat, pengaduan, dan memantau berbagai informasi desa.
                 </p>
 
                 <div class="row mt-4">
                     <div class="col-md-4 mb-3">
+                        <div class="card border-primary h-100">
+                            <div class="card-body">
+                                <i class="bi bi-file-text-fill fs-2 text-primary"></i>
+                                <h5 class="card-title mt-2">Pengajuan Surat</h5>
+                                <p class="card-text">Ajukan berbagai jenis surat administrasi desa secara online.</p>
+                                <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-sm btn-primary">
+                                    <i class="ti ti-arrow-right me-1"></i>Lihat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
                         <div class="card border-info h-100">
                             <div class="card-body">
-                                <i class="bi bi-people-fill fs-2 text-info"></i>
-                                <h5 class="card-title mt-2">Data Kelahiran</h5>
-                                <p class="card-text">Lihat, tambah, atau kelola data kelahiran warga Desa Candi.</p>
+                                <i class="bi bi-chat-left-dots-fill fs-2 text-info"></i>
+                                <h5 class="card-title mt-2">Pengaduan</h5>
+                                <p class="card-text">Sampaikan pengaduan atau aspirasi Anda kepada pemerintah desa.</p>
+                                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-info">
+                                    <i class="ti ti-arrow-right me-1"></i>Lihat
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <div class="card border-danger h-100">
+                        <div class="card border-success h-100">
                             <div class="card-body">
-                                <i class="bi bi-heartbreak-fill fs-2 text-danger"></i>
-                                <h5 class="card-title mt-2">Data Kematian</h5>
-                                <p class="card-text">Pantau dan perbarui data kematian di wilayah desa.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-warning h-100">
-                            <div class="card-body">
-                                <i class="bi bi-chat-left-dots-fill fs-2 text-warning"></i>
-                                <h5 class="card-title mt-2">Pengaduan Warga</h5>
-                                <p class="card-text">Tinjau dan tanggapi laporan atau pengaduan dari masyarakat.</p>
+                                <i class="bi bi-person-circle fs-2 text-success"></i>
+                                <h5 class="card-title mt-2">Profil Saya</h5>
+                                <p class="card-text">Kelola informasi akun dan data pribadi Anda.</p>
+                                <a href="/myprofile" class="btn btn-sm btn-success">
+                                    <i class="ti ti-arrow-right me-1"></i>Lihat
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <a href="/myprofile" class="btn btn-primary mt-4 px-4">
-                    <i class="bi bi-person-circle me-2"></i> Profil Saya
-                </a>
             </div>
         </div>
     </div>
@@ -214,26 +467,89 @@
 }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Script untuk menangani tombol verifikasi agar menampilkan status "processing"
-    const verifyButton = document.getElementById('verify-button');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart Jenis Kelamin
+        const genderCtx = document.getElementById('genderChart');
+        if (genderCtx) {
+            const genderData = @json($penduduk_by_gender);
+            new Chart(genderCtx, {
+                type: 'pie',
+                data: {
+                    labels: genderData.map(item => item.jenis_kelamin),
+                    datasets: [{
+                        data: genderData.map(item => item.total),
+                        backgroundColor: ['#4680ff', '#ff6b9d'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
 
-    if (verifyButton) {
-        verifyButton.addEventListener('click', function() {
-            this.classList.add('disabled');
-            this.innerHTML = `
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Memproses...
-            `;
-        });
-    }
+        // Chart Agama
+        const agamaCtx = document.getElementById('agamaChart');
+        if (agamaCtx) {
+            const agamaData = @json($penduduk_by_agama);
+            new Chart(agamaCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: agamaData.map(item => item.agama),
+                    datasets: [{
+                        data: agamaData.map(item => item.total),
+                        backgroundColor: [
+                            '#4680ff',
+                            '#2ca87f',
+                            '#ff6b9d',
+                            '#f4bd0e',
+                            '#9c27b0',
+                            '#ff9800'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
 
-    // Auto slide carousel setiap 5 detik
-    var myCarousel = document.querySelector('#beritaCarousel')
-    if (myCarousel) {
-        var carousel = new bootstrap.Carousel(myCarousel, {
-            interval: 5000,
-            wrap: true
-        })
-    }
+        // Auto slide carousel
+        var myCarousel = document.querySelector('#beritaCarousel');
+        if (myCarousel) {
+            var carousel = new bootstrap.Carousel(myCarousel, {
+                interval: 5000,
+                wrap: true
+            });
+        }
+
+        // Verify button handler
+        const verifyButton = document.getElementById('verify-button');
+        if (verifyButton) {
+            verifyButton.addEventListener('click', function() {
+                this.classList.add('disabled');
+                this.innerHTML = `
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Memproses...
+                `;
+            });
+        }
+    });
 </script>

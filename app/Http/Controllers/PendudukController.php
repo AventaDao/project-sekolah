@@ -10,11 +10,30 @@ class PendudukController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $penduduks = Penduduk::where('status_hidup', 'Hidup')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = Penduduk::where('status_hidup', 'Hidup');
+
+        // Filter berdasarkan status akun
+        if ($request->has('filter_account')) {
+            if ($request->filter_account === 'has_account') {
+                $query->hasUserAccount();
+            } elseif ($request->filter_account === 'no_account') {
+                $query->noUserAccount();
+            }
+        }
+
+        // Filter berdasarkan pencarian
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nik', 'like', "%{$search}%")
+                  ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
+            });
+        }
+
+        $penduduks = $query->orderBy('created_at', 'desc')->paginate(10);
         
         return view('admin.penduduk.index', compact('penduduks'));
     }
@@ -58,7 +77,7 @@ class PendudukController extends Controller
 
         Penduduk::create($validated);
 
-        return redirect()->route('penduduk.index')
+        return redirect()->route('admin.penduduk.index')
             ->with('success', 'Data penduduk berhasil ditambahkan!');
     }
 
@@ -111,7 +130,7 @@ class PendudukController extends Controller
 
         $penduduk->update($validated);
 
-        return redirect()->route('penduduk.index')
+        return redirect()->route('admin.penduduk.index')
             ->with('success', 'Data penduduk berhasil diperbarui!');
     }
 
@@ -122,7 +141,7 @@ class PendudukController extends Controller
     {
         $penduduk->delete();
 
-        return redirect()->route('penduduk.index')
+        return redirect()->route('admin.penduduk.index')
             ->with('success', 'Data penduduk berhasil dihapus!');
     }
 }

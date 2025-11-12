@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Penduduk;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -59,7 +60,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'nik' => 'required|string|size:16|unique:users,nik',
+            'nik' => 'required|string|size:16|unique:users,nik|unique:penduduks,nik',
             'nama_lengkap' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
@@ -92,39 +93,78 @@ class AuthController extends Controller
             'password.confirmed' => 'Konfirmasi password tidak cocok',
         ]);
 
-        $user = User::create([
-            'nik' => $request->nik,
-            'nama_lengkap' => $request->nama_lengkap,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-            'rt' => $request->rt,
-            'rw' => $request->rw,
-            'desa' => $request->desa,
-            'kecamatan' => $request->kecamatan,
-            'kabupaten' => $request->kabupaten,
-            'provinsi' => $request->provinsi,
-            'kode_pos' => $request->kode_pos,
-            'agama' => $request->agama,
-            'status_perkawinan' => $request->status_perkawinan,
-            'pekerjaan' => $request->pekerjaan,
-            'kewarganegaraan' => $request->kewarganegaraan,
-            'pendidikan_terakhir' => $request->pendidikan_terakhir,
-            'nama_ayah' => $request->nama_ayah,
-            'nama_ibu' => $request->nama_ibu,
-            'no_telepon' => $request->no_telepon,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role' => 'user',
-        ]);
+        // Gunakan DB Transaction untuk memastikan data tersimpan di kedua tabel
+        DB::beginTransaction();
+        
+        try {
+            // Simpan data ke tabel users
+            $user = User::create([
+                'nik' => $request->nik,
+                'nama_lengkap' => $request->nama_lengkap,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'rt' => $request->rt,
+                'rw' => $request->rw,
+                'desa' => $request->desa,
+                'kecamatan' => $request->kecamatan,
+                'kabupaten' => $request->kabupaten,
+                'provinsi' => $request->provinsi,
+                'kode_pos' => $request->kode_pos,
+                'agama' => $request->agama,
+                'status_perkawinan' => $request->status_perkawinan,
+                'pekerjaan' => $request->pekerjaan,
+                'kewarganegaraan' => $request->kewarganegaraan,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'nama_ayah' => $request->nama_ayah,
+                'nama_ibu' => $request->nama_ibu,
+                'no_telepon' => $request->no_telepon,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role' => 'user',
+            ]);
 
-        $request->session()->flash('registered_nik', $request->nik);
+            // Simpan data ke tabel penduduks (otomatis)
+            Penduduk::create([
+                'nik' => $request->nik,
+                'nama_lengkap' => $request->nama_lengkap,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'rt' => $request->rt,
+                'rw' => $request->rw,
+                'desa' => $request->desa,
+                'kecamatan' => $request->kecamatan,
+                'kabupaten' => $request->kabupaten,
+                'provinsi' => $request->provinsi,
+                'kode_pos' => $request->kode_pos,
+                'agama' => $request->agama,
+                'status_perkawinan' => $request->status_perkawinan,
+                'pekerjaan' => $request->pekerjaan,
+                'kewarganegaraan' => $request->kewarganegaraan,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'nama_ayah' => $request->nama_ayah,
+                'nama_ibu' => $request->nama_ibu,
+                'no_telepon' => $request->no_telepon,
+                'status_hidup' => 'Hidup', // Default status
+            ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login menggunakan NIK dan password Anda.');
+            DB::commit();
+
+            $request->session()->flash('registered_nik', $request->nik);
+
+            return redirect()->route('login')->with('success', 'Registrasi berhasil! Data Anda telah tercatat sebagai penduduk desa. Silakan login menggunakan NIK dan password Anda.');
+            
+        } catch (\Exception $e) {
+            DB::rollback();
+            
+            return back()->withErrors([
+                'error' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+            ])->withInput();
+        }
     }
-
-    // ... method lainnya tetap sama ...
     
     public function sendOtp($user = null, $fromRegister = false)
     {
