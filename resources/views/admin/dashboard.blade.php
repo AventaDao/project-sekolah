@@ -23,7 +23,7 @@
     </div>
 
     <!-- Statistik Cards dengan Animasi -->
-    <div class="col-md-6 col-xl-3">
+    <div class="col-md-6 col-xl-4">
         <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #4680ff !important;">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-xl-3">
+    <div class="col-md-6 col-xl-4">
         <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-xl-3">
+    <div class="col-md-6 col-xl-4">
         <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #dc2626 !important;">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
@@ -74,25 +74,6 @@
                     </div>
                     <div class="avatar-lg bg-light-danger rounded-circle d-flex align-items-center justify-content-center">
                         <i class="ti ti-heartbreak text-danger" style="font-size: 32px;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #f59e0b !important;">
-            <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted mb-1">Total Keluarga</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['total_kk'] }}">0</h3>
-                        <small class="text-warning">
-                            <i class="ti ti-home"></i> Kepala Keluarga
-                        </small>
-                    </div>
-                    <div class="avatar-lg bg-light-warning rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-home-2 text-warning" style="font-size: 32px;"></i>
                     </div>
                 </div>
             </div>
@@ -526,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCounter();
     });
 
-    // Main Stats Chart
+    // Main Stats Chart (initialized with empty datasets; will be filled by AJAX)
     const mainCtx = document.getElementById('mainStatsChart');
     const mainChart = new Chart(mainCtx, {
         type: 'bar',
@@ -535,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [
                 {
                     label: 'Pengajuan Surat',
-                    data: [12, 19, 15, 25, 22, 30, 28, 35, 32, 38, 40, 45],
+                    data: new Array(12).fill(0),
                     backgroundColor: 'rgba(70, 128, 255, 0.8)',
                     borderColor: 'rgba(70, 128, 255, 1)',
                     borderWidth: 2,
@@ -543,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 {
                     label: 'Pengaduan',
-                    data: [8, 11, 9, 15, 12, 18, 15, 20, 18, 22, 25, 28],
+                    data: new Array(12).fill(0),
                     backgroundColor: 'rgba(44, 202, 127, 0.8)',
                     borderColor: 'rgba(44, 202, 127, 1)',
                     borderWidth: 2,
@@ -555,42 +536,24 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                }
+                legend: { position: 'top' },
+                tooltip: { mode: 'index', intersect: false }
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
+                y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                x: { grid: { display: false } }
             }
         }
     });
 
-    // Status Pie Chart
+    // Status Pie Chart (initialized empty; will be filled by AJAX)
     const pieCtx = document.getElementById('statusPieChart');
-    new Chart(pieCtx, {
+    const pieChart = new Chart(pieCtx, {
         type: 'doughnut',
         data: {
             labels: ['Menunggu', 'Diproses', 'Selesai'],
             datasets: [{
-                data: [
-                    {{ $stats['pengajuan_menunggu'] + $stats['pengaduan_menunggu'] }},
-                    {{ $stats['pengajuan_diproses'] + $stats['pengaduan_diproses'] }},
-                    {{ $stats['pengajuan_selesai'] + $stats['pengaduan_selesai'] }}
-                ],
+                data: [0, 0, 0],
                 backgroundColor: [
                     'rgba(245, 158, 11, 0.8)',
                     'rgba(59, 130, 246, 0.8)',
@@ -603,13 +566,53 @@ document.addEventListener('DOMContentLoaded', function() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                }
-            }
+            plugins: { legend: { position: 'bottom' } }
         }
     });
+
+    // Function to fetch stats via AJAX and update charts
+    async function fetchAndUpdateStats() {
+        try {
+            const res = await fetch('{{ route('dashboard.stats') }}', { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data = await res.json();
+
+            // Update main chart datasets
+            if (data.pengajuan && data.pengaduan) {
+                mainChart.data.datasets[0].data = data.pengajuan.monthly;
+                mainChart.data.datasets[1].data = data.pengaduan.monthly;
+                mainChart.update();
+            }
+
+            // Update pie chart using combined totals
+            if (data.combined) {
+                pieChart.data.datasets[0].data = [
+                    data.combined.menunggu || 0,
+                    data.combined.diproses || 0,
+                    data.combined.selesai || 0
+                ];
+                pieChart.update();
+            }
+
+            // Update numeric counters in the DOM (if present)
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(node => {
+                const key = node.getAttribute('data-key');
+                if (!key) return;
+                let value = 0;
+                if (key === 'total_penduduk' && data.totals) value = data.totals.total_penduduk || 0;
+                // other keys can be added as needed
+                node.textContent = value;
+            });
+
+        } catch (err) {
+            console.error('Failed to fetch dashboard stats:', err);
+        }
+    }
+
+    // Initial fetch and periodic refresh every 15s
+    fetchAndUpdateStats();
+    setInterval(fetchAndUpdateStats, 15000);
 
     // Function to update main chart
     window.updateMainChart = function(period) {

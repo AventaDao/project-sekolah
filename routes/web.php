@@ -171,5 +171,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::delete('/{pengaduan}', [PengaduanController::class, 'destroy'])->name('destroy');
             Route::get('/{pengaduan}/download-lampiran', [PengaduanController::class, 'downloadLampiran'])->name('download-lampiran');
         });
+
+        // AJAX endpoint for dashboard real-time stats
+        Route::get('/dashboard/stats', [\App\Http\Controllers\DashboardController::class, 'stats'])->name('dashboard.stats');
     });
 });
