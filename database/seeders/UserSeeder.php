@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
             'tempat_lahir' => 'Sidoarjo',
             'tanggal_lahir' => '1985-05-15',
             'jenis_kelamin' => 'Laki-laki',
-            'alamat' => 'Kantor Desa Candi',
+            'alamat' => 'Kantor Desa Kedung Kendo',
             'rt' => '001',
             'rw' => '001',
             'desa' => 'Candi',

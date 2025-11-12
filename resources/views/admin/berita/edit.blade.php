@@ -67,7 +67,7 @@
                                     
                                     @if($beritum->gambar)
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $beritum->gambar) }}" 
+                                        <img src="{{ Storage::disk('public')->url($beritum->gambar) }}" 
                                              alt="{{ $beritum->judul }}" 
                                              class="img-fluid rounded" 
                                              style="max-height: 150px;">

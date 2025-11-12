@@ -59,7 +59,7 @@
                                     <td>{{ $beritas->firstItem() + $key }}</td>
                                     <td>
                                         @if($berita->gambar)
-                                        <img src="{{ asset('storage/' . $berita->gambar) }}" 
+                                        <img src="{{ Storage::disk('public')->url($berita->gambar) }}" 
                                              alt="{{ $berita->judul }}" 
                                              class="img-fluid rounded" 
                                              style="width: 60px; height: 60px; object-fit: cover;">

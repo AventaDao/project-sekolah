@@ -14,6 +14,7 @@ Route::get('/', function () {
 Route::get('/contact-us', function () {
     return view('contact');
 });
+
 Route::get('/verify-email', [AuthController::class, 'showVerifyForm'])->name('verify.form');
 
 Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('send.otp');
