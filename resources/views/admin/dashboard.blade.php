@@ -494,7 +494,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const duration = 1500;
         const increment = target / (duration / 16);
         let current = 0;
-
         const updateCounter = () => {
             current += increment;
             if (current < target) {
@@ -507,16 +506,23 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCounter();
     });
 
-    // Main Stats Chart (initialized with empty datasets; will be filled by AJAX)
+    // Main Stats Chart (Harian, 7 hari terakhir)
     const mainCtx = document.getElementById('mainStatsChart');
+    // Default label: 7 hari terakhir (akan diupdate dari backend)
+    let defaultLabels = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        defaultLabels.push(d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }));
+    }
     const mainChart = new Chart(mainCtx, {
         type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
+            labels: defaultLabels,
             datasets: [
                 {
                     label: 'Pengajuan Surat',
-                    data: new Array(12).fill(0),
+                    data: new Array(7).fill(0),
                     backgroundColor: 'rgba(70, 128, 255, 0.8)',
                     borderColor: 'rgba(70, 128, 255, 1)',
                     borderWidth: 2,
@@ -524,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 {
                     label: 'Pengaduan',
-                    data: new Array(12).fill(0),
+                    data: new Array(7).fill(0),
                     backgroundColor: 'rgba(44, 202, 127, 0.8)',
                     borderColor: 'rgba(44, 202, 127, 1)',
                     borderWidth: 2,
@@ -546,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Status Pie Chart (initialized empty; will be filled by AJAX)
+    // Status Pie Chart (tidak berubah)
     const pieCtx = document.getElementById('statusPieChart');
     const pieChart = new Chart(pieCtx, {
         type: 'doughnut',
@@ -577,10 +583,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
 
-            // Update main chart datasets
-            if (data.pengajuan && data.pengaduan) {
-                mainChart.data.datasets[0].data = data.pengajuan.monthly;
-                mainChart.data.datasets[1].data = data.pengaduan.monthly;
+            // Update main chart datasets (harian)
+            if (data.pengajuan && data.pengaduan && data.labels) {
+                mainChart.data.labels = data.labels; // label: tanggal (misal 7 hari terakhir)
+                mainChart.data.datasets[0].data = data.pengajuan.daily; // array jumlah pengajuan per hari
+                mainChart.data.datasets[1].data = data.pengaduan.daily; // array jumlah pengaduan per hari
                 mainChart.update();
             }
 

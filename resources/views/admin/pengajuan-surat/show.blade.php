@@ -90,7 +90,7 @@
 
                     <!-- Surat Pengantar RW -->
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Surat Pengantar RW</h5>
-                    <a href="{{ route('pengajuan-surat.download-pengantar', $pengajuanSurat->id) }}" 
+                    <a href="{{ route('admin.pengajuan-surat.download-pengantar', $pengajuanSurat->id) }}" 
                        class="btn btn-outline-primary" target="_blank">
                         <i class="ti ti-download"></i> Download Surat Pengantar RW
                     </a>
@@ -107,7 +107,7 @@
                     <!-- Surat Jadi -->
                     @if($pengajuanSurat->file_surat_jadi)
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Surat Jadi</h5>
-                    <a href="{{ route('pengajuan-surat.download-surat-jadi', $pengajuanSurat->id) }}" 
+                    <a href="{{ route('admin.pengajuan-surat.download-surat-jadi', $pengajuanSurat->id) }}" 
                        class="btn btn-success" target="_blank">
                         <i class="ti ti-file-download"></i> Lihat Surat Jadi
                     </a>

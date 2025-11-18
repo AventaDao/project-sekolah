@@ -97,6 +97,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/', [PengajuanSuratController::class, 'adminIndex'])->name('index');
             Route::get('/{pengajuanSurat}', [PengajuanSuratController::class, 'show'])->name('show');
             Route::patch('/{pengajuanSurat}/status', [PengajuanSuratController::class, 'updateStatus'])->name('update-status');
+            Route::get('/{pengajuanSurat}/download-pengantar', [PengajuanSuratController::class, 'downloadSuratPengantar'])->name('download-pengantar');
+            Route::get('/{pengajuanSurat}/download-surat-jadi', [PengajuanSuratController::class, 'downloadSuratJadi'])->name('download-surat-jadi');
         });
 
         // Pengaduan Management

@@ -40,16 +40,9 @@ class PengajuanSuratController extends Controller
      */
     public function create()
     {
-        $jenisSurat = [
-            'Surat KUA',
-            'Surat Keterangan Tidak Mampu',
-            'Surat Domisili',
-            'Surat Keterangan Tanah',
-            'SKCK',
-            'Surat Permohonan Bantuan'
-        ];
+        $suratTypes = PengajuanSurat::getSuratTypes();
         
-        return view('user.pengajuan-surat.create', compact('jenisSurat'));
+        return view('user.pengajuan-surat.create', compact('suratTypes'));
     }
 
     /**
@@ -57,14 +50,50 @@ class PengajuanSuratController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'jenis_surat' => 'required|in:Surat KUA,Surat Keterangan Tidak Mampu,Surat Domisili,Surat Keterangan Tanah,SKCK,Surat Permohonan Bantuan',
-            'keperluan' => 'required|string',
+        // Validasi dasar
+        $suratTypes = PengajuanSurat::getSuratTypes();
+        $jenisSuratList = array_keys($suratTypes);
+        
+        $rules = [
+            'jenis_surat' => 'required|in:' . implode(',', $jenisSuratList),
+            'keperluan' => 'required|string|min:10',
             'surat_pengantar_rw' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'keterangan_tambahan' => 'nullable|string',
-        ], [
+        ];
+
+        // Tambahkan validasi dinamis berdasarkan jenis surat
+        $jenisSurat = $request->input('jenis_surat');
+        $fields = PengajuanSurat::getFieldsForSuratType($jenisSurat);
+
+        foreach ($fields as $fieldName => $fieldConfig) {
+            $rule = $fieldConfig['required'] ? 'required' : 'nullable';
+            
+            if ($fieldConfig['type'] === 'textarea') {
+                $rule .= '|string';
+            } elseif ($fieldConfig['type'] === 'number') {
+                $rule .= '|numeric';
+            } elseif ($fieldConfig['type'] === 'date') {
+                // Jika field adalah tanggal pernikahan atau tanggal dibutuhkan, harus di masa depan
+                // Jika field adalah tanggal mulai tinggal, bisa tanggal apa saja
+                if (in_array($fieldName, ['tanggal_pernikahan', 'tanggal_dibutuhkan'])) {
+                    $rule .= '|date|after:today';
+                } else {
+                    $rule .= '|date';
+                }
+            } elseif ($fieldConfig['type'] === 'select') {
+                $rule .= '|in:' . implode(',', $fieldConfig['options']);
+            } elseif ($fieldConfig['type'] === 'text') {
+                $rule .= '|string';
+            }
+            
+            $rules[$fieldName] = $rule;
+        }
+
+        $validated = $request->validate($rules, [
             'jenis_surat.required' => 'Jenis surat harus dipilih',
+            'jenis_surat.in' => 'Jenis surat tidak valid',
             'keperluan.required' => 'Keperluan harus diisi',
+            'keperluan.min' => 'Keperluan minimal 10 karakter',
             'surat_pengantar_rw.required' => 'Surat pengantar RW wajib dilampirkan',
             'surat_pengantar_rw.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG',
             'surat_pengantar_rw.max' => 'Ukuran file maksimal 2MB',
@@ -76,15 +105,25 @@ class PengajuanSuratController extends Controller
         // Generate nomor pengajuan
         $nomorPengajuan = PengajuanSurat::generateNomorPengajuan();
 
-        // Simpan data pengajuan
-        PengajuanSurat::create([
+        // Siapkan data untuk disimpan
+        $dataToSave = [
             'user_id' => Auth::id(),
             'nomor_pengajuan' => $nomorPengajuan,
             'jenis_surat' => $validated['jenis_surat'],
             'keperluan' => $validated['keperluan'],
             'surat_pengantar_rw' => $filePath,
-            'keterangan_tambahan' => $validated['keterangan_tambahan'],
-        ]);
+            'keterangan_tambahan' => $validated['keterangan_tambahan'] ?? null,
+        ];
+
+        // Tambahkan field dinamis
+        foreach ($fields as $fieldName => $fieldConfig) {
+            if (isset($validated[$fieldName])) {
+                $dataToSave[$fieldName] = $validated[$fieldName];
+            }
+        }
+
+        // Simpan data pengajuan
+        PengajuanSurat::create($dataToSave);
 
         return redirect()->route('pengajuan-surat.index')
             ->with('success', 'Pengajuan surat berhasil dibuat dengan nomor: ' . $nomorPengajuan);
@@ -181,13 +220,22 @@ class PengajuanSuratController extends Controller
      */
     public function downloadSuratPengantar(PengajuanSurat $pengajuanSurat)
     {
-        // Check if user is authorized
+        // Check if user is authorized: admin bisa download semua, user hanya miliknya sendiri
         if (Auth::user()->role !== 'admin' && $pengajuanSurat->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
+        // Validasi bahwa file ada
+        if (!$pengajuanSurat->surat_pengantar_rw || !Storage::disk('public')->exists($pengajuanSurat->surat_pengantar_rw)) {
+            return redirect()->back()->with('error', 'File surat pengantar tidak ditemukan');
+        }
+
         $path = Storage::disk('public')->path($pengajuanSurat->surat_pengantar_rw);
-        return response()->download($path);
+        // Hapus karakter "/" dan "\" dari nomor pengajuan untuk filename
+        $nomorClean = str_replace(['/', '\\'], '-', $pengajuanSurat->nomor_pengajuan);
+        $filename = 'Surat-Pengantar-RW-' . $nomorClean . '.' . pathinfo($pengajuanSurat->surat_pengantar_rw, PATHINFO_EXTENSION);
+        
+        return response()->download($path, $filename);
     }
 
     /**
@@ -195,17 +243,23 @@ class PengajuanSuratController extends Controller
      */
     public function downloadSuratJadi(PengajuanSurat $pengajuanSurat)
     {
-        // Check if user is authorized
-        if ($pengajuanSurat->user_id !== Auth::id()) {
+        // Check if user is authorized: admin bisa download semua, user hanya miliknya sendiri
+        if (Auth::user()->role !== 'admin' && $pengajuanSurat->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
         if (!$pengajuanSurat->file_surat_jadi) {
-            return redirect()->back()
-                ->with('error', 'Surat belum tersedia');
+            return redirect()->back()->with('error', 'Surat belum tersedia');
+        }
+
+        // Validasi bahwa file ada
+        if (!Storage::disk('public')->exists($pengajuanSurat->file_surat_jadi)) {
+            return redirect()->back()->with('error', 'File surat tidak ditemukan');
         }
 
         $path = Storage::disk('public')->path($pengajuanSurat->file_surat_jadi);
-        return response()->download($path);
+        $filename = 'Surat-Jadi-' . $pengajuanSurat->nomor_pengajuan . '.pdf';
+        
+        return response()->download($path, $filename);
     }
 }

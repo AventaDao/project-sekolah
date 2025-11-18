@@ -91,6 +91,43 @@
                         <p class="text-muted">{{ $pengajuanSurat->keperluan }}</p>
                     </div>
 
+                    <!-- Detail Spesifik Berdasarkan Jenis Surat -->
+                    <h5 class="mb-3 text-primary border-bottom pb-2">Detail {{ $pengajuanSurat->jenis_surat }}</h5>
+                    <div class="mb-4">
+                        @php
+                            $suratTypes = \App\Models\PengajuanSurat::getSuratTypes();
+                            $fields = $suratTypes[$pengajuanSurat->jenis_surat]['fields'] ?? [];
+                        @endphp
+                        
+                        @if(count($fields) > 0)
+                            <table class="table table-striped">
+                                @foreach($fields as $fieldName => $fieldConfig)
+                                    @php
+                                        $fieldValue = $pengajuanSurat->$fieldName;
+                                    @endphp
+                                    @if($fieldValue)
+                                    <tr>
+                                        <td width="30%" class="text-muted fw-5"><strong>{{ $fieldConfig['label'] }}</strong></td>
+                                        <td width="70%">
+                                            @if($fieldConfig['type'] === 'textarea')
+                                                <p class="mb-0">{{ nl2br($fieldValue) }}</p>
+                                            @elseif($fieldConfig['type'] === 'date')
+                                                {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
+                                            @elseif($fieldConfig['type'] === 'number' && strpos($fieldName, 'jumlah') !== false)
+                                                Rp. {{ number_format($fieldValue, 0, ',', '.') }}
+                                            @else
+                                                {{ $fieldValue }}
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                            </table>
+                        @else
+                            <p class="text-muted">Tidak ada detail spesifik untuk jenis surat ini.</p>
+                        @endif
+                    </div>
+
                     <!-- Keterangan Tambahan -->
                     @if($pengajuanSurat->keterangan_tambahan)
                     <h5 class="mb-3 text-primary border-bottom pb-2">Keterangan Tambahan</h5>

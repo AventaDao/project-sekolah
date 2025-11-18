@@ -45,26 +45,28 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('pengajuan-surat.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('pengajuan-surat.store') }}" method="POST" enctype="multipart/form-data" id="formPengajuanSurat">
                         @csrf
                         
                         <div class="row">
+                            <!-- Pilih Jenis Surat -->
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Jenis Surat <span class="text-danger">*</span></label>
-                                <select name="jenis_surat" class="form-select @error('jenis_surat') is-invalid @enderror" required>
+                                <select name="jenis_surat" id="jenisSurat" class="form-select @error('jenis_surat') is-invalid @enderror" required onchange="updateFormFields()">
                                     <option value="">-- Pilih Jenis Surat --</option>
-                                    @foreach($jenisSurat as $jenis)
-                                    <option value="{{ $jenis }}" {{ old('jenis_surat') == $jenis ? 'selected' : '' }}>
-                                        {{ $jenis }}
+                                    @foreach($suratTypes as $key => $type)
+                                    <option value="{{ $key }}" {{ old('jenis_surat') == $key ? 'selected' : '' }}>
+                                        {{ $type['label'] }}
                                     </option>
                                     @endforeach
                                 </select>
                                 @error('jenis_surat')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="form-text text-muted">Pilih jenis surat yang ingin Anda ajukan</small>
+                                <small class="form-text text-muted" id="suratDeskripsi"></small>
                             </div>
 
+                            <!-- Keperluan Umum -->
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Keperluan <span class="text-danger">*</span></label>
                                 <textarea name="keperluan" class="form-control @error('keperluan') is-invalid @enderror" 
@@ -75,6 +77,12 @@
                                 <small class="form-text text-muted">Jelaskan secara detail keperluan Anda mengajukan surat ini</small>
                             </div>
 
+                            <!-- Dynamic Fields Container -->
+                            <div id="dynamicFieldsContainer" class="col-md-12">
+                                <!-- Fields akan di-generate oleh JavaScript -->
+                            </div>
+
+                            <!-- Surat Pengantar dari RW -->
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Surat Pengantar dari RW <span class="text-danger">*</span></label>
                                 <input type="file" name="surat_pengantar_rw" 
@@ -88,6 +96,7 @@
                                 </small>
                             </div>
 
+                            <!-- Keterangan Tambahan -->
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Keterangan Tambahan (Opsional)</label>
                                 <textarea name="keterangan_tambahan" class="form-control @error('keterangan_tambahan') is-invalid @enderror" 
@@ -127,82 +136,129 @@
                 </div>
                 <div class="card-body">
                     <div class="accordion" id="accordionJenisSurat">
+                        @foreach($suratTypes as $key => $type)
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat1">
-                                    Surat KUA
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat{{ $loop->index }}">
+                                    {{ $type['label'] }}
                                 </button>
                             </h2>
-                            <div id="surat1" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
+                            <div id="surat{{ $loop->index }}" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
                                 <div class="accordion-body">
-                                    Surat pengantar untuk keperluan administrasi di Kantor Urusan Agama (KUA), seperti untuk nikah, rujuk, atau keperluan lainnya.
+                                    <p>{{ $type['deskripsi'] }}</p>
+                                    <h6 class="mt-3">Field yang Diperlukan:</h6>
+                                    <ul>
+                                        @foreach($type['fields'] as $fieldKey => $field)
+                                        <li>{{ $field['label'] }} {{ $field['required'] ? '<span class="text-danger">*</span>' : '' }}</li>
+                                        @endforeach
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat2">
-                                    Surat Keterangan Tidak Mampu (SKTM)
-                                </button>
-                            </h2>
-                            <div id="surat2" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
-                                <div class="accordion-body">
-                                    Surat keterangan yang menyatakan kondisi ekonomi keluarga kurang mampu. Biasanya digunakan untuk beasiswa, bantuan sosial, atau keringanan biaya.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat3">
-                                    Surat Domisili
-                                </button>
-                            </h2>
-                            <div id="surat3" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
-                                <div class="accordion-body">
-                                    Surat keterangan yang menyatakan tempat tinggal seseorang di wilayah tertentu. Digunakan untuk berbagai keperluan administrasi.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat4">
-                                    Surat Keterangan Tanah
-                                </button>
-                            </h2>
-                            <div id="surat4" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
-                                <div class="accordion-body">
-                                    Surat keterangan kepemilikan atau penguasaan tanah. Digunakan untuk keperluan jual beli, waris, atau administrasi tanah lainnya.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat5">
-                                    SKCK (Surat Keterangan Catatan Kepolisian)
-                                </button>
-                            </h2>
-                            <div id="surat5" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
-                                <div class="accordion-body">
-                                    Surat pengantar dari desa untuk mengurus SKCK di kepolisian. Digunakan untuk keperluan melamar pekerjaan, pendaftaran sekolah, atau keperluan lainnya.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat6">
-                                    Surat Permohonan Bantuan
-                                </button>
-                            </h2>
-                            <div id="surat6" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
-                                <div class="accordion-body">
-                                    Surat permohonan bantuan untuk berbagai keperluan seperti bantuan sosial, renovasi rumah, bantuan kesehatan, atau bantuan lainnya.
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Embed data untuk JavaScript -->
+<script>
+    const suratTypes = @json($suratTypes);
+    const oldValues = @json(old());
+    const errors = @json($errors->getMessages());
+</script>
+
+<script>
+    function updateFormFields() {
+        const jenisSurat = document.getElementById('jenisSurat').value;
+        const container = document.getElementById('dynamicFieldsContainer');
+        const suratDeskripsi = document.getElementById('suratDeskripsi');
+        
+        // Clear container
+        container.innerHTML = '';
+        suratDeskripsi.textContent = '';
+        
+        if (!jenisSurat) return;
+        
+        const suratType = suratTypes[jenisSurat];
+        if (!suratType) return;
+        
+        // Set deskripsi
+        suratDeskripsi.textContent = suratType.deskripsi;
+        
+        // Generate fields
+        const fields = suratType.fields;
+        let fieldsHTML = '';
+        
+        for (const [fieldName, fieldConfig] of Object.entries(fields)) {
+            const fieldValue = oldValues[fieldName] || '';
+            const hasError = errors[fieldName] ? true : false;
+            const errorClass = hasError ? 'is-invalid' : '';
+            const requiredStr = fieldConfig.required ? '<span class="text-danger">*</span>' : '';
+            const requiredAttr = fieldConfig.required ? 'required' : '';
+            
+            let fieldHTML = `
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">${fieldConfig.label} ${requiredStr}</label>
+            `;
+            
+            if (fieldConfig.type === 'text') {
+                fieldHTML += `
+                    <input type="text" name="${fieldName}" class="form-control ${errorClass}" 
+                           value="${fieldValue}" ${requiredAttr}>
+                `;
+            } else if (fieldConfig.type === 'number') {
+                fieldHTML += `
+                    <input type="number" name="${fieldName}" class="form-control ${errorClass}" 
+                           value="${fieldValue}" step="${fieldConfig.step || '1'}" ${requiredAttr}>
+                `;
+            } else if (fieldConfig.type === 'date') {
+                fieldHTML += `
+                    <input type="date" name="${fieldName}" class="form-control ${errorClass}" 
+                           value="${fieldValue}" ${requiredAttr}>
+                `;
+            } else if (fieldConfig.type === 'textarea') {
+                fieldHTML += `
+                    <textarea name="${fieldName}" class="form-control ${errorClass}" rows="4" ${requiredAttr}>${fieldValue}</textarea>
+                `;
+            } else if (fieldConfig.type === 'select') {
+                fieldHTML += `
+                    <select name="${fieldName}" class="form-select ${errorClass}" ${requiredAttr}>
+                        <option value="">-- Pilih --</option>
+                `;
+                
+                fieldConfig.options.forEach(option => {
+                    const selected = fieldValue === option ? 'selected' : '';
+                    fieldHTML += `<option value="${option}" ${selected}>${option}</option>`;
+                });
+                
+                fieldHTML += `</select>`;
+            }
+            
+            // Add error message
+            if (hasError) {
+                fieldHTML += `
+                    <div class="invalid-feedback" style="display: block;">
+                        ${errors[fieldName][0]}
+                    </div>
+                `;
+            }
+            
+            fieldHTML += `</div>`;
+            fieldsHTML += fieldHTML;
+        }
+        
+        container.innerHTML = fieldsHTML;
+    }
+    
+    // Trigger update on page load if there's an old value
+    document.addEventListener('DOMContentLoaded', function() {
+        const jenisSurat = document.getElementById('jenisSurat').value;
+        if (jenisSurat) {
+            updateFormFields();
+        }
+    });
+</script>
 @endsection
