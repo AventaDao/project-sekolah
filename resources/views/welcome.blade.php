@@ -242,6 +242,78 @@
     </section>
     <!-- [ Alur Penggunaan ] End -->
 
+    <!-- [ Lokasi Desa ] start -->
+    <section class="location-section" id="lokasi">
+        <div class="container title">
+            <div class="row justify-content-center text-center wow fadeInUp" data-wow-delay="0.2s">
+                <div class="col-md-10 col-xl-6">
+                    <span class="section-badge">Temukan Kami</span>
+                    <h2 class="section-title">Lokasi Desa Kami</h2>
+                    <p class="section-subtitle">Kunjungi kantor desa kami atau lihat lokasi desa di peta interaktif di bawah ini.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <div class="location-info wow fadeInLeft" data-wow-delay="0.2s">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="ti ti-map-pin"></i>
+                            </div>
+                            <div class="info-content">
+                                <h5 class="info-title">Alamat Kantor Desa</h5>
+                                <p class="info-text" id="village-address">Jl. Raya Candi, Desa Candi, Kecamatan Candi, Kabupaten Sidoarjo, Jawa Timur</p>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="ti ti-phone"></i>
+                            </div>
+                            <div class="info-content">
+                                <h5 class="info-title">Telepon</h5>
+                                <p class="info-text">(021) 3193-7190</p>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="ti ti-mail"></i>
+                            </div>
+                            <div class="info-content">
+                                <h5 class="info-title">Email</h5>
+                                <p class="info-text">info@desaku.id</p>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="ti ti-clock"></i>
+                            </div>
+                            <div class="info-content">
+                                <h5 class="info-title">Jam Operasional</h5>
+                                <p class="info-text">Senin - Jumat: 08:00 - 17:00<br>Sabtu: 08:00 - 12:00</p>
+                            </div>
+                        </div>
+                        <a href="https://maps.app.goo.gl/fD3sp77vSd5vpUYv7" class="btn btn-primary btn-lg mt-4 wow fadeInUp" data-wow-delay="0.4s" id="open-maps" target="_blank">
+                            <i class="ti ti-map me-2"></i> Buka di Google Maps
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="map-container wow fadeInRight" data-wow-delay="0.2s">
+                        <div id="map" style="width: 100%; height: 500px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);"></div>
+                        <p class="map-info text-center mt-3">
+                            <small class="text-muted">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Perbesar, perkecil, atau geser peta untuk melihat lokasi lebih detail
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- [ Lokasi Desa ] End -->
+
     <!-- [ CTA ] start -->
     <section class="cta-section"
         style="position: relative; padding: 120px 0; background: url('{{ asset('assets/images/my/join-us.png') }}') no-repeat center center; background-size: cover; background-attachment: fixed;">
@@ -931,6 +1003,90 @@
             margin: 0;
         }
 
+        /* Location Section */
+        .location-section {
+            padding: 80px 0;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .location-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .info-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(70, 128, 255, 0.15);
+            border-left-color: #4680ff;
+        }
+
+        .info-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4680ff 0%, #82b1ff 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .info-content {
+            flex-grow: 1;
+        }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 10px;
+        }
+
+        .info-text {
+            font-size: 15px;
+            color: #6c757d;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .map-container {
+            position: relative;
+        }
+
+        #map {
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 3px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        #map:hover {
+            box-shadow: 0 15px 50px rgba(70, 128, 255, 0.2);
+        }
+
+        .map-info {
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .hero-title {
@@ -969,6 +1125,19 @@
 
             .cta-title {
                 font-size: 1.8rem;
+            }
+
+            #map {
+                height: 350px !important;
+            }
+
+            .location-info {
+                order: 2;
+            }
+
+            .map-container {
+                order: 1;
+                margin-bottom: 30px;
             }
         }
 
@@ -1027,6 +1196,150 @@
             display: inline-block;
         }
     </style>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDummyKeyForNow&libraries=places"></script>
+
+    <script>
+        // Initialize Google Maps
+        function initializeMap() {
+            // Default location: Based on Google Maps link provided
+            // Link: https://maps.app.goo.gl/fD3sp77vSd5vpUYv7
+            const desaLocation = {
+                lat: -7.2575,
+                lng: 112.7521
+            };
+
+            // Create map
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: desaLocation,
+                mapTypeControl: true,
+                fullscreenControl: true,
+                streetViewControl: true,
+                zoomControl: true,
+                mapTypeId: 'roadmap',
+                styles: [
+                    {
+                        "featureType": "all",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "weight": "2.00"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "all",
+                        "elementType": "geometry.stroke",
+                        "stylers": [
+                            {
+                                "color": "#9c9c9c"
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            // Add marker
+            const marker = new google.maps.Marker({
+                position: desaLocation,
+                map: map,
+                title: 'Lokasi Desa',
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 12,
+                    fillColor: '#4680ff',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2
+                }
+            });
+
+            // Add info window
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 15px; font-family: Arial, sans-serif;">
+                        <h3 style="margin: 0 0 10px; color: #2c3e50; font-size: 16px;">Kantor Desa Candi</h3>
+                        <p style="margin: 5px 0; color: #6c757d; font-size: 13px;">
+                            <strong>Alamat:</strong> Jl. Raya Candi, Desa Candi, Kabupaten Sidoarjo
+                        </p>
+                        <p style="margin: 5px 0; color: #6c757d; font-size: 13px;">
+                            <strong>Telepon:</strong> (031) 1234-5678
+                        </p>
+                        <p style="margin: 0; color: #6c757d; font-size: 13px;">
+                            <strong>Email:</strong> info@desacandi.id
+                        </p>
+                    </div>
+                `
+            });
+
+            marker.addListener('click', function() {
+                infoWindow.open(map, marker);
+            });
+
+            // Open info window by default
+            infoWindow.open(map, marker);
+
+            // Store map reference for updating location
+            window.desaMap = map;
+            window.desaMarker = marker;
+            window.desaInfoWindow = infoWindow;
+        }
+
+        // Initialize map when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for Google Maps to load
+            if (typeof google !== 'undefined' && google.maps) {
+                initializeMap();
+            } else {
+                // Retry if Google Maps not loaded yet
+                setTimeout(initializeMap, 1000);
+            }
+
+            // Handle open maps button
+            const openMapsBtn = document.getElementById('open-maps');
+            if (openMapsBtn) {
+                openMapsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.open('https://maps.app.goo.gl/fD3sp77vSd5vpUYv7', '_blank');
+                });
+            }
+        });
+
+        // Function to update map location (call this with Google Maps link)
+        window.updateMapLocation = function(lat, lng, address, mapLink) {
+            if (window.desaMap) {
+                const newLocation = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                window.desaMap.setCenter(newLocation);
+                window.desaMarker.setPosition(newLocation);
+                
+                document.getElementById('village-address').textContent = address;
+                
+                if (mapLink) {
+                    document.getElementById('open-maps').href = mapLink;
+                    document.getElementById('open-maps').target = '_blank';
+                }
+                
+                window.desaInfoWindow.setContent(`
+                    <div style="padding: 15px; font-family: Arial, sans-serif;">
+                        <h3 style="margin: 0 0 10px; color: #2c3e50; font-size: 16px;">Kantor Desa</h3>
+                        <p style="margin: 5px 0; color: #6c757d; font-size: 13px;">
+                            <strong>Alamat:</strong> ${address}
+                        </p>
+                        <p style="margin: 5px 0; color: #6c757d; font-size: 13px;">
+                            <strong>Telepon:</strong> (021) 3193-7190
+                        </p>
+                        <p style="margin: 0; color: #6c757d; font-size: 13px;">
+                            <strong>Email:</strong> info@desaku.id
+                        </p>
+                    </div>
+                `);
+                window.desaInfoWindow.open(window.desaMap, window.desaMarker);
+            }
+        };
+
+    </script>
 
     <script>
         // Counter Animation

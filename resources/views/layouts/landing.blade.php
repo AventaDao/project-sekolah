@@ -53,7 +53,13 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item pe-1">
-                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/">Beranda</a>
+                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/#home">Beranda</a>
+                    </li>
+                    <li class="nav-item pe-1">
+                        <a class="nav-link" href="/#fitur">Fitur</a>
+                    </li>
+                    <li class="nav-item pe-1">
+                        <a class="nav-link" href="/#lokasi">Lokasi</a>
                     </li>
                     <li class="nav-item pe-1">
                         <a class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}" href="/dashboard">Dashboard</a>
