@@ -219,6 +219,13 @@
                     <input type="date" name="${fieldName}" class="form-control ${errorClass}" 
                            value="${fieldValue}" ${requiredAttr}>
                 `;
+            } else if (fieldConfig.type === 'file') {
+                const acceptAttr = fieldConfig.accept ? `accept="${fieldConfig.accept}"` : '';
+                fieldHTML += `
+                    <input type="file" name="${fieldName}" class="form-control ${errorClass}" 
+                           ${acceptAttr} ${requiredAttr}>
+                    <small class="form-text text-muted">Maksimal ukuran file 5MB</small>
+                `;
             } else if (fieldConfig.type === 'textarea') {
                 fieldHTML += `
                     <textarea name="${fieldName}" class="form-control ${errorClass}" rows="4" ${requiredAttr}>${fieldValue}</textarea>

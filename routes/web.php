@@ -45,6 +45,10 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
+    // Karyawan (employee) login - allow NIK or email
+    Route::get('/karyawan/login', [\App\Http\Controllers\KaryawanAuthController::class, 'showLoginForm'])->name('karyawan.login');
+    Route::post('/karyawan/login', [\App\Http\Controllers\KaryawanAuthController::class, 'login'])->name('karyawan.login.post');
+
     // Register Routes
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
@@ -101,6 +105,11 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/{pengajuanSurat}/download-surat-jadi', [PengajuanSuratController::class, 'downloadSuratJadi'])->name('download-surat-jadi');
         });
 
+        // Admin Absensi Management
+        Route::prefix('absensi')->name('absensi.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\AbsensiController::class, 'adminIndex'])->name('index');
+        });
+
         // Pengaduan Management
         Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
             Route::get('/', [PengaduanController::class, 'adminIndex'])->name('index');
@@ -124,6 +133,12 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/laporan', function () {
             return view('admin.laporan');
         })->name('laporan');
+    });
+
+    // Karyawan routes (attendance) - protected for role karyawan
+    Route::middleware(['cekRole:karyawan'])->prefix('karyawan')->name('karyawan.')->group(function () {
+        Route::get('/absensi', [\App\Http\Controllers\AbsensiController::class, 'employeeDashboard'])->name('absensi.dashboard');
+        Route::post('/absensi', [\App\Http\Controllers\AbsensiController::class, 'store'])->name('absensi.store');
     });
 
     /*
@@ -161,6 +176,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/{pengajuanSurat}/download-pengantar', [PengajuanSuratController::class, 'downloadSuratPengantar'])->name('download-pengantar');
             Route::get('/{pengajuanSurat}/download-surat-jadi', [PengajuanSuratController::class, 'downloadSuratJadi'])->name('download-surat-jadi');
         });
+
+        
 
         /*
         | Pengaduan Routes (User)

@@ -22,6 +22,13 @@ class AppServiceProvider extends ServiceProvider
                     : $user->avatar;
 
                 $view->with(compact('user', 'name', 'role', 'avatar'));
+            } else {
+                $view->with([
+                    'avatar' => url('assets/images/user/default.png'),
+                    'name' => 'Guest',
+                    'role' => null,
+                    'user' => null
+                ]);
             }
         });
     }
@@ -31,12 +38,5 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
         });
-
-        
-        if ($this->app->environment('local')) {
-                URL::forceRootUrl(config('app.url'));
-                URL::forceScheme('https');
-        }
-
     }
 }

@@ -51,7 +51,11 @@
                 <div class="m-header justify-content-center">
                     <a href="/" class="b-brand text-dark text-capitalize fw-bold">
                         <!-- ========   Change your logo from here   ============ -->
-                        <span class="fs-4">{{ auth()->user()->role }} Dashboard</span>
+                        @if(auth()->check())
+                            <span class="fs-4">{{ auth()->user()->role }} Dashboard</span>
+                        @else
+                            <span class="fs-4">Login</span>
+                        @endif
                     </a>
                 </div>
                 <div class="navbar-content">
@@ -62,10 +66,12 @@
                                 <span class="pc-mtext">Dashboard</span>
                             </a>
                         </li>
-                        @if (auth()->user()->role === 'admin')
-                            @include('admin.sidebar')
-                        @else
-                            @include('user.sidebar')
+                        @if (auth()->check())
+                            @if (auth()->user()->role === 'admin')
+                                @include('admin.sidebar')
+                            @else
+                                @include('user.sidebar')
+                            @endif
                         @endif
 
 

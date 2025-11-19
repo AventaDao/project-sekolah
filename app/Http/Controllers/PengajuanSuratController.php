@@ -73,12 +73,17 @@ class PengajuanSuratController extends Controller
             } elseif ($fieldConfig['type'] === 'number') {
                 $rule .= '|numeric';
             } elseif ($fieldConfig['type'] === 'date') {
-                // Jika field adalah tanggal pernikahan atau tanggal dibutuhkan, harus di masa depan
-                // Jika field adalah tanggal mulai tinggal, bisa tanggal apa saja
-                if (in_array($fieldName, ['tanggal_pernikahan', 'tanggal_dibutuhkan'])) {
-                    $rule .= '|date|after:today';
-                } else {
-                    $rule .= '|date';
+                // Field tanggal bisa dipilih tanggal apa saja (lampau, sekarang, atau depan)
+                $rule .= '|date';
+            } elseif ($fieldConfig['type'] === 'file') {
+                $rule .= '|file|max:5120';
+                // Add mime type validation based on accept attribute
+                if (isset($fieldConfig['accept'])) {
+                    if (strpos($fieldConfig['accept'], 'pdf') !== false) {
+                        $rule .= '|mimes:pdf,jpg,jpeg,png';
+                    } elseif (strpos($fieldConfig['accept'], 'image') !== false) {
+                        $rule .= '|mimes:jpg,jpeg,png';
+                    }
                 }
             } elseif ($fieldConfig['type'] === 'select') {
                 $rule .= '|in:' . implode(',', $fieldConfig['options']);
@@ -117,7 +122,11 @@ class PengajuanSuratController extends Controller
 
         // Tambahkan field dinamis
         foreach ($fields as $fieldName => $fieldConfig) {
-            if (isset($validated[$fieldName])) {
+            if ($fieldConfig['type'] === 'file' && $request->hasFile($fieldName)) {
+                // Handle file upload
+                $filePath = $request->file($fieldName)->store('pengajuan-surat-files', 'public');
+                $dataToSave[$fieldName] = $filePath;
+            } elseif (isset($validated[$fieldName])) {
                 $dataToSave[$fieldName] = $validated[$fieldName];
             }
         }
