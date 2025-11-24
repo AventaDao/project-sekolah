@@ -114,7 +114,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Kabupaten <span class="text-danger">*</span></label>
                         <input type="text" name="kabupaten" class="form-control @error('kabupaten') is-invalid @enderror" 
                                value="{{ old('kabupaten', 'Sidoarjo') }}" required>
@@ -130,7 +130,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-md-2 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
                         <input type="text" name="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" 
                                value="{{ old('kode_pos') }}" maxlength="5" required>
@@ -232,13 +232,13 @@
                 <h5 class="mb-3 text-primary mt-3">Data Akun</h5>
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Email (Opsional)</label>
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
-                               value="{{ old('email') }}" placeholder="email@contoh.com">
+                               value="{{ old('email') }}" placeholder="email@contoh.com" required>
                         @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Email diperlukan jika ingin verifikasi akun</small>
+                        <small class="text-muted">Email digunakan untuk login dan verifikasi akun</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Password <span class="text-danger">*</span></label>

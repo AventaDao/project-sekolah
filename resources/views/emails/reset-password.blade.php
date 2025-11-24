@@ -87,7 +87,7 @@
                 <p>Jika Anda tidak pernah meminta proses ini, abaikan email ini.</p>
             </div>
             <div class="footer">
-                &copy; {{ date('Y') }} Aplikasi PPDB SMK
+                &copy; {{ date('Y') }} Aplikasi Sistem Informasi Desa
             </div>
         </div>
     </body>

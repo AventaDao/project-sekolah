@@ -220,7 +220,7 @@
                                             @endif
                                         </p>
                                         @if(request('search') || request('filter_account'))
-                                            <a href="{{ route('penduduk.index') }}" class="btn btn-secondary btn-sm mt-2">
+                                            <a href="{{ route('admin.penduduk.index') }}" class="btn btn-secondary btn-sm mt-2">
                                                 <i class="ti ti-refresh"></i> Reset Filter
                                             </a>
                                         @endif

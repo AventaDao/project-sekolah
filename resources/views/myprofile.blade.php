@@ -37,7 +37,8 @@
                                         <div class="chat-avtar d-inline-flex mx-auto mb-3 mt-3">
                                             <img class="rounded-circle img-fluid wid-70"
                                                 src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/images/avatar-default.png') }}"
-                                                alt="{{ auth()->user()->nama_lengkap }}">
+                                                alt="{{ auth()->user()->nama_lengkap }}"
+                                                onerror="this.src='{{ asset('assets/images/avatar-default.png') }}'">
                                         </div>
                                         <h5 class="mb-0">{{ auth()->user()->nama_lengkap }}</h5>
                                         <p class="text-muted text-sm">{{ auth()->user()->pekerjaan ?? 'N/A' }}</p>
@@ -62,6 +63,11 @@
                                             @else
                                                 <span class="badge bg-warning">Belum Terverifikasi</span>
                                             @endif
+                                        </div>
+                                        <div class="mt-3">
+                                            <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-sm w-100">
+                                                <i class="ti ti-edit me-1"></i> Edit Profil
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Penduduk;
 use Illuminate\Support\Str;
@@ -81,13 +82,16 @@ class AuthController extends Controller
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:15',
-            'email' => 'nullable|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
         ], [
             'nik.required' => 'NIK harus diisi',
             'nik.size' => 'NIK harus 16 digit',
             'nik.unique' => 'NIK sudah terdaftar',
             'nama_lengkap.required' => 'Nama lengkap harus diisi',
+            'email.required' => 'Email harus diisi',
+            'email.email' => 'Email harus valid',
+            'email.unique' => 'Email sudah terdaftar',
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
@@ -324,7 +328,7 @@ class AuthController extends Controller
             now()->addMinutes(5)->format('d M Y H:i:s')
         ));
 
-        return redirect()->route('login')->with('success', 'Bila email ada, maka email untuk mengubah password akan dikirim ke email yang Anda masukkan');
+        return redirect()->route('login')->with('success', 'Silahkan cek email Anda untuk link reset password.');
     }
 
     public function showResetForm($token)
@@ -376,5 +380,59 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login');
+    }
+
+    /**
+     * Show edit profile form
+     */
+    public function editProfile()
+    {
+        $user = Auth::user();
+        return view('auth.edit-profile', compact('user'));
+    }
+
+    /**
+     * Update user profile with avatar upload
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'no_telepon' => 'nullable|string|max:15',
+            'pekerjaan' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'avatar.image' => 'File harus berupa gambar',
+            'avatar.mimes' => 'Format gambar harus: jpeg, png, jpg, atau gif',
+            'avatar.max' => 'Ukuran gambar maksimal 2MB',
+        ]);
+
+        $data = [
+            'nama_lengkap' => $request->nama_lengkap,
+            'email' => $request->email,
+            'no_telepon' => $request->no_telepon,
+            'pekerjaan' => $request->pekerjaan,
+        ];
+
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($user->avatar && \Storage::disk('public')->exists($user->avatar)) {
+                \Storage::disk('public')->delete($user->avatar);
+            }
+
+            // Store new avatar
+            $file = $request->file('avatar');
+            $filename = 'avatars/' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('', $filename, 'public');
+            $data['avatar'] = $filename;
+        }
+
+        $user->update($data);
+
+        return redirect()->route('myprofile')->with('success', 'Profil berhasil diperbarui!');
     }
 }

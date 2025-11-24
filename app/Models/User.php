@@ -69,6 +69,6 @@ class User extends Authenticatable
     // Get umur
     public function getUmurAttribute()
     {
-        return $this->tanggal_lahir->age;
+        return (int) $this->tanggal_lahir->age;
     }
 }

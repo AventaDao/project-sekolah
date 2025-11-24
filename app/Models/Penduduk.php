@@ -46,9 +46,9 @@ class Penduduk extends Model
     public function getUmurAttribute()
     {
         if ($this->status_hidup === 'Meninggal') {
-            return $this->tanggal_lahir->diffInYears($this->tanggal_meninggal);
+            return (int) $this->tanggal_lahir->diffInYears($this->tanggal_meninggal);
         }
-        return $this->tanggal_lahir->age;
+        return (int) $this->tanggal_lahir->age;
     }
 
     /**

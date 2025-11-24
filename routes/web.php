@@ -82,6 +82,9 @@ Route::middleware(['auth', 'web'])->group(function () {
         return view('myprofile');
     })->name('myprofile');
 
+    Route::get('/edit-profile', [AuthController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
     /*
     |--------------------------------------------------------------------------
     | Admin Routes

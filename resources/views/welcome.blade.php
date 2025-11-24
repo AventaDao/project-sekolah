@@ -1198,7 +1198,7 @@
     </style>
 
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDummyKeyForNow&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
 
     <script>
         // Initialize Google Maps

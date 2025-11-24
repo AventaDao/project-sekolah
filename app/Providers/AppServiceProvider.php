@@ -17,14 +17,28 @@ class AppServiceProvider extends ServiceProvider
                 $user = Auth::user();
                 $name = $user->nama_lengkap;
                 $role = $user->role;
-                $avatar = $user->provider == null
-                    ? url('assets/images/user/' . $user->avatar)
-                    : $user->avatar;
+                
+                // Handle avatar: check if user has avatar in storage, fallback to default or provider avatar
+                if ($user->provider == null) {
+                    // Local user: check if avatar exists in storage
+                    if ($user->avatar && strpos($user->avatar, 'avatars/') === 0) {
+                        $avatar = asset('storage/' . $user->avatar);
+                    } else if ($user->avatar) {
+                        // Fallback for old avatar format
+                        $avatar = url('assets/images/user/' . $user->avatar);
+                    } else {
+                        // No avatar: use default
+                        $avatar = url('assets/images/avatar-default.png');
+                    }
+                } else {
+                    // Social provider user: use provider avatar
+                    $avatar = $user->avatar;
+                }
 
                 $view->with(compact('user', 'name', 'role', 'avatar'));
             } else {
                 $view->with([
-                    'avatar' => url('assets/images/user/default.png'),
+                    'avatar' => url('assets/images/avatar-default.png'),
                     'name' => 'Guest',
                     'role' => null,
                     'user' => null
