@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Penduduk;
+use App\Models\Activity;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -27,11 +28,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'nik' => 'required|string|size:16',
+            'nik' => 'required|numeric|digits:16',
             'password' => 'required|min:6',
         ], [
             'nik.required' => 'NIK harus diisi',
-            'nik.size' => 'NIK harus 16 digit',
+            'nik.numeric' => 'NIK harus berupa angka (tidak boleh ada huruf atau karakter)',
+            'nik.digits' => 'NIK harus tepat 16 digit',
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 6 karakter',
         ]);
@@ -45,6 +47,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+            Activity::log('login', 'Login berhasil');
             return redirect()->intended('dashboard');
         }
 
@@ -61,7 +64,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'nik' => 'required|string|size:16|unique:users,nik|unique:penduduks,nik',
+            'nik' => 'required|numeric|digits:16|unique:users,nik|unique:penduduks,nik',
             'nama_lengkap' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
@@ -86,7 +89,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ], [
             'nik.required' => 'NIK harus diisi',
-            'nik.size' => 'NIK harus 16 digit',
+            'nik.numeric' => 'NIK harus berupa angka (tidak boleh ada huruf atau karakter)',
+            'nik.digits' => 'NIK harus tepat 16 digit',
             'nik.unique' => 'NIK sudah terdaftar',
             'nama_lengkap.required' => 'Nama lengkap harus diisi',
             'email.required' => 'Email harus diisi',
@@ -153,11 +157,15 @@ class AuthController extends Controller
                 'nama_ibu' => $request->nama_ibu,
                 'no_telepon' => $request->no_telepon,
                 'status_hidup' => 'Hidup', // Default status
+                'source_type' => 'registrasi', // User registration, bukan data kelahiran
             ]);
 
             DB::commit();
 
             $request->session()->flash('registered_nik', $request->nik);
+
+            // Log activity - login sebagai user baru (auth belum dilakukan, jadi manual set user)
+            Activity::log('register', 'Pendaftaran akun baru', $user->id, 'User');
 
             return redirect()->route('login')->with('success', 'Registrasi berhasil! Data Anda telah tercatat sebagai penduduk desa. Silakan login menggunakan NIK dan password Anda.');
             
@@ -240,6 +248,9 @@ class AuthController extends Controller
         $user->otp_expires_at = null;
         $user->save();
 
+        // Log activity
+        Activity::log('email_verify', 'Verifikasi email berhasil', $user->id, 'User');
+
         session()->forget(['verify_email', 'last_otp_sent']);
 
         return redirect()->route('dashboard')->with('success', 'Email berhasil diverifikasi!');
@@ -313,32 +324,112 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email tidak terdaftar dalam sistem kami']);
         }
 
-        $token = Str::random(64);
+        // Generate token menggunakan format: numeric_id + hash (lebih aman dari hexadecimal)
+        // Format: 16 random hex chars - ini lebih robust daripada yang sebelumnya
+        $token = strtolower(substr(hash('sha256', random_bytes(32)), 0, 32));
 
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
-            ['token' => $token, 'created_at' => now()]
-        );
+        // Delete old token first to avoid conflicts
+        DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->delete();
 
-        $resetLink = route('password.reset', ['token' => $token]);
+        // Insert new token
+        DB::table('password_reset_tokens')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now(),
+        ]);
+
+        // Generate reset link menggunakan PATH-based token bukan query parameter (lebih aman dari email rewriting)
+        $resetLink = 'http://localhost:8000/password-reset/' . $token;
+
+        \Log::info('Reset link generated', [
+            'email' => $request->email,
+            'token_length' => strlen($token),
+            'token_first_16' => substr($token, 0, 16),
+            'reset_link' => $resetLink
+        ]);
 
         Mail::to($request->email)->send(new ResetPasswordMail(
             $user->nama_lengkap,
             $resetLink,
-            now()->addMinutes(5)->format('d M Y H:i:s')
+            now()->addMinutes(30)->format('d M Y H:i:s')
         ));
 
         return redirect()->route('login')->with('success', 'Silahkan cek email Anda untuk link reset password.');
     }
 
-    public function showResetForm($token)
+    public function showResetForm($token = null)
     {
-        $getEmail = DB::table('password_reset_tokens')
-            ->where('token', $token)
-            ->firstOrFail();
-        $user = User::whereEmail($getEmail->email)->firstOrFail();
+        try {
+            // Token sekarang dari path parameter (lebih aman dari email rewriting)
+            \Log::info('========== RESET FORM ACCESSED ==========');
+            \Log::info('Token from path parameter', ['token' => $token, 'length' => strlen($token ?? '')]);
+            
+            // Jika token tidak ada atau kosong, redirect ke forgot password form
+            if (!$token || empty(trim($token))) {
+                \Log::warning('No token provided - redirecting to forgot password form');
+                return redirect()->route('forgot_password.email_form');
+            }
+            
+            // Step 1: Query database
+            $getEmail = DB::table('password_reset_tokens')
+                ->where('token', $token)
+                ->first();
 
-        return view('auth.forgot-password.reset', compact('token', 'user'));
+            \Log::info('Step 1: Query for token', ['found' => $getEmail ? 'YES' : 'NO', 'query_token' => $token]);
+            
+            if ($getEmail) {
+                \Log::info('Token found in DB', ['email' => $getEmail->email, 'db_token' => $getEmail->token, 'match' => $getEmail->token === $token]);
+            } else {
+                \Log::warning('Token NOT found. Checking all tokens in DB:');
+                $allTokens = DB::table('password_reset_tokens')->get();
+                foreach ($allTokens as $t) {
+                    \Log::info('DB token', ['token' => $t->token, 'email' => $t->email, 'matches_param' => $t->token === $token]);
+                }
+            }
+
+            if (!$getEmail) {
+                \Log::warning('Token not found - redirecting to request new one');
+                // Redirect tanpa error message jika langsung diakses, dengan error message jika dari invalid token
+                return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Token tidak valid atau sudah kadaluarsa. Silakan request ulang reset password.']);
+            }
+
+            // Check if token is expired (more than 30 minutes)
+            $createdAt = \Carbon\Carbon::parse($getEmail->created_at);
+            $minutesPassed = abs(now()->diffInMinutes($createdAt));
+            
+            \Log::info('Step 2: Expiry check', ['created_at' => $getEmail->created_at, 'now' => now()->toDateTimeString(), 'minutes_passed' => $minutesPassed]);
+            
+            if ($minutesPassed > 30) {
+                \Log::warning('Token expired', ['minutes_passed' => $minutesPassed]);
+                DB::table('password_reset_tokens')->where('token', $token)->delete();
+                return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Token sudah kadaluarsa, silakan request ulang.']);
+            }
+
+            $user = User::whereEmail($getEmail->email)->first();
+            
+            \Log::info('Step 3: User lookup', ['email' => $getEmail->email, 'user_found' => $user ? 'YES' : 'NO']);
+            
+            if (!$user) {
+                \Log::warning('User not found', ['email' => $getEmail->email]);
+                return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'User tidak ditemukan.']);
+            }
+
+            \Log::info('========== ALL CHECKS PASSED - SHOWING FORM ==========');
+            \Log::info('Passing to view', ['user_email' => $user->email, 'token' => substr($token, 0, 20)]);
+
+            $credensial = [
+                'token' => $token,
+                'user' =>$user
+            ];
+            
+            return view('auth.forgot-password.reset', compact('credensial'));
+            
+        } catch (\Exception $e) {
+            \Log::error('showResetForm exception', ['error' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+            return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
     }
 
     public function resetPassword(Request $request)
@@ -358,9 +449,12 @@ class AuthController extends Controller
             return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Token tidak valid.']);
         }
 
-        $createdAt = abs((int) now()->diffInMinutes($reset->created_at));
+        // Check if token is expired (more than 30 minutes)
+        $createdAt = \Carbon\Carbon::parse($reset->created_at);
+        $minutesPassed = abs(now()->diffInMinutes($createdAt));
 
-        if ($createdAt > 5) {
+        if ($minutesPassed > 30) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
             return redirect()->route('forgot_password.email_form')->withErrors(['email' => 'Token sudah kadaluarsa, silakan request ulang.']);
         }
 
@@ -370,12 +464,21 @@ class AuthController extends Controller
 
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
         
+        // Log activity untuk user yang reset password
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            Activity::log('password_change', 'Reset password berhasil', $user->id, 'User');
+        }
+        
         $request->session()->flash('registered_email', $request->email);
         return redirect('/login')->with('success', 'Password berhasil direset! Silahkan Login menggunakan password baru Anda');
     }
 
     public function logout(Request $request)
     {
+        // Log activity sebelum logout
+        Activity::log('logout', 'Logout berhasil');
+        
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -432,6 +535,9 @@ class AuthController extends Controller
         }
 
         $user->update($data);
+
+        // Log activity
+        Activity::log('profile_update', 'Update profil berhasil', $user->id, 'User');
 
         return redirect()->route('myprofile')->with('success', 'Profil berhasil diperbarui!');
     }

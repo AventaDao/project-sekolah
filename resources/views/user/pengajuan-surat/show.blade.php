@@ -36,7 +36,7 @@
                         </span>
                     </div>
 
-                    <!-- Data Pengajuan -->
+                    <!-- Informasi Pengajuan -->
                     <h5 class="mb-3 text-primary border-bottom pb-2">Informasi Pengajuan</h5>
                     <div class="row mb-4">
                         <div class="col-md-6">
@@ -84,6 +84,168 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Timeline Status -->
+                    <h5 class="mb-3 text-primary border-bottom pb-2">Tracking Status</h5>
+                    <div class="mb-4">
+                        <div class="timeline timeline-left">
+                            <!-- Step 1: Pengajuan -->
+                            <div class="timeline-item">
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-dot bg-success">
+                                    <i class="ti ti-check"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <h6 class="mb-0"><strong>Pengajuan Diterima</strong></h6>
+                                        <span class="badge bg-success ms-2">Selesai</span>
+                                    </div>
+                                    <p class="text-muted mb-0">
+                                        <i class="ti ti-clock me-1"></i>
+                                        {{ $pengajuanSurat->created_at->format('d F Y H:i') }} WIB
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Diproses -->
+                            <div class="timeline-item">
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-dot {{ $pengajuanSurat->tanggal_diproses ? 'bg-success' : 'bg-secondary' }}">
+                                    <i class="ti {{ $pengajuanSurat->tanggal_diproses ? 'ti-check' : 'ti-hourglass' }}"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <h6 class="mb-0"><strong>Dalam Proses</strong></h6>
+                                        <span class="badge {{ $pengajuanSurat->tanggal_diproses ? 'bg-success' : 'bg-secondary' }} ms-2">
+                                            {{ $pengajuanSurat->tanggal_diproses ? 'Selesai' : 'Menunggu' }}
+                                        </span>
+                                    </div>
+                                    @if($pengajuanSurat->tanggal_diproses)
+                                        <p class="text-muted mb-0">
+                                            <i class="ti ti-clock me-1"></i>
+                                            {{ $pengajuanSurat->tanggal_diproses->format('d F Y H:i') }} WIB
+                                        </p>
+                                        <small class="text-muted">
+                                            Waktu pemrosesan: {{ $pengajuanSurat->tanggal_diproses->diffForHumans($pengajuanSurat->created_at, ['parts' => 2]) }}
+                                        </small>
+                                    @else
+                                        <p class="text-muted mb-0">
+                                            <i class="ti ti-hourglass me-1"></i>
+                                            Menunggu pemrosesan...
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Selesai/Ditolak -->
+                            @if($pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak')
+                            <div class="timeline-item">
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-dot {{ $pengajuanSurat->status === 'Selesai' ? 'bg-success' : 'bg-danger' }}">
+                                    <i class="ti {{ $pengajuanSurat->status === 'Selesai' ? 'ti-check' : 'ti-x' }}"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <h6 class="mb-0"><strong>{{ $pengajuanSurat->status === 'Selesai' ? 'Selesai' : 'Ditolak' }}</strong></h6>
+                                        <span class="badge {{ $pengajuanSurat->status === 'Selesai' ? 'bg-success' : 'bg-danger' }} ms-2">
+                                            {{ $pengajuanSurat->status }}
+                                        </span>
+                                    </div>
+                                    <p class="text-muted mb-0">
+                                        <i class="ti ti-clock me-1"></i>
+                                        {{ ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)->format('d F Y H:i') }} WIB
+                                    </p>
+                                    @if($pengajuanSurat->tanggal_diproses && ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak))
+                                        <small class="text-muted">
+                                            Waktu penyelesaian: {{ ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)->diffForHumans($pengajuanSurat->tanggal_diproses, ['parts' => 2]) }}
+                                        </small>
+                                    @endif
+                                </div>
+                            </div>
+                            @else
+                            <div class="timeline-item">
+                                <div class="timeline-bar"></div>
+                                <div class="timeline-dot bg-secondary">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <h6 class="mb-0"><strong>Selesai</strong></h6>
+                                        <span class="badge bg-secondary ms-2">Menunggu</span>
+                                    </div>
+                                    <p class="text-muted mb-0">
+                                        <i class="ti ti-hourglass me-1"></i>
+                                        Menunggu penyelesaian...
+                                    </p>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <style>
+                        .timeline {
+                            position: relative;
+                            padding: 20px 0;
+                        }
+
+                        .timeline-left {
+                            padding-left: 0;
+                        }
+
+                        .timeline-item {
+                            display: flex;
+                            margin-bottom: 30px;
+                            position: relative;
+                        }
+
+                        .timeline-bar {
+                            position: absolute;
+                            left: 15px;
+                            top: 50px;
+                            width: 2px;
+                            height: calc(100% + 30px);
+                            background: #e0e0e0;
+                        }
+
+                        .timeline-item:last-child .timeline-bar {
+                            display: none;
+                        }
+
+                        .timeline-dot {
+                            min-width: 32px;
+                            width: 32px;
+                            height: 32px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-weight: bold;
+                            z-index: 1;
+                            flex-shrink: 0;
+                        }
+
+                        .timeline-content {
+                            margin-left: 20px;
+                            flex-grow: 1;
+                        }
+
+                        .timeline-content h6 {
+                            font-size: 15px;
+                            margin-bottom: 5px;
+                        }
+
+                        .timeline-content p {
+                            font-size: 13px;
+                            margin: 5px 0;
+                        }
+
+                        .timeline-content small {
+                            font-size: 11px;
+                            display: block;
+                        }
+                    </style>
 
                     <!-- Keperluan -->
                     <h5 class="mb-3 text-primary border-bottom pb-2">Keperluan</h5>

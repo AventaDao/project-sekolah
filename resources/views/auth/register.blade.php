@@ -3,6 +3,16 @@
 @section('title', 'Register Page')
 
 @section('content')
+    <style>
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
     <div class="card my-5">
         <form action="{{ route('register') }}" method="POST">
             @csrf
@@ -28,8 +38,8 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">NIK <span class="text-danger">*</span></label>
-                        <input type="text" name="nik" class="form-control @error('nik') is-invalid @enderror" 
-                               value="{{ old('nik') }}" maxlength="16" required placeholder="16 digit">
+                        <input type="number" name="nik" class="form-control @error('nik') is-invalid @enderror" 
+                               value="{{ old('nik') }}" maxlength="16" min="0" inputmode="numeric" required placeholder="16 digit">
                         @error('nik')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

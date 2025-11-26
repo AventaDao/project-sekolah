@@ -78,7 +78,7 @@
                         <tr>
                             <td class="text-muted">Tanggal Tanggapan</td>
                             <td>:</td>
-                            <td>{{ $pengaduan->tanggal_tanggapan->format('d F Y H:i') }} WIB</td>
+                            <td>{{ $pengaduan->tanggal_tanggapan?->format('d F Y H:i') }} WIB</td>
                         </tr>
                         @endif
                         @if($pengaduan->adminPenanggap)
@@ -135,7 +135,7 @@
                         <hr>
                         <small class="text-muted">
                             Ditanggapi oleh: <strong>{{ $pengaduan->adminPenanggap->name }}</strong><br>
-                            Tanggal: {{ $pengaduan->tanggal_tanggapan->format('d F Y H:i') }} WIB
+                            Tanggal: {{ $pengaduan->tanggal_tanggapan?->format('d F Y H:i') }} WIB
                         </small>
                         @endif
                     </div>

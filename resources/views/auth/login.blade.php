@@ -3,6 +3,16 @@
 @section('title', 'Login Page')
 
 @section('content')
+    <style>
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
     <div class="card my-5">
         <form method="POST" action="{{ route('login.post') }}">
             @csrf
@@ -25,8 +35,8 @@
                 @endif
                 <div class="form-group mb-3">
                     <label class="form-label">NIK</label>
-                    <input type="text" class="form-control" name="nik" placeholder="Masukkan NIK 16 digit"
-                        value="{{ session('registered_nik') }}" autocomplete="off" maxlength="16" required>
+                    <input type="number" class="form-control" name="nik" placeholder="Masukkan NIK 16 digit"
+                        value="{{ session('registered_nik') }}" autocomplete="off" maxlength="16" min="0" inputmode="numeric" required>
                 </div>
                 <div class="form-group mb-3">
                     <label for="password" class="form-label">Password</label>

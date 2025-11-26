@@ -9,6 +9,7 @@ use App\Http\Controllers\BeritaDesaController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InfografisController;
+use App\Http\Controllers\ActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,9 +61,22 @@ Route::middleware(['guest'])->group(function () {
     // Password Reset Routes
     Route::get('/forgot-password', [AuthController::class, 'showRequestForm'])->name('forgot_password.email_form');
     Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot_password.send_link');
-    Route::get('/password-reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/password-reset', [AuthController::class, 'resetPassword'])->name('password.update');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Public Password Reset Routes (accessible to everyone)
+|--------------------------------------------------------------------------
+*/
+/*
+|--------------------------------------------------------------------------
+| Password Reset Routes (Path-based token untuk menghindari email rewriting)
+|--------------------------------------------------------------------------
+*/
+// Password reset routes yang bisa diakses oleh siapa saja (sudah protected oleh token)
+// Menggunakan PATH parameter /password-reset/{token} bukan query parameter untuk lebih robust
+Route::get('/password-reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password-reset', [AuthController::class, 'resetPassword'])->name('password.update');
 
 /*
 |--------------------------------------------------------------------------
@@ -111,6 +125,12 @@ Route::middleware(['auth', 'web'])->group(function () {
         // Admin Absensi Management
         Route::prefix('absensi')->name('absensi.')->group(function () {
             Route::get('/', [\App\Http\Controllers\AbsensiController::class, 'adminIndex'])->name('index');
+        });
+
+        // Admin Activities Management
+        Route::prefix('activities')->name('activities.')->group(function () {
+            Route::get('/', [ActivityController::class, 'adminIndex'])->name('index');
+            Route::get('/{activity}', [ActivityController::class, 'adminShow'])->name('show');
         });
 
         // Pengaduan Management
@@ -196,5 +216,13 @@ Route::middleware(['auth', 'web'])->group(function () {
 
         // AJAX endpoint for dashboard real-time stats
         Route::get('/dashboard/stats', [\App\Http\Controllers\DashboardController::class, 'stats'])->name('dashboard.stats');
+
+        /*
+        | Activities Routes (User)
+        */
+        Route::prefix('activities')->name('activities.')->group(function () {
+            Route::get('/', [ActivityController::class, 'index'])->name('index');
+            Route::get('/{activity}', [ActivityController::class, 'show'])->name('show');
+        });
     });
 });

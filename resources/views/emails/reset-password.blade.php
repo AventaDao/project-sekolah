@@ -75,11 +75,11 @@
             </div>
             <div class="content">
                 <p>Halo <b>{{ $name }}</b>,</p>
-                <p>Anda telah meminta untuk mereset password akun Anda. Silakan klik tombol di bawah ini untuk
+                <p>Anda telah meminta untuk mereset password akun Anda. Silakan klik link di bawah ini untuk
                     melanjutkan:</p>
-            </div>
-            <div class="button-container">
-                <a href="{{ $resetLink }}" class="btn">Reset Password</a>
+                <p><a href="{{ $resetLink }}" class="btn">{{ $resetLink }}</a></p>
+                <p style="font-size: 12px; color: #999;">Jika link di atas tidak berfungsi, copy & paste URL ini ke browser:</p>
+                <p style="word-break: break-all; background-color: #f5f5f5; padding: 10px; border-radius: 3px; font-family: monospace; font-size: 12px;">{{ $resetLink }}</p>
             </div>
             <div class="content">
                 <p>Link ini berlaku sampai <b>{{ $expireAt }}</b>. Jika sudah lewat, Anda harus membuat permintaan

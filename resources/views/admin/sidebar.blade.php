@@ -22,9 +22,9 @@
         <span class="pc-mtext">Kelola Pengaduan</span>
     </a>
 </li>
-<li class="pc-item {{ request()->is('admin/absensi*') ? 'active' : '' }}">
-    <a href="{{ route('admin.absensi.index') }}" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-clock"></i></span>
-        <span class="pc-mtext">Absensi Karyawan</span>
+<li class="pc-item {{ request()->is('admin/activities*') ? 'active' : '' }}">
+    <a href="{{ route('admin.activities.index') }}" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-history"></i></span>
+        <span class="pc-mtext">Riwayat Aktivitas User</span>
     </a>
 </li>

@@ -33,6 +33,7 @@ class Penduduk extends Model
         'no_telepon',
         'status_hidup',
         'tanggal_meninggal',
+        'source_type',
     ];
 
     protected $casts = [

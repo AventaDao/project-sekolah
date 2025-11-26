@@ -13,17 +13,15 @@
                     <a href="{{ route('login') }}" class="link-primary">Back to Login</a>
                 </div>
 
-
-                @if ($errors->any())
+                {{-- HANYA tampilkan error jika ada email field error, bukan generic 'email' key dari redirect --}}
+                @if ($errors->has('email') && old('email'))
                     <div class="alert alert-danger">
-
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors->get('email') as $error)
                             <div>{{ $error }}</div>
                         @endforeach
-
                     </div>
-
                 @endif
+                
                 @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}

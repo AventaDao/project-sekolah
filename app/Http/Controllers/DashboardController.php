@@ -89,6 +89,7 @@ class DashboardController extends Controller
             'kelahiran_bulan_ini' => Penduduk::whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->where('status_hidup', 'Hidup')
+                ->where('source_type', 'manual')
                 ->count(),
             'kematian_bulan_ini' => Penduduk::where('status_hidup', 'Meninggal')
                 ->whereMonth('tanggal_meninggal', now()->month)

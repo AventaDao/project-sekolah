@@ -19,11 +19,15 @@ class Pengaduan extends Model
         'status',
         'tanggapan_admin',
         'tanggal_tanggapan',
+        'tanggal_diproses',
+        'tanggal_ditolak',
         'ditanggapi_oleh',
     ];
 
     protected $casts = [
         'tanggal_tanggapan' => 'datetime',
+        'tanggal_diproses' => 'datetime',
+        'tanggal_ditolak' => 'datetime',
     ];
 
     /**

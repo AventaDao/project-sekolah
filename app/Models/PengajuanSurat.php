@@ -21,6 +21,8 @@ class PengajuanSurat extends Model
         'catatan_admin',
         'file_surat_jadi',
         'tanggal_selesai',
+        'tanggal_diproses',
+        'tanggal_ditolak',
         // SURAT KUA
         'nama_calon_mempelai',
         'tanggal_pernikahan',
@@ -78,6 +80,8 @@ class PengajuanSurat extends Model
 
     protected $casts = [
         'tanggal_selesai' => 'datetime',
+        'tanggal_diproses' => 'datetime',
+        'tanggal_ditolak' => 'datetime',
         'tanggal_pernikahan' => 'date',
         'tanggal_mulai_tinggal' => 'date',
         'tanggal_dibutuhkan' => 'date',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PengajuanSurat;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -132,7 +133,10 @@ class PengajuanSuratController extends Controller
         }
 
         // Simpan data pengajuan
-        PengajuanSurat::create($dataToSave);
+        $pengajuanSurat = PengajuanSurat::create($dataToSave);
+
+        // Log activity
+        Activity::log('pengajuan_surat_create', "Membuat pengajuan surat: $nomorPengajuan ($validated[jenis_surat])", $pengajuanSurat->id, 'PengajuanSurat');
 
         return redirect()->route('pengajuan-surat.index')
             ->with('success', 'Pengajuan surat berhasil dibuat dengan nomor: ' . $nomorPengajuan);
@@ -181,9 +185,19 @@ class PengajuanSuratController extends Controller
             $data['file_surat_jadi'] = $request->file('file_surat_jadi')->store('surat-jadi', 'public');
         }
 
+        // Set tanggal diproses jika berubah dari Menunggu ke Diproses
+        if ($validated['status'] === 'Diproses' && $pengajuanSurat->status !== 'Diproses') {
+            $data['tanggal_diproses'] = now();
+        }
+
         // Set tanggal selesai jika status selesai
         if ($validated['status'] === 'Selesai') {
             $data['tanggal_selesai'] = now();
+        }
+
+        // Set tanggal ditolak jika status ditolak
+        if ($validated['status'] === 'Ditolak') {
+            $data['tanggal_ditolak'] = now();
         }
 
         $pengajuanSurat->update($data);
@@ -218,6 +232,10 @@ class PengajuanSuratController extends Controller
             Storage::disk('public')->delete($pengajuanSurat->file_surat_jadi);
         }
 
+        // Log activity
+        $nomorPengajuan = $pengajuanSurat->nomor_pengajuan;
+        Activity::log('pengajuan_surat_delete', "Membatalkan pengajuan surat: $nomorPengajuan", $pengajuanSurat->id, 'PengajuanSurat');
+
         $pengajuanSurat->delete();
 
         return redirect()->route('pengajuan-surat.index')
@@ -244,6 +262,9 @@ class PengajuanSuratController extends Controller
         $nomorClean = str_replace(['/', '\\'], '-', $pengajuanSurat->nomor_pengajuan);
         $filename = 'Surat-Pengantar-RW-' . $nomorClean . '.' . pathinfo($pengajuanSurat->surat_pengantar_rw, PATHINFO_EXTENSION);
         
+        // Log activity
+        Activity::log('pengajuan_surat_download', "Download surat pengantar RW: {$pengajuanSurat->nomor_pengajuan}", $pengajuanSurat->id, 'PengajuanSurat');
+
         return response()->download($path, $filename);
     }
 

@@ -130,8 +130,46 @@ class PendudukController extends Controller
 
         $penduduk->update($validated);
 
+        // Sync data ke akun user jika penduduk memiliki akun
+        if ($penduduk->hasAccount()) {
+            $user = $penduduk->user();
+            
+            // Field yang akan disinkronkan
+            $syncFields = [
+                'nik',
+                'nama_lengkap',
+                'tempat_lahir',
+                'tanggal_lahir',
+                'jenis_kelamin',
+                'alamat',
+                'rt',
+                'rw',
+                'desa',
+                'kecamatan',
+                'kabupaten',
+                'provinsi',
+                'kode_pos',
+                'agama',
+                'status_perkawinan',
+                'pekerjaan',
+                'kewarganegaraan',
+                'pendidikan_terakhir',
+                'nama_ayah',
+                'nama_ibu',
+                'no_telepon',
+            ];
+            
+            // Update user dengan data yang sama
+            $syncData = [];
+            foreach ($syncFields as $field) {
+                $syncData[$field] = $validated[$field] ?? null;
+            }
+            
+            $user->update($syncData);
+        }
+
         return redirect()->route('admin.penduduk.index')
-            ->with('success', 'Data penduduk berhasil diperbarui!');
+            ->with('success', 'Data penduduk berhasil diperbarui! Akun user juga telah diperbarui.');
     }
 
     /**

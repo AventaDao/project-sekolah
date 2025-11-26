@@ -4,3 +4,9 @@
         <span class="pc-mtext">Pengajuan Surat</span>
     </a>
 </li>
+<li class="pc-item {{ request()->is('activities*') ? 'active' : '' }}">
+    <a href="{{ route('activities.index') }}" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-history"></i></span>
+        <span class="pc-mtext">Riwayat Aktivitas</span>
+    </a>
+</li>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -74,7 +75,7 @@ class PengaduanController extends Controller
         // Generate nomor pengaduan
         $nomorPengaduan = Pengaduan::generateNomorPengaduan();
 
-        Pengaduan::create([
+        $pengaduan = Pengaduan::create([
             'user_id' => Auth::id(),
             'nomor_pengaduan' => $nomorPengaduan,
             'kategori' => $validated['kategori'],
@@ -82,6 +83,9 @@ class PengaduanController extends Controller
             'deskripsi' => $validated['deskripsi'],
             'lampiran' => $lampiranPath,
         ]);
+
+        // Log activity
+        Activity::log('pengaduan_create', "Membuat pengaduan: $nomorPengaduan ($validated[kategori])", $pengaduan->id, 'Pengaduan');
 
         return redirect()->route('pengaduan.index')
             ->with('success', 'Pengaduan berhasil dikirim dengan nomor: ' . $nomorPengaduan);
@@ -114,12 +118,28 @@ class PengaduanController extends Controller
             'tanggapan_admin' => 'nullable|string',
         ]);
 
-        $pengaduan->update([
+        $data = [
             'status' => $validated['status'],
             'tanggapan_admin' => $validated['tanggapan_admin'],
-            'tanggal_tanggapan' => now(),
             'ditanggapi_oleh' => Auth::id(),
-        ]);
+        ];
+
+        // Set tanggal diproses jika berubah dari Menunggu ke Diproses
+        if ($validated['status'] === 'Diproses' && $pengaduan->status !== 'Diproses') {
+            $data['tanggal_diproses'] = now();
+        }
+
+        // Set tanggal tanggapan jika status selesai atau ditolak
+        if ($validated['status'] === 'Selesai' || $validated['status'] === 'Ditolak') {
+            $data['tanggal_tanggapan'] = now();
+        }
+
+        // Set tanggal ditolak jika status ditolak
+        if ($validated['status'] === 'Ditolak') {
+            $data['tanggal_ditolak'] = now();
+        }
+
+        $pengaduan->update($data);
 
         return redirect()->back()
             ->with('success', 'Tanggapan berhasil disimpan');
@@ -145,6 +165,10 @@ class PengaduanController extends Controller
         if ($pengaduan->lampiran) {
             Storage::disk('public')->delete($pengaduan->lampiran);
         }
+
+        // Log activity
+        $nomorPengaduan = $pengaduan->nomor_pengaduan;
+        Activity::log('pengaduan_delete', "Membatalkan pengaduan: $nomorPengaduan", $pengaduan->id, 'Pengaduan');
 
         $pengaduan->delete();
 
