@@ -66,7 +66,7 @@
                         <div class="col-md-6">
                             <table class="table table-borderless">
                                 <tr>
-                                    <td width="40%" class="text-muted">Status</td>
+                                    <td class="text-muted">Status</td>
                                     <td width="5%">:</td>
                                     <td>
                                         <span class="badge {{ $pengaduan->status_badge }}">
@@ -78,7 +78,7 @@
                                 <tr>
                                     <td class="text-muted">Tanggal Tanggapan</td>
                                     <td>:</td>
-                                    <td>{{ $pengaduan->tanggal_tanggapan->format('d F Y H:i') }} WIB</td>
+                                    <td>{{ optional($pengaduan->tanggal_tanggapan)->format('d F Y H:i') }} WIB</td>
                                 </tr>
                                 @endif
                                 <tr>
@@ -134,7 +134,7 @@
                                     @if($pengaduan->tanggal_diproses)
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-clock me-1"></i>
-                                            {{ $pengaduan->tanggal_diproses->format('d F Y H:i') }} WIB
+                                            {{ optional($pengaduan->tanggal_diproses)->format('d F Y H:i') }} WIB
                                         </p>
                                         <small class="text-muted">
                                             Waktu pemrosesan: {{ $pengaduan->tanggal_diproses->diffForHumans($pengaduan->created_at, ['parts' => 2]) }}
@@ -164,7 +164,7 @@
                                     </div>
                                     <p class="text-muted mb-0">
                                         <i class="ti ti-clock me-1"></i>
-                                        {{ ($pengaduan->status === 'Selesai' ? $pengaduan->tanggal_tanggapan : $pengaduan->tanggal_ditolak)->format('d F Y H:i') }} WIB
+                                        {{ optional($pengaduan->status === 'Selesai' ? $pengaduan->tanggal_tanggapan : $pengaduan->tanggal_ditolak)->format('d F Y H:i') }} WIB
                                     </p>
                                     @if($pengaduan->tanggal_diproses && ($pengaduan->status === 'Selesai' ? $pengaduan->tanggal_tanggapan : $pengaduan->tanggal_ditolak))
                                         <small class="text-muted">
@@ -306,7 +306,7 @@
                                 <hr class="my-2">
                                 <small class="text-muted">
                                     <strong>Ditanggapi oleh:</strong> {{ $pengaduan->adminPenanggap->name }}<br>
-                                    <strong>Tanggal:</strong> {{ $pengaduan->tanggal_tanggapan->format('d F Y H:i') }} WIB
+                                    <strong>Tanggal:</strong> {{ optional($pengaduan->tanggal_tanggapan)->format('d F Y H:i') }} WIB
                                 </small>
                                 @endif
                             </div>

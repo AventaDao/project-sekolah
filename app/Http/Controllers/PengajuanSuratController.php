@@ -7,6 +7,7 @@ use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PengajuanSuratController extends Controller
 {
@@ -42,8 +43,9 @@ class PengajuanSuratController extends Controller
     public function create()
     {
         $suratTypes = PengajuanSurat::getSuratTypes();
+        $user = Auth::user();
         
-        return view('user.pengajuan-surat.create', compact('suratTypes'));
+        return view('user.pengajuan-surat.create', compact('suratTypes', 'user'));
     }
 
     /**
@@ -73,6 +75,14 @@ class PengajuanSuratController extends Controller
                 $rule .= '|string';
             } elseif ($fieldConfig['type'] === 'number') {
                 $rule .= '|numeric';
+                // Add max validation for numeric fields
+                if (isset($fieldConfig['max'])) {
+                    $rule .= '|max:' . $fieldConfig['max'];
+                }
+                // Add min validation for numeric fields
+                if (isset($fieldConfig['min'])) {
+                    $rule .= '|min:' . $fieldConfig['min'];
+                }
             } elseif ($fieldConfig['type'] === 'date') {
                 // Field tanggal bisa dipilih tanggal apa saja (lampau, sekarang, atau depan)
                 $rule .= '|date';
@@ -193,11 +203,19 @@ class PengajuanSuratController extends Controller
         // Set tanggal selesai jika status selesai
         if ($validated['status'] === 'Selesai') {
             $data['tanggal_selesai'] = now();
+            // Jika belum ada tanggal diproses, set sekarang (skip dari Menunggu langsung ke Selesai)
+            if (!$pengajuanSurat->tanggal_diproses) {
+                $data['tanggal_diproses'] = now();
+            }
         }
 
         // Set tanggal ditolak jika status ditolak
         if ($validated['status'] === 'Ditolak') {
             $data['tanggal_ditolak'] = now();
+            // Jika belum ada tanggal diproses, set sekarang (skip dari Menunggu langsung ke Ditolak)
+            if (!$pengajuanSurat->tanggal_diproses) {
+                $data['tanggal_diproses'] = now();
+            }
         }
 
         $pengajuanSurat->update($data);
@@ -290,6 +308,128 @@ class PengajuanSuratController extends Controller
         $path = Storage::disk('public')->path($pengajuanSurat->file_surat_jadi);
         $filename = 'Surat-Jadi-' . $pengajuanSurat->nomor_pengajuan . '.pdf';
         
+        return response()->download($path, $filename);
+    }
+
+    /**
+     * Export pengajuan surat ke PDF dengan dompdf
+     */
+    public function exportPdf($id)
+    {
+        $pengajuanSurat = PengajuanSurat::findOrFail($id);
+
+        // Pastikan user hanya bisa export pengajuan miliknya
+        if ($pengajuanSurat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        // Ambil data user untuk laporan
+        $user = $pengajuanSurat->user;
+        
+        // Generate PDF menggunakan dompdf
+        $pdf = Pdf::loadView('user.pengajuan-surat.pdf-export', compact('pengajuanSurat', 'user'));
+        
+        // Setting ukuran kertas dan orientasi
+        $pdf->setPaper('A4', 'portrait');
+        
+        // Return sebagai download
+        // Sanitize nomor pengajuan untuk filename (ganti "/" dengan "-")
+        $nomorSanitized = str_replace('/', '-', $pengajuanSurat->nomor_pengajuan);
+        $filename = 'Pengajuan-Surat-' . $nomorSanitized . '.pdf';
+        return $pdf->download($filename);
+    }
+
+    /**
+     * Print preview pengajuan surat
+     */
+    public function printPreview($id)
+    {
+        $pengajuanSurat = PengajuanSurat::findOrFail($id);
+
+        // Pastikan user hanya bisa preview pengajuan miliknya
+        if ($pengajuanSurat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $user = $pengajuanSurat->user;
+        
+        return view('user.pengajuan-surat.pdf-preview', compact('pengajuanSurat', 'user'));
+    }
+
+    /**
+     * Preview file dinamis (untuk admin dan user view detail).
+     */
+    public function previewFile(PengajuanSurat $pengajuanSurat, $fieldName)
+    {
+        // Check authorization
+        if (Auth::user()->role !== 'admin' && $pengajuanSurat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        // Validasi fieldName hanya berisi alphanumeric dan underscore
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $fieldName)) {
+            abort(400, 'Invalid field name');
+        }
+
+        // Get file value dari model
+        $fileValue = $pengajuanSurat->{$fieldName} ?? null;
+
+        if (!$fileValue || !Storage::disk('public')->exists($fileValue)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        $path = Storage::disk('public')->path($fileValue);
+        $mimeType = 'application/octet-stream';
+        
+        // Detect MIME type berdasarkan extension
+        $ext = strtolower(pathinfo($fileValue, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'txt' => 'text/plain',
+        ];
+        
+        if (isset($mimeTypes[$ext])) {
+            $mimeType = $mimeTypes[$ext];
+        }
+        
+        // Log activity
+        Activity::log('pengajuan_surat_preview', "Preview file: {$fieldName} dari pengajuan {$pengajuanSurat->nomor_pengajuan}", $pengajuanSurat->id, 'PengajuanSurat');
+
+        return response()->file($path, ['Content-Type' => $mimeType]);
+    }
+
+    /**
+     * Download file dinamis (untuk admin dan user).
+     */
+    public function downloadFile(PengajuanSurat $pengajuanSurat, $fieldName)
+    {
+        // Check authorization
+        if (Auth::user()->role !== 'admin' && $pengajuanSurat->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        // Validasi fieldName hanya berisi alphanumeric dan underscore
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $fieldName)) {
+            abort(400, 'Invalid field name');
+        }
+
+        // Get file value dari model
+        $fileValue = $pengajuanSurat->{$fieldName} ?? null;
+
+        if (!$fileValue || !Storage::disk('public')->exists($fileValue)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        $path = Storage::disk('public')->path($fileValue);
+        $filename = basename($fileValue);
+        
+        // Log activity
+        Activity::log('pengajuan_surat_download', "Download file: {$fieldName} dari pengajuan {$pengajuanSurat->nomor_pengajuan}", $pengajuanSurat->id, 'PengajuanSurat');
+
         return response()->download($path, $filename);
     }
 }

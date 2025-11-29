@@ -24,9 +24,19 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Detail Pengajuan Surat</h5>
-                    <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-secondary btn-sm">
-                        <i class="ti ti-arrow-left"></i> Kembali
-                    </a>
+                    <div>
+                        @if($pengajuanSurat->status == 'Selesai')
+                            <a href="{{ route('pengajuan-surat.print', $pengajuanSurat->id) }}" class="btn btn-primary btn-sm me-2" target="_blank">
+                                <i class="ti ti-printer me-1"></i> Cetak
+                            </a>
+                            <a href="{{ route('pengajuan-surat.export-pdf', $pengajuanSurat->id) }}" class="btn btn-info btn-sm me-2">
+                                <i class="ti ti-download me-1"></i> Download PDF
+                            </a>
+                        @endif
+                        <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="ti ti-arrow-left"></i> Kembali
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <!-- Status Badge -->
@@ -110,24 +120,26 @@
                             <!-- Step 2: Diproses -->
                             <div class="timeline-item">
                                 <div class="timeline-bar"></div>
-                                <div class="timeline-dot {{ $pengajuanSurat->tanggal_diproses ? 'bg-success' : 'bg-secondary' }}">
-                                    <i class="ti {{ $pengajuanSurat->tanggal_diproses ? 'ti-check' : 'ti-hourglass' }}"></i>
+                                <div class="timeline-dot {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'bg-success' : 'bg-secondary' }}">
+                                    <i class="ti {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'ti-check' : 'ti-hourglass' }}"></i>
                                 </div>
                                 <div class="timeline-content">
                                     <div class="d-flex align-items-center mb-1">
                                         <h6 class="mb-0"><strong>Dalam Proses</strong></h6>
-                                        <span class="badge {{ $pengajuanSurat->tanggal_diproses ? 'bg-success' : 'bg-secondary' }} ms-2">
-                                            {{ $pengajuanSurat->tanggal_diproses ? 'Selesai' : 'Menunggu' }}
+                                        <span class="badge {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'bg-success' : 'bg-secondary' }} ms-2">
+                                            {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'Selesai' : 'Menunggu' }}
                                         </span>
                                     </div>
-                                    @if($pengajuanSurat->tanggal_diproses)
+                                    @if($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak')
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-clock me-1"></i>
-                                            {{ $pengajuanSurat->tanggal_diproses->format('d F Y H:i') }} WIB
+                                            {{ ($pengajuanSurat->tanggal_diproses ?? $pengajuanSurat->updated_at)->format('d F Y H:i') }} WIB
                                         </p>
+                                        @if($pengajuanSurat->tanggal_diproses && $pengajuanSurat->created_at)
                                         <small class="text-muted">
                                             Waktu pemrosesan: {{ $pengajuanSurat->tanggal_diproses->diffForHumans($pengajuanSurat->created_at, ['parts' => 2]) }}
                                         </small>
+                                        @endif
                                     @else
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-hourglass me-1"></i>

@@ -120,6 +120,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::patch('/{pengajuanSurat}/status', [PengajuanSuratController::class, 'updateStatus'])->name('update-status');
             Route::get('/{pengajuanSurat}/download-pengantar', [PengajuanSuratController::class, 'downloadSuratPengantar'])->name('download-pengantar');
             Route::get('/{pengajuanSurat}/download-surat-jadi', [PengajuanSuratController::class, 'downloadSuratJadi'])->name('download-surat-jadi');
+            Route::get('/{pengajuanSurat}/preview-file/{fieldName}', [PengajuanSuratController::class, 'previewFile'])->name('preview-file');
+            Route::get('/{pengajuanSurat}/download-file/{fieldName}', [PengajuanSuratController::class, 'downloadFile'])->name('download-file');
         });
 
         // Admin Absensi Management
@@ -130,6 +132,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         // Admin Activities Management
         Route::prefix('activities')->name('activities.')->group(function () {
             Route::get('/', [ActivityController::class, 'adminIndex'])->name('index');
+            Route::post('/clear-logs', [ActivityController::class, 'clearLogs'])->name('clear-logs');
             Route::get('/{activity}', [ActivityController::class, 'adminShow'])->name('show');
         });
 
@@ -198,6 +201,10 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::delete('/{pengajuanSurat}', [PengajuanSuratController::class, 'destroy'])->name('destroy');
             Route::get('/{pengajuanSurat}/download-pengantar', [PengajuanSuratController::class, 'downloadSuratPengantar'])->name('download-pengantar');
             Route::get('/{pengajuanSurat}/download-surat-jadi', [PengajuanSuratController::class, 'downloadSuratJadi'])->name('download-surat-jadi');
+            Route::get('/{pengajuanSurat}/export-pdf', [PengajuanSuratController::class, 'exportPdf'])->name('export-pdf');
+            Route::get('/{pengajuanSurat}/print', [PengajuanSuratController::class, 'printPreview'])->name('print');
+            Route::get('/{pengajuanSurat}/preview-file/{fieldName}', [PengajuanSuratController::class, 'previewFile'])->name('preview-file');
+            Route::get('/{pengajuanSurat}/download-file/{fieldName}', [PengajuanSuratController::class, 'downloadFile'])->name('download-file');
         });
 
         

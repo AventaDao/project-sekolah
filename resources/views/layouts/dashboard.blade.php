@@ -120,7 +120,7 @@
                     </ul>
                 </div>
                 <!-- [Mobile Media Block end] -->
-                <div class="ms-auto">
+                <!-- <div class="ms-auto">
                     <ul class="list-unstyled">
                         <li class="dropdown pc-h-item">
                             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
@@ -200,7 +200,7 @@
                                     <a href="#!" class="link-primary">View all</a>
                                 </div>
                             </div>
-                        </li>
+                        </li> -->
                         <li class="dropdown pc-h-item header-user-profile">
                             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                                 href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
@@ -310,6 +310,8 @@
         <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
         <script src="{{ asset('assets/js/pcoded.js') }}"></script>
         <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
+        <!-- SweetAlert2 Library -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -348,9 +350,58 @@
                 history.replaceState(null, null, window.location.pathname);
             }
         </script>
+
+        <!-- SweetAlert2 Notifications -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Success notification
+                @if(session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#4680ff'
+                    });
+                @endif
+
+                // Error notification
+                @if(session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan!',
+                        text: '{{ session('error') }}',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#ff5370'
+                    });
+                @endif
+
+                // Warning notification
+                @if(session('warning'))
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan!',
+                        text: '{{ session('warning') }}',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#f4bd0e'
+                    });
+                @endif
+
+                // Info notification
+                @if(session('info'))
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Informasi',
+                        text: '{{ session('info') }}',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#4680ff'
+                    });
+                @endif
+            });
+        </script>
         <!-- Floating Pengaduan (hanya untuk user, bukan admin) -->
 @if(Auth::check() && Auth::user()->role !== 'admin')
-    @include('components.floating-pengaduan')
+    @include('component.floating-pengaduan')
 @endif
     </body>
     <!-- [Body] end -->

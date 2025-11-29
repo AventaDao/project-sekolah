@@ -48,6 +48,75 @@
                     <form action="{{ route('pengajuan-surat.store') }}" method="POST" enctype="multipart/form-data" id="formPengajuanSurat">
                         @csrf
                         
+                        <!-- Auto-filled User Data Section
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="alert alert-info d-flex align-items-center" role="alert">
+                                    <i class="ti ti-info-circle f-24 me-3"></i>
+                                    <div>
+                                        <strong>Data Pribadi Anda</strong> telah otomatis terisi berdasarkan profil akun. Data ini tidak dapat diubah untuk memastikan keakuratan administratif.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            Data Pribadi (Read-only)
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">NIK <span class="text-danger">*</span></label>
+                                <input type="text" name="nik_display" class="form-control" 
+                                       value="{{ $user->nik ?? '-' }}" readonly>
+                                <small class="form-text text-muted">Data dari profil akun Anda</small>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                <input type="text" name="nama_lengkap_display" class="form-control" 
+                                       value="{{ $user->nama_lengkap ?? '-' }}" readonly>
+                                <small class="form-text text-muted">Data dari profil akun Anda</small>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">No. Telepon</label>
+                                <input type="text" name="no_telepon_display" class="form-control" 
+                                       value="{{ $user->no_telepon ?? '-' }}" readonly>
+                                <small class="form-text text-muted">Data dari profil akun Anda</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Alamat</label>
+                                <textarea name="alamat_display" class="form-control" rows="3" readonly>{{ $user->alamat ?? '-' }}</textarea>
+                                <small class="form-text text-muted">Data dari profil akun Anda</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">RT</label>
+                                        <input type="text" name="rt_display" class="form-control" 
+                                               value="{{ $user->rt ?? '-' }}" readonly>
+                                        <small class="form-text text-muted">Data dari profil</small>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">RW</label>
+                                        <input type="text" name="rw_display" class="form-control" 
+                                               value="{{ $user->rw ?? '-' }}" readonly>
+                                        <small class="form-text text-muted">Data dari profil</small>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Kode Pos</label>
+                                        <input type="text" name="kode_pos_display" class="form-control" 
+                                               value="{{ $user->kode_pos ?? '-' }}" readonly>
+                                        <small class="form-text text-muted">Data dari profil</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <hr class="my-4">
+                        
                         <div class="row">
                             <!-- Pilih Jenis Surat -->
                             <div class="col-md-12 mb-3">
@@ -210,9 +279,12 @@
                            value="${fieldValue}" ${requiredAttr}>
                 `;
             } else if (fieldConfig.type === 'number') {
+                const maxAttr = fieldConfig.max ? `max="${fieldConfig.max}"` : 'max="9999999999"';
+                const minAttr = fieldConfig.min ? `min="${fieldConfig.min}"` : 'min="0"';
                 fieldHTML += `
                     <input type="number" name="${fieldName}" class="form-control ${errorClass}" 
-                           value="${fieldValue}" step="${fieldConfig.step || '1'}" ${requiredAttr}>
+                           value="${fieldValue}" step="${fieldConfig.step || '1'}" ${minAttr} ${maxAttr} ${requiredAttr}>
+                    <small class="form-text text-muted">Maksimal nilai: ${fieldConfig.max || '9.999.999.999'}</small>
                 `;
             } else if (fieldConfig.type === 'date') {
                 fieldHTML += `

@@ -53,4 +53,24 @@ class ActivityController extends Controller
         $activity->load('user');
         return view('admin.activities.show', compact('activity'));
     }
+
+    /**
+     * Clear all activity logs (Admin only)
+     */
+    public function clearLogs(Request $request)
+    {
+        // Delete all activities
+        Activity::truncate();
+
+        // Log the action
+        Activity::create([
+            'user_id' => Auth::id(),
+            'activity_type' => 'admin_action',
+            'description' => 'Admin membersihkan semua activity logs',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.activities.index')
+            ->with('success', 'Semua activity logs berhasil dihapus.');
+    }
 }

@@ -88,6 +88,9 @@
                     <p class="text-muted">{{ $pengajuanSurat->keterangan_tambahan }}</p>
                     @endif
 
+                    <!-- Detail Informasi Pengajuan (Field Teks) -->
+                    @include('component.detail-pengajuan', ['pengajuanSurat' => $pengajuanSurat])
+
                     <!-- Surat Pengantar RW -->
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Surat Pengantar RW</h5>
                     <a href="{{ route('admin.pengajuan-surat.download-pengantar', $pengajuanSurat->id) }}" 
@@ -112,6 +115,9 @@
                         <i class="ti ti-file-download"></i> Lihat Surat Jadi
                     </a>
                     @endif
+
+                    <!-- Preview Dokumen yang Diunggah User -->
+                    @include('component.dokumen-pengajuan', ['pengajuanSurat' => $pengajuanSurat])
                 </div>
             </div>
         </div>

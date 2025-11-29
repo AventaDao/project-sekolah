@@ -263,7 +263,7 @@
                             </div>
                             <div class="info-content">
                                 <h5 class="info-title">Alamat Kantor Desa</h5>
-                                <p class="info-text" id="village-address">Jl. Raya Candi, Desa Candi, Kecamatan Candi, Kabupaten Sidoarjo, Jawa Timur</p>
+                                <p class="info-text" id="village-address">Kantor Kepala Desa Kedung Kendo</p>
                             </div>
                         </div>
                         <div class="info-card">
@@ -293,7 +293,7 @@
                                 <p class="info-text">Senin - Jumat: 08:00 - 17:00<br>Sabtu: 08:00 - 12:00</p>
                             </div>
                         </div>
-                        <a href="https://maps.app.goo.gl/fD3sp77vSd5vpUYv7" class="btn btn-primary btn-lg mt-4 wow fadeInUp" data-wow-delay="0.4s" id="open-maps" target="_blank">
+                        <a href="https://maps.app.goo.gl/y3gv2H7DLMvdzSSi7" class="btn btn-primary btn-lg mt-4 wow fadeInUp" data-wow-delay="0.4s" id="open-maps" target="_blank">
                             <i class="ti ti-map me-2"></i> Buka di Google Maps
                         </a>
                     </div>
@@ -1204,10 +1204,10 @@
         // Initialize Google Maps
         function initializeMap() {
             // Default location: Based on Google Maps link provided
-            // Link: https://maps.app.goo.gl/fD3sp77vSd5vpUYv7
+            // Link: https://maps.app.goo.gl/y3gv2H7DLMvdzSSi7
             const desaLocation = {
-                lat: -7.2575,
-                lng: 112.7521
+                lat: -7.4760844,
+                lng: 112.695031
             };
 
             // Create map

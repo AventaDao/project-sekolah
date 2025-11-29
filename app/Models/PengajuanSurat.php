@@ -173,7 +173,7 @@ class PengajuanSurat extends Model
                 'deskripsi' => 'Surat permohonan bantuan untuk berbagai keperluan',
                 'fields' => [
                     'jenis_bantuan' => ['label' => 'Jenis Bantuan', 'type' => 'select', 'options' => ['Bantuan Sosial', 'Renovasi Rumah', 'Kesehatan', 'Pendidikan', 'Bencana', 'Lainnya'], 'required' => true],
-                    'jumlah_bantuan' => ['label' => 'Jumlah Bantuan (Rp)', 'type' => 'number', 'step' => '1', 'required' => false],
+                    'jumlah_bantuan' => ['label' => 'Jumlah Bantuan (Rp)', 'type' => 'number', 'step' => '1', 'max' => '9999999999', 'required' => false],
                     'latar_belakang_bantuan' => ['label' => 'Latar Belakang / Alasan Bantuan', 'type' => 'textarea', 'required' => true],
                     'prioritas_bantuan' => ['label' => 'Prioritas', 'type' => 'select', 'options' => ['Sangat Mendesak', 'Mendesak', 'Normal'], 'required' => true],
                 ]
