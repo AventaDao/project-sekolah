@@ -64,12 +64,12 @@
                     <li class="nav-item pe-1">
                         <a class="nav-link <?php echo e(request()->is('dashboard') ? 'active' : ''); ?>" href="/dashboard">Dashboard</a>
                     </li>
-                    <li class="nav-item pe-1">
+                    <!-- <li class="nav-item pe-1">
                         <a class="nav-link <?php echo e(request()->is('profil-desa') ? 'active' : ''); ?>" href="/profil-desa">Profil Desa</a>
                     </li>
                     <li class="nav-item pe-1">
                         <a class="nav-link <?php echo e(request()->is('kontak') ? 'active' : ''); ?>" href="/contact-us">Kontak</a>
-                    </li>
+                    </li> -->
                     <?php if(auth()->check()): ?>
                         <li class="nav-item">
                             <a class="btn btn-primary" href="/myprofile">Hai, <?php echo e(auth()->user()->name); ?></a>

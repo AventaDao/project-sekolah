@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Penduduk extends Model
 {
@@ -46,10 +47,14 @@ class Penduduk extends Model
      */
     public function getUmurAttribute()
     {
-        if ($this->status_hidup === 'Meninggal') {
-            return (int) $this->tanggal_lahir->diffInYears($this->tanggal_meninggal);
+        if (!$this->tanggal_lahir) {
+            return 0;
         }
-        return (int) $this->tanggal_lahir->age;
+        
+        if ($this->status_hidup === 'Meninggal' && $this->tanggal_meninggal) {
+            return (int) Carbon::parse($this->tanggal_lahir)->diffInYears(Carbon::parse($this->tanggal_meninggal));
+        }
+        return (int) Carbon::parse($this->tanggal_lahir)->diffInYears(now());
     }
 
     /**

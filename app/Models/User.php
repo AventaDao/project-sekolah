@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -69,6 +70,9 @@ class User extends Authenticatable
     // Get umur
     public function getUmurAttribute()
     {
-        return (int) $this->tanggal_lahir->age;
+        if (!$this->tanggal_lahir) {
+            return 0;
+        }
+        return (int) Carbon::parse($this->tanggal_lahir)->diffInYears(now());
     }
 }

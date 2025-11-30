@@ -26,6 +26,10 @@
             border-bottom: 3px solid #333;
             padding-bottom: 15px;
             margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
         }
         
         .header h1 {
@@ -161,8 +165,17 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>LAPORAN PENGAJUAN SURAT</h1>
-            <p>Sistem Informasi Desa Candi</p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                <!-- Logo/Icon -->
+                <div style="flex-shrink: 0;">
+                    <img src="{{ public_path('assets/images/logo-icon.svg') }}" alt="Logo Desa" style="width: 80px; height: 80px;">
+                </div>
+                <!-- Judul -->
+                <div>
+                    <h1>LAPORAN PENGAJUAN SURAT</h1>
+                    <p>Sistem Informasi Desa Candi</p>
+                </div>
+            </div>
         </div>
 
         <!-- Nomor Pengajuan -->

@@ -294,16 +294,19 @@ class AuthController extends Controller
         }
         
         $socialUser = Socialite::driver($provider)->user();
+        $email = $socialUser->getEmail();
 
-        $user = User::updateOrCreate([
-            'email' => $socialUser->email,
-        ], [
-            'nama_lengkap' => $socialUser->name ?? $socialUser->getNickname(),
-            'provider' => $provider,
-            'provider_id' => $socialUser->getId(),
-            'avatar' => $socialUser->getAvatar(),
-            'is_verified' => true
-        ]);
+        $user = User::updateOrCreate(
+            ['email' => $email],
+            [
+                'nama_lengkap' => $socialUser->name ?? $socialUser->getNickname(),
+                'email' => $email,
+                'provider' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+                'is_verified' => true
+            ]
+        );
 
         Auth::login($user);
 

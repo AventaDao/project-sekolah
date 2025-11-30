@@ -3,6 +3,24 @@
 @section('title', 'Edit Profile')
 
 @section('content')
+    <style>
+        /* Ensure avatar is always square and not stretched */
+        #avatarPreview {
+            width: 150px !important;
+            height: 150px !important;
+            object-fit: cover !important;
+            object-position: center !important;
+        }
+        
+        .cropper-container {
+            position: relative;
+        }
+        
+        #cropperImage {
+            max-width: 100%;
+            max-height: 400px;
+        }
+    </style>
     <div class="pc-content">
         <!-- [ breadcrumb ] start -->
         <div class="page-header">
@@ -79,7 +97,12 @@
                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <button type="button" id="resetAvatar" class="btn btn-sm btn-outline-secondary">
+                                            <div class="d-flex gap-2 mb-2">
+                                                <button type="button" id="openCropButton" class="btn btn-sm btn-info flex-grow-1" style="display: none;">
+                                                    <i class="ti ti-crop"></i> Crop & Sesuaikan
+                                                </button>
+                                            </div>
+                                            <button type="button" id="resetAvatar" class="btn btn-sm btn-outline-secondary w-100">
                                                 <i class="ti ti-x"></i> Batalkan
                                             </button>
                                         </div>
@@ -200,22 +223,125 @@
         <!-- [ Main Content ] end -->
     </div>
 
+    <!-- Crop Modal -->
+    <div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cropModalLabel">Sesuaikan Foto Profil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="max-height: 600px; display: flex; align-items: center; justify-content: center; background: #f5f5f5; border-radius: 8px; padding: 20px;">
+                        <img id="cropperImage" src="" alt="Crop Image" style="max-width: 100%; max-height: 550px;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="ti ti-x"></i> Batalkan
+                    </button>
+                    <button type="button" id="cropButton" class="btn btn-primary">
+                        <i class="ti ti-check"></i> Simpan Crop
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CDN Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <script>
+        let cropper = null;
+        let currentFile = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             const avatarInput = document.getElementById('avatar');
             const avatarPreview = document.getElementById('avatarPreview');
             const resetButton = document.getElementById('resetAvatar');
+            const openCropButton = document.getElementById('openCropButton');
+            const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+            const cropperImage = document.getElementById('cropperImage');
+            const cropButton = document.getElementById('cropButton');
             const originalPreview = avatarPreview.src;
 
             // Preview avatar when file is selected
             avatarInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
+                    currentFile = file;
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        avatarPreview.src = event.target.result;
+                        // Show crop button
+                        openCropButton.style.display = 'block';
                     };
                     reader.readAsDataURL(file);
+                }
+            });
+
+            // Open crop modal when button is clicked
+            openCropButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        cropperImage.src = event.target.result;
+                        
+                        // Destroy old cropper if exists
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+                        
+                        // Initialize cropper
+                        setTimeout(() => {
+                            cropper = new Cropper(cropperImage, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                responsive: true,
+                                restore: true,
+                                guides: true,
+                                center: true,
+                                highlight: true,
+                                cropBoxMovable: true,
+                                cropBoxResizable: true,
+                                toggleDragModeOnDblclick: true,
+                            });
+                        }, 100);
+                        
+                        // Show crop modal
+                        cropModal.show();
+                    };
+                    reader.readAsDataURL(currentFile);
+                }
+            });
+
+            // Save crop
+            cropButton.addEventListener('click', function() {
+                if (cropper) {
+                    const canvas = cropper.getCroppedCanvas({
+                        maxWidth: 500,
+                        maxHeight: 500,
+                        fillColor: '#fff',
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high',
+                    });
+
+                    // Convert canvas to blob and update preview
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        avatarPreview.src = url;
+                        
+                        // Update file input with cropped image
+                        const dt = new DataTransfer();
+                        const file = new File([blob], currentFile.name, { type: 'image/png' });
+                        dt.items.add(file);
+                        avatarInput.files = dt.files;
+                        
+                        // Close modal
+                        cropModal.hide();
+                    }, 'image/png');
                 }
             });
 
@@ -223,6 +349,12 @@
             resetButton.addEventListener('click', function() {
                 avatarInput.value = '';
                 avatarPreview.src = originalPreview;
+                openCropButton.style.display = 'none';
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+                currentFile = null;
             });
         });
     </script>

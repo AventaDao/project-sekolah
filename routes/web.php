@@ -8,7 +8,6 @@ use App\Http\Controllers\PengajuanSuratController;
 use App\Http\Controllers\BeritaDesaController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\InfografisController;
 use App\Http\Controllers\ActivityController;
 
 /*
@@ -23,9 +22,6 @@ Route::get('/', function () {
 Route::get('/contact-us', function () {
     return view('contact');
 })->name('contact');
-
-// Public Infografis route (if controller/view exists)
-Route::get('/infografis', [InfografisController::class, 'index'])->name('infografis.index');
 
 /*
 |--------------------------------------------------------------------------

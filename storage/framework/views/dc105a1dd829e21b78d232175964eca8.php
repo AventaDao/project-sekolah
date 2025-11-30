@@ -1,6 +1,15 @@
 <?php $__env->startSection('title', 'My Profile'); ?>
 
 <?php $__env->startSection('content'); ?>
+    <style>
+        /* Ensure avatar is always square and not stretched */
+        .chat-avtar img {
+            width: 70px !important;
+            height: 70px !important;
+            object-fit: cover !important;
+            object-position: center !important;
+        }
+    </style>
     <div class="pc-content">
         <!-- [ breadcrumb ] start -->
         <div class="page-header">
@@ -91,13 +100,20 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Tanggal Lahir</strong></p>
-                                                <p class="mb-0"><?php echo e(auth()->user()->tanggal_lahir ? auth()->user()->tanggal_lahir->format('d-m-Y') : 'N/A'); ?></p>
+                                                <p class="mb-0">
+                                                    <?php if(auth()->user()->tanggal_lahir): ?>
+                                                        <?php echo e(\Carbon\Carbon::parse(auth()->user()->tanggal_lahir)->format('d-m-Y')); ?>
+
+                                                    <?php else: ?>
+                                                        N/A
+                                                    <?php endif; ?>
+                                                </p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Umur</strong></p>
                                                 <p class="mb-0">
                                                     <?php if(auth()->user()->tanggal_lahir): ?>
-                                                        <?php echo e(auth()->user()->tanggal_lahir->age); ?> tahun
+                                                        <?php echo e(\Carbon\Carbon::parse(auth()->user()->tanggal_lahir)->age); ?> tahun
                                                     <?php else: ?>
                                                         N/A
                                                     <?php endif; ?>
