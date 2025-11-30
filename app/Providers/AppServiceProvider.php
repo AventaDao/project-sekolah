@@ -53,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
             $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
         });
 
+        // for Ngrok used, delete if not
         if ($this->app->environment('local')) {
         URL::forceRootUrl(config('app.url'));
         URL::forceScheme('https');
