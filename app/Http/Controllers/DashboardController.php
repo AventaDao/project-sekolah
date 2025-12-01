@@ -7,6 +7,7 @@ use App\Models\Penduduk;
 use App\Models\PengajuanSurat;
 use App\Models\Pengaduan;
 use App\Models\BeritaDesa;
+use App\Models\Kelahiran;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -86,10 +87,8 @@ class DashboardController extends Controller
             // Data Penduduk
             'total_penduduk' => Penduduk::where('status_hidup', 'Hidup')->count(),
             'total_kk' => 0, // Sementara dinonaktifkan karena tidak ada data KK yang valid
-            'kelahiran_bulan_ini' => Penduduk::whereMonth('created_at', now()->month)
+            'kelahiran_bulan_ini' => Kelahiran::whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
-                ->where('status_hidup', 'Hidup')
-                ->where('source_type', 'manual')
                 ->count(),
             'kematian_bulan_ini' => Penduduk::where('status_hidup', 'Meninggal')
                 ->whereMonth('tanggal_meninggal', now()->month)

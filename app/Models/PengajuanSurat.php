@@ -76,6 +76,32 @@ class PengajuanSurat extends Model
         'jumlah_bantuan',
         'latar_belakang_bantuan',
         'prioritas_bantuan',
+        // SURAT KEMATIAN
+        'nama_almarhum_almarhumah',
+        'tanggal_kematian',
+        'fc_ktp_almarhum',
+        'fc_kk_almarhum',
+        'surat_keterangan_dokter_paramedis',
+        'surat_pengantar_rt_rw',
+        // SURAT PERMOHONAN KK BARU
+        'fc_kk_lama_kk',
+        'fc_ktp_kk',
+        'fc_akta_nikah_kk',
+        'fc_akta_kelahiran_kk',
+        'surat_keterangan_pindah_datang_kk',
+        'formulir_permohonan_kk',
+        // SURAT PERMOHONAN AKTA KELAHIRAN
+        'surat_keterangan_kelahiran_acta',
+        'fc_kk_acta',
+        'fc_ktp_ayah_acta',
+        'fc_ktp_ibu_acta',
+        'fc_buku_nikah_acta',
+        'fc_ktp_saksi_1_acta',
+        'fc_ktp_saksi_2_acta',
+        'formulir_f202_acta',
+        'formulir_f201_acta',
+        'sptjm_acta',
+        'fc_akta_kelahiran_ibu_acta',
     ];
 
     protected $casts = [
@@ -176,6 +202,47 @@ class PengajuanSurat extends Model
                     'jumlah_bantuan' => ['label' => 'Jumlah Bantuan (Rp)', 'type' => 'number', 'step' => '1', 'max' => '9999999999', 'required' => false],
                     'latar_belakang_bantuan' => ['label' => 'Latar Belakang / Alasan Bantuan', 'type' => 'textarea', 'required' => true],
                     'prioritas_bantuan' => ['label' => 'Prioritas', 'type' => 'select', 'options' => ['Sangat Mendesak', 'Mendesak', 'Normal'], 'required' => true],
+                ]
+            ],
+            'Surat Kematian' => [
+                'label' => 'Surat Kematian',
+                'deskripsi' => 'Akta kematian penting sebagai data statistik untuk memantau penyebab kematian, angka harapan hidup, dan penetapan kebijakan pembangunan lainnya. Akta kematian juga membantu validasi data kependudukan, sehingga pemerintah dapat menyalurkan bantuan sosial dan subsidi lebih tepat sasaran.',
+                'fields' => [
+                    'nama_almarhum_almarhumah' => ['label' => 'Nama Almarhum/Almarhumah', 'type' => 'text', 'required' => true],
+                    'tanggal_kematian' => ['label' => 'Tanggal Kematian', 'type' => 'date', 'required' => true],
+                    'fc_ktp_almarhum' => ['label' => 'Fotokopi KTP Almarhum/Almarhumah', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_kk_almarhum' => ['label' => 'Fotokopi Kartu Keluarga (KK)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'surat_keterangan_dokter_paramedis' => ['label' => 'Surat Keterangan Kematian dari Dokter/Paramedis', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'surat_pengantar_rt_rw' => ['label' => 'Surat Pengantar dari RT dan RW', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                ]
+            ],
+            'Surat Permohonan KK Baru' => [
+                'label' => 'Surat Permohonan KK Baru',
+                'deskripsi' => 'Surat permohonan untuk membuat Kartu Keluarga baru. Proses dimulai dengan mendapatkan surat pengantar dari RT dan RW, kemudian digunakan untuk mengurus formulir permohonan KK di kelurahan.',
+                'fields' => [
+                    'fc_kk_lama_kk' => ['label' => 'Fotokopi KK Lama (jika ada)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
+                    'fc_ktp_kk' => ['label' => 'Fotokopi KTP untuk Semua Anggota Keluarga', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_akta_nikah_kk' => ['label' => 'Fotokopi Akta Nikah (jika ada/baru menikah)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
+                    'fc_akta_kelahiran_kk' => ['label' => 'Fotokopi Akta Kelahiran untuk Semua Anggota Keluarga', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'surat_keterangan_pindah_datang_kk' => ['label' => 'Surat Keterangan Pindah Datang (jika pindah dari luar kota/provinsi)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
+                    'formulir_permohonan_kk' => ['label' => 'Formulir Permohonan KK (F.1-15) yang Sudah Diisi', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                ]
+            ],
+            'Surat Permohonan Akta Kelahiran' => [
+                'label' => 'Surat Permohonan Akta Kelahiran',
+                'deskripsi' => 'Surat permohonan untuk membuat akta kelahiran baru. Diperlukan dokumen dari rumah sakit/puskesmas, fotokopi identitas orang tua, buku nikah, serta KTP saksi yang mengetahui proses kelahiran.',
+                'fields' => [
+                    'surat_keterangan_kelahiran_acta' => ['label' => 'Surat Keterangan Kelahiran dari Rumah Sakit/Puskesmas/Dokter/Bidan', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_kk_acta' => ['label' => 'Fotokopi KK Orang Tua', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_ktp_ayah_acta' => ['label' => 'Fotokopi KTP Ayah', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_ktp_ibu_acta' => ['label' => 'Fotokopi KTP Ibu', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_buku_nikah_acta' => ['label' => 'Fotokopi Buku Nikah/Akta Perkawinan Orang Tua', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_ktp_saksi_1_acta' => ['label' => 'Fotokopi KTP Saksi 1', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'fc_ktp_saksi_2_acta' => ['label' => 'Fotokopi KTP Saksi 2', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => true],
+                    'formulir_f202_acta' => ['label' => 'Formulir F.2-02 (Untuk Anak yang Baru Lahir)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
+                    'formulir_f201_acta' => ['label' => 'Formulir F.2-01 (Untuk Orang Dewasa yang Belum Memiliki Akta)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
+                    'sptjm_acta' => ['label' => 'SPTJM (Surat Pernyataan Tanpa Mengecil)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
+                    'fc_akta_kelahiran_ibu_acta' => ['label' => 'Fotokopi Akta Kelahiran Ibu (jika ada)', 'type' => 'file', 'accept' => 'image/*,application/pdf', 'required' => false],
                 ]
             ],
         ];

@@ -66,6 +66,14 @@ class Penduduk extends Model
     }
 
     /**
+     * Relasi ke Kelahiran
+     */
+    public function kelahiran()
+    {
+        return $this->hasOne(Kelahiran::class);
+    }
+
+    /**
      * Check if penduduk has user account
      */
     public function hasAccount()

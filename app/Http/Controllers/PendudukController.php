@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penduduk;
+use App\Models\Kelahiran;
 use Illuminate\Http\Request;
 
 class PendudukController extends Controller
@@ -73,9 +74,58 @@ class PendudukController extends Controller
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:15',
+            // Validasi kelahiran
+            'buat_kelahiran_baru' => 'nullable|boolean',
+            'nomor_akta_kelahiran' => 'nullable|string|max:255',
+            'tanggal_daftar_kelahiran' => 'nullable|date',
+            'penolong_kelahiran' => 'nullable|in:Dokter,Bidan,Perawat,Dukun,Keluarga,Lainnya',
+            'tempat_kelahiran' => 'nullable|in:Rumah Sakit,Klinik,Puskesmas,Rumah,Lainnya',
+            'berat_bayi' => 'nullable|numeric|min:0|max:10',
+            'panjang_bayi' => 'nullable|numeric|min:0|max:100',
         ]);
 
-        Penduduk::create($validated);
+        // Pisahkan data penduduk dan kelahiran
+        $pendudukData = [
+            'nik' => $validated['nik'],
+            'nama_lengkap' => $validated['nama_lengkap'],
+            'tempat_lahir' => $validated['tempat_lahir'],
+            'tanggal_lahir' => $validated['tanggal_lahir'],
+            'jenis_kelamin' => $validated['jenis_kelamin'],
+            'alamat' => $validated['alamat'],
+            'rt' => $validated['rt'],
+            'rw' => $validated['rw'],
+            'desa' => $validated['desa'],
+            'kecamatan' => $validated['kecamatan'],
+            'kabupaten' => $validated['kabupaten'],
+            'provinsi' => $validated['provinsi'],
+            'kode_pos' => $validated['kode_pos'],
+            'agama' => $validated['agama'],
+            'status_perkawinan' => $validated['status_perkawinan'],
+            'pekerjaan' => $validated['pekerjaan'],
+            'kewarganegaraan' => $validated['kewarganegaraan'],
+            'pendidikan_terakhir' => $validated['pendidikan_terakhir'],
+            'nama_ayah' => $validated['nama_ayah'],
+            'nama_ibu' => $validated['nama_ibu'],
+            'no_telepon' => $validated['no_telepon'],
+        ];
+
+        // Simpan penduduk
+        $penduduk = Penduduk::create($pendudukData);
+
+        // Jika checkbox buat_kelahiran_baru dicentang, simpan data kelahiran
+        if ($request->has('buat_kelahiran_baru') && $request->buat_kelahiran_baru) {
+            $kelahiranData = [
+                'penduduk_id' => $penduduk->id,
+                'nomor_akta' => $validated['nomor_akta_kelahiran'] ?? null,
+                'tanggal_daftar' => $validated['tanggal_daftar_kelahiran'] ?? null,
+                'penolong' => $validated['penolong_kelahiran'] ?? null,
+                'tempat' => $validated['tempat_kelahiran'] ?? null,
+                'berat' => $validated['berat_bayi'] ?? null,
+                'panjang' => $validated['panjang_bayi'] ?? null,
+            ];
+
+            Kelahiran::create($kelahiranData);
+        }
 
         return redirect()->route('admin.penduduk.index')
             ->with('success', 'Data penduduk berhasil ditambahkan!');

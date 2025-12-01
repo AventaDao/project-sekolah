@@ -54,10 +54,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // for Ngrok used, delete if not
-        if ($this->app->environment('local')) {
-        URL::forceRootUrl(config('app.url'));
-        URL::forceScheme('https');
-}
+//         if ($this->app->environment('local')) {
+//         URL::forceRootUrl(config('app.url'));
+//         URL::forceScheme('https');
+// }
 
     }
 }

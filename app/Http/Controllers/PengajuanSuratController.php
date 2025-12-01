@@ -306,7 +306,9 @@ class PengajuanSuratController extends Controller
         }
 
         $path = Storage::disk('public')->path($pengajuanSurat->file_surat_jadi);
-        $filename = 'Surat-Jadi-' . $pengajuanSurat->nomor_pengajuan . '.pdf';
+        // Replace "/" with "-" in nomor_pengajuan to avoid invalid filename characters
+        $safeNomorPengajuan = str_replace('/', '-', $pengajuanSurat->nomor_pengajuan);
+        $filename = 'Surat-Jadi-' . $safeNomorPengajuan . '.pdf';
         
         return response()->download($path, $filename);
     }

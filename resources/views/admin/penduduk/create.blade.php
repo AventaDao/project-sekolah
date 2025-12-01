@@ -55,6 +55,10 @@
                             <div class="step-counter">4</div>
                             <div class="step-name">Data Keluarga</div>
                         </div>
+                        <div class="stepper-item" data-step="5">
+                            <div class="step-counter">5</div>
+                            <div class="step-name">Data Kelahiran</div>
+                        </div>
                     </div>
 
                     <form action="{{ route('admin.penduduk.store') }}" method="POST" id="formPenduduk">
@@ -124,16 +128,16 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">RT <span class="text-danger">*</span></label>
-                                    <input type="text" name="rt" class="form-control @error('rt') is-invalid @enderror" 
-                                           value="{{ old('rt') }}" maxlength="3" required>
+                                    <input type="number" name="rt" class="form-control @error('rt') is-invalid @enderror" 
+                                           value="{{ old('rt') }}" min="1" max="999" required>
                                     @error('rt')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">RW <span class="text-danger">*</span></label>
-                                    <input type="text" name="rw" class="form-control @error('rw') is-invalid @enderror" 
-                                           value="{{ old('rw') }}" maxlength="3" required>
+                                    <input type="number" name="rw" class="form-control @error('rw') is-invalid @enderror" 
+                                           value="{{ old('rw') }}" min="1" max="999" required>
                                     @error('rw')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -172,8 +176,8 @@
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
-                                    <input type="text" name="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" 
-                                           value="{{ old('kode_pos') }}" maxlength="5" required>
+                                    <input type="number" name="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" 
+                                           value="{{ old('kode_pos') }}" min="10000" max="99999" required>
                                     @error('kode_pos')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -292,11 +296,102 @@
                                     @enderror
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Step 5: Data Kelahiran -->
+                        <div class="step-content" data-step="5">
+                            <h5 class="mb-3 text-primary">Data Kelahiran (Opsional)</h5>
+                            <div class="alert alert-info mb-3">
+                                <i class="ti ti-info-circle me-2"></i>
+                                <strong>Catatan:</strong> Bagian ini bersifat opsional. Anda dapat membiarkannya kosong jika tidak ingin membuat data kelahiran baru sekarang.
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="buat_kelahiran_baru" id="buatKelahiranBaru" class="form-check-input" value="1">
+                                        <label class="form-check-label" for="buatKelahiranBaru">
+                                            Buat kelahiran baru untuk penduduk ini
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="kelahiranFields" style="display: none;">
+                                <hr class="my-4">
+                                <h6 class="text-secondary mb-3">Informasi Kelahiran</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nomor Akta Kelahiran</label>
+                                        <input type="text" name="nomor_akta_kelahiran" class="form-control @error('nomor_akta_kelahiran') is-invalid @enderror" 
+                                               value="{{ old('nomor_akta_kelahiran') }}" placeholder="Kosongkan jika belum memiliki nomor">
+                                        @error('nomor_akta_kelahiran')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Opsional</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tanggal Pendaftaran Kelahiran</label>
+                                        <input type="date" name="tanggal_daftar_kelahiran" class="form-control @error('tanggal_daftar_kelahiran') is-invalid @enderror" 
+                                               value="{{ old('tanggal_daftar_kelahiran') }}">
+                                        @error('tanggal_daftar_kelahiran')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Opsional</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Penolong Kelahiran</label>
+                                        <select name="penolong_kelahiran" class="form-select @error('penolong_kelahiran') is-invalid @enderror">
+                                            <option value="">Pilih Penolong</option>
+                                            <option value="Dokter" {{ old('penolong_kelahiran') == 'Dokter' ? 'selected' : '' }}>Dokter</option>
+                                            <option value="Bidan" {{ old('penolong_kelahiran') == 'Bidan' ? 'selected' : '' }}>Bidan</option>
+                                            <option value="Dukun" {{ old('penolong_kelahiran') == 'Dukun' ? 'selected' : '' }}>Dukun</option>
+                                            <option value="Lainnya" {{ old('penolong_kelahiran') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                        </select>
+                                        @error('penolong_kelahiran')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Opsional</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tempat Kelahiran</label>
+                                        <select name="tempat_kelahiran" class="form-select @error('tempat_kelahiran') is-invalid @enderror">
+                                            <option value="">Pilih Tempat</option>
+                                            <option value="Rumah Sakit" {{ old('tempat_kelahiran') == 'Rumah Sakit' ? 'selected' : '' }}>Rumah Sakit</option>
+                                            <option value="Klinik" {{ old('tempat_kelahiran') == 'Klinik' ? 'selected' : '' }}>Klinik</option>
+                                            <option value="Puskesmas" {{ old('tempat_kelahiran') == 'Puskesmas' ? 'selected' : '' }}>Puskesmas</option>
+                                            <option value="Rumah" {{ old('tempat_kelahiran') == 'Rumah' ? 'selected' : '' }}>Rumah</option>
+                                            <option value="Lainnya" {{ old('tempat_kelahiran') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                        </select>
+                                        @error('tempat_kelahiran')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Opsional</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Berat Bayi (kg)</label>
+                                        <input type="number" name="berat_bayi" class="form-control @error('berat_bayi') is-invalid @enderror" 
+                                               value="{{ old('berat_bayi') }}" step="0.1" min="0" max="10">
+                                        @error('berat_bayi')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Opsional</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Panjang Bayi (cm)</label>
+                                        <input type="number" name="panjang_bayi" class="form-control @error('panjang_bayi') is-invalid @enderror" 
+                                               value="{{ old('panjang_bayi') }}" step="0.1" min="0" max="100">
+                                        @error('panjang_bayi')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Opsional</small>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Informasi untuk step terakhir -->
                             <div class="alert alert-info mt-3">
                                 <i class="ti ti-info-circle me-2"></i>
-                                <strong>Informasi:</strong> Pastikan semua data yang Anda edit sudah benar sebelum menyimpan perubahan.
+                                <strong>Informasi:</strong> Pastikan semua data yang Anda masukkan sudah benar sebelum menyimpan.
                             </div>
                         </div>
 
@@ -448,7 +543,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 1;
-    const totalSteps = 4;
+    const totalSteps = 5;
     
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -456,6 +551,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formPenduduk');
     const statusHidup = document.getElementById('statusHidup');
     const tanggalMeninggalField = document.getElementById('tanggalMeninggalField');
+    const buatKelahiranBaru = document.getElementById('buatKelahiranBaru');
+    const kelahiranFields = document.getElementById('kelahiranFields');
     
     // Toggle tanggal meninggal field
     statusHidup.addEventListener('change', function() {
@@ -463,6 +560,15 @@ document.addEventListener('DOMContentLoaded', function() {
             tanggalMeninggalField.style.display = 'block';
         } else {
             tanggalMeninggalField.style.display = 'none';
+        }
+    });
+
+    // Toggle kelahiran fields
+    buatKelahiranBaru.addEventListener('change', function() {
+        if (this.checked) {
+            kelahiranFields.style.display = 'block';
+        } else {
+            kelahiranFields.style.display = 'none';
         }
     });
     
