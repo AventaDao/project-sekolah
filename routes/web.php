@@ -50,14 +50,20 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
-    // Social Auth Routes
+    // Social Auth Redirect Routes
     Route::get('/auth/{provider}', [AuthController::class, 'redirect'])->name('sso.redirect');
-    Route::get('/auth/{provider}/callback', [AuthController::class, 'callback'])->name('sso.callback');
 
     // Password Reset Routes
     Route::get('/forgot-password', [AuthController::class, 'showRequestForm'])->name('forgot_password.email_form');
     Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot_password.send_link');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Social Auth Callback Routes (Not restricted by guest middleware)
+|--------------------------------------------------------------------------
+*/
+Route::get('/auth/{provider}/callback', [AuthController::class, 'callback'])->name('sso.callback');
 
 /*
 |--------------------------------------------------------------------------

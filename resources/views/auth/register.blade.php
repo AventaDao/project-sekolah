@@ -13,6 +13,34 @@
             -moz-appearance: textfield;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only allow numbers for RT, RW, Kode Pos, and No. Telepon
+            const numericInputs = document.querySelectorAll('input[name="rt"], input[name="rw"], input[name="kode_pos"], input[name="no_telepon"]');
+            
+            numericInputs.forEach(input => {
+                // Prevent non-numeric characters
+                input.addEventListener('keypress', function(e) {
+                    if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+                
+                // Remove non-numeric characters on paste
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                    const numericOnly = pasteData.replace(/[^0-9]/g, '');
+                    this.value = numericOnly.substring(0, this.maxLength);
+                });
+                
+                // Clean up any existing non-numeric content
+                input.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            });
+        });
+    </script>
     <div class="card my-5">
         <form action="{{ route('register') }}" method="POST">
             @csrf
@@ -33,6 +61,17 @@
                     </div>
                 @endif
 
+                <!-- Info Social Auth -->
+                @if (session('social_email'))
+                <div class="alert alert-info mb-4">
+                    <i class="ti ti-info-circle me-2"></i>
+                    <strong>Login via {{ ucfirst(session('provider', 'Social')) }}:</strong>
+                    <br>
+                    Email <strong>{{ session('social_email') }}</strong> sudah terdaftar via {{ ucfirst(session('provider', 'Social')) }}.
+                    <br>Silakan lengkapi data di bawah untuk menyelesaikan pendaftaran, khususnya NIK dan field yang wajib diisi.
+                </div>
+                @endif
+
                 <!-- Data Identitas -->
                 <h5 class="mb-3 text-primary">Data Identitas</h5>
                 <div class="row">
@@ -47,7 +86,7 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                         <input type="text" name="nama_lengkap" class="form-control @error('nama_lengkap') is-invalid @enderror" 
-                               value="{{ old('nama_lengkap') }}" required>
+                               value="{{ session('social_name') ?? old('nama_lengkap') }}" required>
                         @error('nama_lengkap')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -95,7 +134,7 @@
                     <div class="col-md-2 mb-3">
                         <label class="form-label">RT <span class="text-danger">*</span></label>
                         <input type="text" name="rt" class="form-control @error('rt') is-invalid @enderror" 
-                               value="{{ old('rt') }}" maxlength="3" required>
+                               value="{{ old('rt') }}" maxlength="3" inputmode="numeric" pattern="[0-9]*" required>
                         @error('rt')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -103,7 +142,7 @@
                     <div class="col-md-2 mb-3">
                         <label class="form-label">RW <span class="text-danger">*</span></label>
                         <input type="text" name="rw" class="form-control @error('rw') is-invalid @enderror" 
-                               value="{{ old('rw') }}" maxlength="3" required>
+                               value="{{ old('rw') }}" maxlength="3" inputmode="numeric" pattern="[0-9]*" required>
                         @error('rw')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -143,7 +182,7 @@
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
                         <input type="text" name="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" 
-                               value="{{ old('kode_pos') }}" maxlength="5" required>
+                               value="{{ old('kode_pos') }}" maxlength="5" inputmode="numeric" pattern="[0-9]*" required>
                         @error('kode_pos')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -210,7 +249,7 @@
                     <div class="col-md-4 mb-3">
                         <label class="form-label">No. Telepon</label>
                         <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" 
-                               value="{{ old('no_telepon') }}" maxlength="15">
+                               value="{{ old('no_telepon') }}" maxlength="15" inputmode="numeric" pattern="[0-9]*">
                         @error('no_telepon')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -244,12 +283,15 @@
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Email <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
-                               value="{{ old('email') }}" placeholder="email@contoh.com" required>
+                               value="{{ session('social_email') ?? old('email') }}" 
+                               placeholder="email@contoh.com" 
+                               {{ session('social_email') ? 'readonly' : 'required' }}>
                         @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">Email digunakan untuk login dan verifikasi akun</small>
                     </div>
+                    @if (!session('social_email'))
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Password <span class="text-danger">*</span></label>
                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" 
@@ -263,6 +305,19 @@
                         <input type="password" name="password_confirmation" class="form-control" 
                                required placeholder="Ulangi password">
                     </div>
+                    @else
+                    <!-- Hidden fields untuk social auth -->
+                    <input type="hidden" name="provider" value="{{ session('provider') }}">
+                    <input type="hidden" name="provider_id" value="{{ session('provider_id') }}">
+                    <input type="hidden" name="avatar" value="{{ session('social_avatar') }}">
+                    <input type="hidden" name="is_social_auth" value="1">
+                    <div class="col-md-12 mb-3 p-3 bg-light rounded">
+                        <p class="text-muted mb-0">
+                            <i class="ti ti-check-circle text-success me-2"></i>
+                            Password tidak diperlukan karena Anda login via {{ ucfirst(session('provider')) }}.
+                        </p>
+                    </div>
+                    @endif
                 </div>
 
                 <p class="mt-4 text-sm text-muted">

@@ -63,7 +63,10 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
+        // Check if this is social auth registration
+        $isSocialAuth = $request->is_social_auth == '1';
+
+        $rules = [
             'nik' => 'required|numeric|digits:16|unique:users,nik|unique:penduduks,nik',
             'nama_lengkap' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:255',
@@ -86,8 +89,11 @@ class AuthController extends Controller
             'nama_ibu' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:15',
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ], [
+            // Password only required for non-social auth
+            'password' => $isSocialAuth ? 'nullable' : 'required|string|min:6|confirmed',
+        ];
+
+        $messages = [
             'nik.required' => 'NIK harus diisi',
             'nik.numeric' => 'NIK harus berupa angka (tidak boleh ada huruf atau karakter)',
             'nik.digits' => 'NIK harus tepat 16 digit',
@@ -99,14 +105,16 @@ class AuthController extends Controller
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
-        ]);
+        ];
+
+        $request->validate($rules, $messages);
 
         // Gunakan DB Transaction untuk memastikan data tersimpan di kedua tabel
         DB::beginTransaction();
         
         try {
-            // Simpan data ke tabel users
-            $user = User::create([
+            // Prepare user data
+            $userData = [
                 'nik' => $request->nik,
                 'nama_lengkap' => $request->nama_lengkap,
                 'tempat_lahir' => $request->tempat_lahir,
@@ -129,9 +137,20 @@ class AuthController extends Controller
                 'nama_ibu' => $request->nama_ibu,
                 'no_telepon' => $request->no_telepon,
                 'email' => $request->email,
-                'password' => bcrypt($request->password),
+                'password' => $isSocialAuth ? bcrypt(str()->random(32)) : bcrypt($request->password),
                 'role' => 'user',
-            ]);
+            ];
+
+            // Add social auth fields if applicable
+            if ($isSocialAuth) {
+                $userData['provider'] = $request->provider;
+                $userData['provider_id'] = $request->provider_id;
+                $userData['avatar'] = $request->avatar;
+                $userData['email_verified_at'] = now();
+            }
+
+            // Simpan data ke tabel users
+            $user = User::create($userData);
 
             // Simpan data ke tabel penduduks (otomatis)
             Penduduk::create([
@@ -166,6 +185,12 @@ class AuthController extends Controller
 
             // Log activity - login sebagai user baru (auth belum dilakukan, jadi manual set user)
             Activity::log('register', 'Pendaftaran akun baru', $user->id, 'User');
+
+            // Auto-login for social auth, otherwise redirect to login page
+            if ($isSocialAuth) {
+                Auth::login($user);
+                return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Selamat datang di Dashboard Desa.');
+            }
 
             return redirect()->route('login')->with('success', 'Registrasi berhasil! Data Anda telah tercatat sebagai penduduk desa. Silakan login menggunakan NIK dan password Anda.');
             
@@ -293,24 +318,32 @@ class AuthController extends Controller
             return redirect()->to($newUrl);
         }
         
-        $socialUser = Socialite::driver($provider)->user();
-        $email = $socialUser->getEmail();
+        try {
+            $socialUser = Socialite::driver($provider)->user();
+            $email = $socialUser->getEmail();
 
-        $user = User::updateOrCreate(
-            ['email' => $email],
-            [
-                'nama_lengkap' => $socialUser->name ?? $socialUser->getNickname(),
-                'email' => $email,
-                'provider' => $provider,
-                'provider_id' => $socialUser->getId(),
-                'avatar' => $socialUser->getAvatar(),
-                'is_verified' => true
-            ]
-        );
+            // Check if user dengan email ini sudah ada
+            $user = User::where('email', $email)->first();
 
-        Auth::login($user);
-
-        return redirect('/dashboard');
+            if ($user) {
+                // User sudah ada, tinggal login
+                Auth::login($user);
+                return redirect('/dashboard');
+            } else {
+                // User belum ada, redirect ke register dengan email pre-filled
+                // dan data dari social provider
+                return redirect()->route('register')->with([
+                    'social_email' => $email,
+                    'social_name' => $socialUser->name ?? $socialUser->getNickname(),
+                    'social_avatar' => $socialUser->getAvatar(),
+                    'provider' => $provider,
+                    'provider_id' => $socialUser->getId(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Social auth error: ' . $e->getMessage());
+            return redirect('/login')->withErrors(['error' => 'Login gagal: ' . $e->getMessage()]);
+        }
     }
 
     public function showRequestForm()
