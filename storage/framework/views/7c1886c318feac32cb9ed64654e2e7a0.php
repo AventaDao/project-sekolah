@@ -68,7 +68,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">NIK <span class="text-danger">*</span></label>
-                                    <input type="text" name="nik" class="form-control <?php $__errorArgs = ['nik'];
+                                    <input type="number" name="nik" class="form-control <?php $__errorArgs = ['nik'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }

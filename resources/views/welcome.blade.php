@@ -338,7 +338,7 @@
     <!-- [ CTA ] End -->
 
     <!-- [ Testimoni ] start -->
-    <section class="testimonial-section">
+    <!-- <section class="testimonial-section">
         <div class="container title">
             <div class="row justify-content-center text-center wow fadeInUp" data-wow-delay="0.2s">
                 <div class="col-md-10 col-xl-6">
@@ -415,7 +415,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- [ Testimoni ] End -->
 
     <style>

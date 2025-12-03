@@ -1,194 +1,228 @@
-<?php $__env->startSection('title', 'Print Preview - ' . $pengajuanSurat->nomor_pengajuan); ?>
-
-<?php $__env->startSection('content'); ?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo e($pengajuanSurat->jenis_surat); ?> - <?php echo e($pengajuanSurat->nomor_pengajuan); ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/tabler-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
 <div class="pc-content">
-    <!-- Breadcrumb -->
-    <div class="page-header">
+    <!-- Action Buttons -->
+    <div class="page-header" id="actionBar">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="<?php echo e(route('pengajuan-surat.index')); ?>">Pengajuan Surat</a></li>
-                        <li class="breadcrumb-item"><a href="<?php echo e(route('pengajuan-surat.show', $pengajuanSurat->id)); ?>">Detail</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Print Preview</li>
-                    </ul>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="mb-0"><?php echo e($pengajuanSurat->jenis_surat); ?></h5>
+                            <small class="text-muted"><?php echo e($pengajuanSurat->nomor_pengajuan); ?></small>
+                        </div>
+                        <div>
+                            <button class="btn btn-danger btn-sm me-2" onclick="downloadPDF()">
+                                <i class="ti ti-download me-1"></i> Download PDF
+                            </button>
+                            <button class="btn btn-primary btn-sm me-2" onclick="window.print()">
+                                <i class="ti ti-printer me-1"></i> Cetak
+                            </button>
+                            <a href="<?php echo e(route('pengajuan-surat.show', $pengajuanSurat->id)); ?>" class="btn btn-secondary btn-sm">
+                                <i class="ti ti-arrow-left me-1"></i> Kembali
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Preview Cetak Pengajuan Surat</h5>
-                    <div>
-                        <button class="btn btn-primary btn-sm" onclick="window.print()">
-                            <i class="ti ti-printer me-1"></i> Cetak / Print
-                        </button>
-                        <a href="<?php echo e(route('pengajuan-surat.show', $pengajuanSurat->id)); ?>" class="btn btn-secondary btn-sm">
-                            <i class="ti ti-arrow-left me-1"></i> Kembali
-                        </a>
+    <!-- Letter Content -->
+    <div class="row mt-4">
+        <div class="col-lg-8 offset-lg-2">
+            <div id="letterContent" style="background: white; padding: 50px; min-height: 1100px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+                
+                <!-- Letter Header -->
+                <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px;">
+                    <div style="margin-bottom: 10px;">
+                        <h3 style="font-weight: 700; margin: 0; font-size: 18px;">PEMERINTAH DESA KEDUNGKENDO</h3>
+                        <p style="margin: 5px 0; font-size: 13px;">Kecamatan Candi Kabupaten Sidoarjo</p>
                     </div>
                 </div>
-                <div class="card-body">
-                    <!-- Print Content -->
-                    <div id="printContent" style="background: white; padding: 40px; min-height: 800px;">
-                        <!-- Header -->
-                        <div style="text-align: center; border-bottom: 3px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
-                            <h1 style="font-size: 24px; margin-bottom: 5px;">LAPORAN PENGAJUAN SURAT</h1>
-                            <p style="font-size: 14px; color: #666; margin: 0;">Sistem Informasi Desa Candi</p>
-                        </div>
 
-                        <!-- Nomor Pengajuan -->
-                        <div style="margin-bottom: 25px;">
-                            <div style="margin-bottom: 12px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Nomor Pengajuan</span>
-                                <span>: <strong><?php echo e($pengajuanSurat->nomor_pengajuan); ?></strong></span>
-                            </div>
-                            <div style="margin-bottom: 12px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Status</span>
-                                <span>:
-                                    <?php if($pengajuanSurat->status == 'Menunggu'): ?>
-                                        <span style="background-color: #f4bd0e; color: #333; padding: 3px 8px; border-radius: 3px; font-weight: bold;"><?php echo e($pengajuanSurat->status); ?></span>
-                                    <?php elseif($pengajuanSurat->status == 'Diproses'): ?>
-                                        <span style="background-color: #1ea8e0; color: white; padding: 3px 8px; border-radius: 3px; font-weight: bold;"><?php echo e($pengajuanSurat->status); ?></span>
-                                    <?php elseif($pengajuanSurat->status == 'Selesai'): ?>
-                                        <span style="background-color: #2ca87f; color: white; padding: 3px 8px; border-radius: 3px; font-weight: bold;"><?php echo e($pengajuanSurat->status); ?></span>
-                                    <?php else: ?>
-                                        <?php echo e($pengajuanSurat->status); ?>
+                <!-- Letter Title -->
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="font-weight: 700; margin: 0 0 10px 0; font-size: 18px; text-decoration: underline;"><?php echo e($pengajuanSurat->jenis_surat); ?></h2>
+                    <p style="margin: 0; font-size: 12px;">No. <?php echo e($pengajuanSurat->nomor_pengajuan); ?></p>
+                </div>
 
-                                    <?php endif; ?>
-                                </span>
-                            </div>
-                            <div style="margin-bottom: 12px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Tanggal Pengajuan</span>
-                                <span>: <?php echo e($pengajuanSurat->created_at->format('d F Y H:i')); ?> WIB</span>
-                            </div>
-                        </div>
+                <!-- Letter Body -->
+                <div style="margin-bottom: 30px; line-height: 1.8; font-size: 12px;">
+                    <p style="margin-bottom: 15px;">Dengan ini kami beritahukan bahwa:</p>
 
-                        <div style="border-top: 1px solid #ddd; margin: 20px 0;"></div>
+                    <!-- Data Pemohon -->
+                    <table style="width: 100%; margin-bottom: 20px; font-size: 12px; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 5px 0; width: 150px;">
+                                <strong>Nama</strong>
+                            </td>
+                            <td style="padding: 5px 0; padding-left: 20px;">
+                                : <?php echo e($user->nama_lengkap ?? '-'); ?>
 
-                        <!-- Data Pemohon -->
-                        <div style="margin-bottom: 25px;">
-                            <div style="background-color: #f0f0f0; padding: 10px 15px; font-weight: bold; border-left: 4px solid #4680ff; margin-bottom: 15px;">
-                                Data Pemohon
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">NIK</span>
-                                <span>: <?php echo e($user->nik ?? '-'); ?></span>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Nama Lengkap</span>
-                                <span>: <?php echo e($user->nama_lengkap ?? '-'); ?></span>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">No. Telepon</span>
-                                <span>: <?php echo e($user->no_telepon ?? '-'); ?></span>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Email</span>
-                                <span>: <?php echo e($user->email ?? '-'); ?></span>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Alamat</span>
-                                <span>: <?php echo e($user->alamat ?? '-'); ?> RT <?php echo e($user->rt ?? '-'); ?> RW <?php echo e($user->rw ?? '-'); ?></span>
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;">
+                                <strong>NIK</strong>
+                            </td>
+                            <td style="padding: 5px 0; padding-left: 20px;">
+                                : <?php echo e($user->nik ?? '-'); ?>
 
-                        <div style="border-top: 1px solid #ddd; margin: 20px 0;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;">
+                                <strong>Tempat, Tgl Lahir</strong>
+                            </td>
+                            <td style="padding: 5px 0; padding-left: 20px;">
+                                : <?php echo e($user->tempat_lahir ?? '-'); ?>, <?php echo e($user->tanggal_lahir ? \Carbon\Carbon::parse($user->tanggal_lahir)->format('d F Y') : '-'); ?>
 
-                        <!-- Informasi Surat -->
-                        <div style="margin-bottom: 25px;">
-                            <div style="background-color: #f0f0f0; padding: 10px 15px; font-weight: bold; border-left: 4px solid #4680ff; margin-bottom: 15px;">
-                                Informasi Surat
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Jenis Surat</span>
-                                <span>: <strong><?php echo e($pengajuanSurat->jenis_surat); ?></strong></span>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Keperluan</span>
-                                <span>: <?php echo e($pengajuanSurat->keperluan ?? '-'); ?></span>
-                            </div>
-                            <?php if($pengajuanSurat->keterangan_tambahan): ?>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Keterangan Tambahan</span>
-                                <span>: <?php echo e($pengajuanSurat->keterangan_tambahan); ?></span>
-                            </div>
-                            <?php endif; ?>
-                        </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;">
+                                <strong>Alamat</strong>
+                            </td>
+                            <td style="padding: 5px 0; padding-left: 20px;">
+                                : <?php echo e($user->alamat ?? '-'); ?> RT <?php echo e($user->rt ?? '-'); ?> RW <?php echo e($user->rw ?? '-'); ?>
 
-                        <!-- Dynamic Fields -->
-                        <?php if($pengajuanSurat->dynamic_fields && count(json_decode($pengajuanSurat->dynamic_fields, true)) > 0): ?>
-                        <div style="border-top: 1px solid #ddd; margin: 20px 0;"></div>
-                        <div style="margin-bottom: 25px;">
-                            <div style="background-color: #f0f0f0; padding: 10px 15px; font-weight: bold; border-left: 4px solid #4680ff; margin-bottom: 15px;">
-                                Detail Pengajuan
-                            </div>
-                            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
-                                <?php $__currentLoopData = json_decode($pengajuanSurat->dynamic_fields, true); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldName => $fieldValue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <div style="margin-bottom: 12px;">
-                                    <div style="font-weight: bold; color: #555; font-size: 13px;">
-                                        <?php echo e(ucfirst(str_replace('_', ' ', $fieldName))); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;">
+                                <strong>No. Telepon</strong>
+                            </td>
+                            <td style="padding: 5px 0; padding-left: 20px;">
+                                : <?php echo e($user->no_telepon ?? '-'); ?>
 
-                                    </div>
-                                    <div style="color: #333; margin-top: 3px; word-wrap: break-word;">
-                                        <?php if(is_array($fieldValue)): ?>
-                                            <?php echo e(implode(', ', $fieldValue)); ?>
+                            </td>
+                        </tr>
+                    </table>
 
-                                        <?php else: ?>
-                                            <?php echo e($fieldValue ?? '-'); ?>
+                    <p style="margin-bottom: 15px;">Dengan penuh tanggung jawab, kami nyatakan bahwa data tersebut di atas adalah benar adanya.</p>
 
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </div>
-                        </div>
-                        <?php endif; ?>
+                    <!-- Dynamic Fields Section -->
+                    <?php
+                        $jenisSurat = $pengajuanSurat->jenis_surat;
+                        $allSuratTypes = \App\Models\PengajuanSurat::getSuratTypes();
+                        $fields = $allSuratTypes[$jenisSurat]['fields'] ?? [];
+                        $textFields = [];
+                        foreach ($fields as $fieldName => $fieldConfig) {
+                            if ($fieldConfig['type'] !== 'file') {
+                                $textFields[$fieldName] = $fieldConfig;
+                            }
+                        }
+                    ?>
 
-                        <div style="border-top: 1px solid #ddd; margin: 20px 0;"></div>
+                    <?php
+                        $hasFilledFields = false;
+                        foreach ($textFields as $fieldName => $fieldConfig) {
+                            if ($pengajuanSurat->{$fieldName} !== null && $pengajuanSurat->{$fieldName} !== '') {
+                                $hasFilledFields = true;
+                                break;
+                            }
+                        }
+                    ?>
 
-                        <!-- Status Tracking -->
-                        <div style="margin-bottom: 25px;">
-                            <div style="background-color: #f0f0f0; padding: 10px 15px; font-weight: bold; border-left: 4px solid #4680ff; margin-bottom: 15px;">
-                                Catatan Proses
-                            </div>
-                            <div>
-                                <?php if($pengajuanSurat->catatan_admin): ?>
-                                    <?php echo e($pengajuanSurat->catatan_admin); ?>
+                    <?php if($hasFilledFields): ?>
+                        <p style="margin-bottom: 15px; font-weight: 500;">Keterangan Pengajuan:</p>
+                        <table style="width: 100%; margin-bottom: 20px; font-size: 12px; border-collapse: collapse;">
+                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldName => $fieldConfig): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
+                                    $fieldValue = $pengajuanSurat->{$fieldName};
+                                    $isTextarea = $fieldConfig['type'] === 'textarea';
+                                    $isSelect = $fieldConfig['type'] === 'select';
+                                    $isDate = $fieldConfig['type'] === 'date';
+                                    $isNumber = $fieldConfig['type'] === 'number';
+                                ?>
+                                
+                                <?php if($fieldValue !== null && $fieldValue !== ''): ?>
+                                    <tr>
+                                        <td style="padding: 5px 0; width: 150px; vertical-align: top;">
+                                            <strong><?php echo e($fieldConfig['label']); ?></strong>
+                                        </td>
+                                        <td style="padding: 5px 0; padding-left: 20px;">
+                                            :
+                                            <?php if($isTextarea): ?>
+                                                <span style="white-space: pre-wrap; word-wrap: break-word;"><?php echo e($fieldValue); ?></span>
+                                            <?php elseif($isDate): ?>
+                                                <?php echo e(\Carbon\Carbon::parse($fieldValue)->format('d F Y')); ?>
 
-                                <?php else: ?>
-                                    <em>Belum ada catatan dari admin</em>
+                                            <?php elseif($isNumber): ?>
+                                                <?php if(str_contains(strtolower($fieldConfig['label']), 'luas')): ?>
+                                                    <?php echo e(number_format($fieldValue, 2, ',', '.')); ?> m²
+                                                <?php elseif(str_contains(strtolower($fieldConfig['label']), 'harga|nominal|jumlah')): ?>
+                                                    Rp. <?php echo e(number_format($fieldValue, 0, ',', '.')); ?>
+
+                                                <?php else: ?>
+                                                    <?php echo e($fieldValue); ?>
+
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <?php echo e($fieldValue); ?>
+
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
                                 <?php endif; ?>
-                            </div>
-                        </div>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </table>
+                    <?php endif; ?>
 
-                        <div style="border-top: 1px solid #ddd; margin: 20px 0;"></div>
+                    <?php if($pengajuanSurat->keperluan): ?>
+                        <table style="width: 100%; margin-bottom: 20px; font-size: 12px; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 5px 0; width: 150px; vertical-align: top;">
+                                    <strong>Keperluan</strong>
+                                </td>
+                                <td style="padding: 5px 0; padding-left: 20px;">
+                                    : <?php echo e($pengajuanSurat->keperluan); ?>
 
-                        <!-- Tanggal Update -->
-                        <div style="margin-bottom: 25px;">
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Terakhir Diupdate</span>
-                                <span>: <?php echo e($pengajuanSurat->updated_at->format('d F Y H:i')); ?> WIB</span>
-                            </div>
-                            <?php if($pengajuanSurat->tanggal_selesai): ?>
-                            <div style="margin-bottom: 10px;">
-                                <span style="font-weight: bold; width: 200px; display: inline-block;">Tanggal Selesai</span>
-                                <span>: <?php echo e($pengajuanSurat->tanggal_selesai->format('d F Y H:i')); ?> WIB</span>
-                            </div>
+                                </td>
+                            </tr>
+                            <?php if($pengajuanSurat->keterangan_tambahan): ?>
+                            <tr>
+                                <td style="padding: 5px 0; width: 150px; vertical-align: top;">
+                                    <strong>Keterangan</strong>
+                                </td>
+                                <td style="padding: 5px 0; padding-left: 20px;">
+                                    : <?php echo e($pengajuanSurat->keterangan_tambahan); ?>
+
+                                </td>
+                            </tr>
                             <?php endif; ?>
-                        </div>
+                        </table>
+                    <?php endif; ?>
+                </div>
 
-                        <!-- Footer -->
-                        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #ddd; margin-top: 40px; font-size: 12px; color: #999;">
-                            <p style="margin: 5px 0;">Dokumen ini dicetak otomatis dari Sistem Informasi Desa Candi</p>
-                            <p style="margin: 5px 0;">Tanggal Cetak: <?php echo e(now()->format('d F Y H:i')); ?> WIB</p>
+                <!-- Signature Section -->
+                <div style="margin-top: 50px; margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="width: 45%; text-align: center;">
+                            <p style="margin: 0 0 50px 0; font-size: 12px;">Pemohon</p>
+                            <p style="margin: 0; font-size: 12px; font-weight: 500;"><?php echo e($user->nama_lengkap ?? '-'); ?></p>
+                        </div>
+                        <div style="width: 45%; text-align: center;">
+                            <p style="margin: 0 0 50px 0; font-size: 12px;">Kepala Desa Kedung Kendo</p>
+                            <p style="margin: 0; font-size: 12px; font-weight: 500;">(...........................)</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Footer -->
+                <div style="text-align: center; padding-top: 20px; border-top: 1px solid #ddd; margin-top: 30px; font-size: 11px; color: #999;">
+                    <p style="margin: 5px 0;">Dokumen ini dicetak dari Sistem Informasi Desa Kedung Kendo</p>
+                    <p style="margin: 5px 0;">Tanggal: <?php echo e(now()->format('d F Y')); ?> | Nomor: <?php echo e($pengajuanSurat->nomor_pengajuan); ?></p>
                 </div>
             </div>
         </div>
@@ -196,20 +230,72 @@
 </div>
 
 <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: #f5f5f5;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     @media print {
         body {
             margin: 0;
             padding: 0;
+            background-color: white;
         }
-        .page-header,
-        .card-header {
+
+        #actionBar {
             display: none;
         }
-        #printContent {
-            padding: 0 !important;
+
+        #letterContent {
+            box-shadow: none;
+            width: 100%;
+            margin: 0;
+            padding: 40px;
+            min-height: auto;
+            page-break-after: avoid;
+        }
+
+        .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .col-lg-8,
+        .offset-lg-2 {
+            width: 100% !important;
+            margin-left: 0 !important;
         }
     }
-</style>
-<?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\LARAVEL12\appdesa\resources\views/user/pengajuan-surat/pdf-preview.blade.php ENDPATH**/ ?>
+    @page {
+        size: A4;
+        margin: 0;
+    }
+</style>
+
+<script>
+    function downloadPDF() {
+        const element = document.getElementById('letterContent');
+        const opt = {
+            margin: 5,
+            filename: '<?php echo e($pengajuanSurat->nomor_pengajuan); ?>.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<?php /**PATH C:\LARAVEL12\appdesa\resources\views/user/pengajuan-surat/pdf-preview.blade.php ENDPATH**/ ?>

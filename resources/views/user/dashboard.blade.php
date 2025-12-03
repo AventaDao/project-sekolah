@@ -1,17 +1,64 @@
 <div class="row">
-    <!-- Statistik Desa -->
-    <div class="col-md-6 col-xl-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-s bg-light-primary">
-                            <i class="ti ti-users f-24"></i>
+    <!-- Header Welcome Card -->
+    <div class="col-12 mb-4">
+        <div class="card bg-primary text-white border-0 shadow-lg" style="background: linear-gradient(135deg, #4680ff 0%, #2c3e50 100%);">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="text-white mb-2">
+                            <i class="ti ti-dashboard me-2"></i>Selamat Datang, {{ Auth::user()->name }}!
+                        </h3>
+                        <p class="text-white-75 mb-0">
+                            <i class="ti ti-calendar me-1"></i>{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end d-none d-md-block">
+                        <div class="dashboard-icon">
+                            <i class="ti ti-chart-line" style="font-size: 80px; opacity: 0.3;"></i>
                         </div>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Total Penduduk Desa</h6>
-                        <h3 class="mb-0 mt-2">{{ number_format($stats['total_penduduk']) }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Verifikasi -->
+    @if (!$user->is_verified)
+    <div class="col-12 mb-3">
+        <div class="alert alert-warning d-flex align-items-center justify-content-between shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="ti ti-exclamation-triangle fs-4 me-3"></i>
+                <div>
+                    <strong>Akun Anda belum terverifikasi.</strong> Silakan verifikasi terlebih dahulu untuk mengakses semua fitur layanan desa.
+                </div>
+            </div>
+            <a href="{{ route('verify.form') }}" id="verify-button" class="btn btn-warning btn-sm fw-bold">Verifikasi Sekarang</a>
+        </div>
+    </div>
+    @endif
+
+    @if (session('success'))
+    <div class="col-12 mb-3">
+        <div class="alert alert-success shadow-sm" role="alert">
+            <i class="ti ti-circle-check me-2"></i>{{ session('success') }}
+        </div>
+    </div>
+    @endif
+
+    <!-- Statistik Cards User -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1">Pengajuan Saya</p>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['my_pengajuan_menunggu'] + $stats['my_pengajuan_diproses'] + $stats['my_pengajuan_selesai'] }}">0</h3>
+                        <small class="text-success">
+                            <i class="ti ti-trending-up"></i> Total Pengajuan
+                        </small>
+                    </div>
+                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="ti ti-file-text text-success" style="font-size: 32px;"></i>
                     </div>
                 </div>
             </div>
@@ -19,17 +66,18 @@
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card shadow-sm border-0">
+        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-s bg-light-success">
-                            <i class="ti ti-file-check f-24"></i>
-                        </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1">Pengaduan Saya</p>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['my_pengaduan_menunggu'] + $stats['my_pengaduan_selesai'] }}">0</h3>
+                        <small class="text-success">
+                            <i class="ti ti-trending-up"></i> Total Pengaduan
+                        </small>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Surat Disetujui</h6>
-                        <h3 class="mb-0 mt-2">{{ number_format($stats['surat_disetujui']) }}</h3>
+                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="ti ti-message-report text-success" style="font-size: 32px;"></i>
                     </div>
                 </div>
             </div>
@@ -37,113 +85,171 @@
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card shadow-sm border-0">
+        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-s bg-light-info">
-                            <i class="ti ti-circle-check f-24"></i>
-                        </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1">Total Surat Disetujui (Global)</p>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['surat_disetujui'] }}">0</h3>
+                        <small class="text-success">
+                            <i class="ti ti-circle-check"></i> Status Selesai
+                        </small>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Pengaduan Selesai</h6>
-                        <h3 class="mb-0 mt-2">{{ number_format($stats['pengaduan_selesai']) }}</h3>
+                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="ti ti-file-check text-success" style="font-size: 32px;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistik Personal User -->
+    <!-- Pengajuan Surat Status Cards -->
+    <div class="col-12 mt-3">
+        <h5 class="mb-3"><i class="ti ti-file-text me-2"></i>Status Pengajuan Surat Saya</h5>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card hover-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-md bg-warning rounded me-3">
+                        <i class="ti ti-clock text-white" style="font-size: 24px;"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Menunggu</p>
+                        <h4 class="mb-0 counter" data-count="{{ $stats['my_pengajuan_menunggu'] }}">0</h4>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card hover-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-md bg-info rounded me-3">
+                        <i class="ti ti-settings text-white" style="font-size: 24px;"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Sedang Diproses</p>
+                        <h4 class="mb-0 counter" data-count="{{ $stats['my_pengajuan_diproses'] }}">0</h4>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card hover-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-md bg-success rounded me-3">
+                        <i class="ti ti-circle-check text-white" style="font-size: 24px;"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Selesai</p>
+                        <h4 class="mb-0 counter" data-count="{{ $stats['my_pengajuan_selesai'] }}">0</h4>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pengaduan Status Cards -->
     <div class="col-12 mt-4">
-        <h5 class="mb-3"><i class="ti ti-user me-2"></i>Statistik Aktivitas Saya</h5>
+        <h5 class="mb-3"><i class="ti ti-message-report me-2"></i>Status Pengaduan Saya</h5>
     </div>
 
-    <!-- Pengajuan Surat Saya -->
-    <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white">
-                <h6 class="mb-0"><i class="ti ti-file-text me-2"></i>Pengajuan Surat Saya</h6>
-            </div>
+    <div class="col-md-6 col-xl-6">
+        <div class="card hover-card border-0 shadow-sm">
             <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-4">
-                        <div class="p-3">
-                            <h4 class="mb-1 text-warning">{{ $stats['my_pengajuan_menunggu'] }}</h4>
-                            <p class="mb-0 text-muted">Menunggu</p>
-                        </div>
+                <div class="d-flex align-items-center">
+                    <div class="avatar-md bg-warning rounded me-3">
+                        <i class="ti ti-alert-circle text-white" style="font-size: 24px;"></i>
                     </div>
-                    <div class="col-4 border-start border-end">
-                        <div class="p-3">
-                            <h4 class="mb-1 text-info">{{ $stats['my_pengajuan_diproses'] }}</h4>
-                            <p class="mb-0 text-muted">Diproses</p>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="p-3">
-                            <h4 class="mb-1 text-success">{{ $stats['my_pengajuan_selesai'] }}</h4>
-                            <p class="mb-0 text-muted">Selesai</p>
-                        </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Menunggu Respon</p>
+                        <h4 class="mb-0 counter" data-count="{{ $stats['my_pengaduan_menunggu'] }}">0</h4>
                     </div>
                 </div>
-                <div class="mt-3 pt-3 border-top">
-                    <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-outline-primary btn-sm w-100">
-                        <i class="ti ti-eye me-1"></i>Lihat Semua Pengajuan
-                    </a>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pengaduan Saya -->
-    <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-info text-white">
-                <h6 class="mb-0"><i class="ti ti-message-report me-2"></i>Pengaduan Saya</h6>
-            </div>
+    <div class="col-md-6 col-xl-6">
+        <div class="card hover-card border-0 shadow-sm">
             <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <div class="p-3">
-                            <h4 class="mb-1 text-warning">{{ $stats['my_pengaduan_menunggu'] }}</h4>
-                            <p class="mb-0 text-muted">Menunggu</p>
-                        </div>
+                <div class="d-flex align-items-center">
+                    <div class="avatar-md bg-success rounded me-3">
+                        <i class="ti ti-check text-white" style="font-size: 24px;"></i>
                     </div>
-                    <div class="col-6 border-start">
-                        <div class="p-3">
-                            <h4 class="mb-1 text-success">{{ $stats['my_pengaduan_selesai'] }}</h4>
-                            <p class="mb-0 text-muted">Selesai</p>
-                        </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Terselesaikan</p>
+                        <h4 class="mb-0 counter" data-count="{{ $stats['my_pengaduan_selesai'] }}">0</h4>
                     </div>
                 </div>
-                <div class="mt-3 pt-3 border-top">
-                    <a href="{{ route('pengaduan.index') }}" class="btn btn-outline-info btn-sm w-100">
-                        <i class="ti ti-eye me-1"></i>Lihat Semua Pengaduan
-                    </a>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Grafik Demografi Penduduk -->
-    <div class="col-lg-6 mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="ti ti-chart-pie me-2"></i>Demografi Berdasarkan Jenis Kelamin</h6>
+    <!-- Quick Actions -->
+    <div class="col-12 mt-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="ti ti-bolt me-2"></i>Menu Cepat</h5>
             </div>
             <div class="card-body">
-                <canvas id="genderChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-6 mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="ti ti-chart-donut me-2"></i>Demografi Berdasarkan Agama</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="agamaChart" height="200"></canvas>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="{{ route('pengajuan-surat.create') }}" class="quick-action-card">
+                            <div class="text-center p-3">
+                                <div class="avatar-lg bg-primary rounded-circle mx-auto mb-3">
+                                    <i class="ti ti-file-plus text-white" style="font-size: 32px;"></i>
+                                </div>
+                                <h6 class="mb-0">Ajukan Surat</h6>
+                                <small class="text-muted">Buat pengajuan baru</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ route('pengajuan-surat.index') }}" class="quick-action-card">
+                            <div class="text-center p-3">
+                                <div class="avatar-lg bg-success rounded-circle mx-auto mb-3">
+                                    <i class="ti ti-file-text text-white" style="font-size: 32px;"></i>
+                                </div>
+                                <h6 class="mb-0">Riwayat Pengajuan</h6>
+                                <small class="text-muted">Lihat semua pengajuan</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ route('pengaduan.index') }}" class="quick-action-card">
+                            <div class="text-center p-3">
+                                <div class="avatar-lg bg-info rounded-circle mx-auto mb-3">
+                                    <i class="ti ti-message-report text-white" style="font-size: 32px;"></i>
+                                </div>
+                                <h6 class="mb-0">Pengaduan Saya</h6>
+                                <small class="text-muted">Kelola pengaduan</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -151,10 +257,10 @@
     <!-- Pengajuan Surat Terbaru -->
     @if($recent_pengajuan->count() > 0)
     <div class="col-12 mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <h6 class="mb-0"><i class="ti ti-file-text me-2"></i>Pengajuan Surat Terbaru</h6>
-                <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="ti ti-file-text me-2"></i>Pengajuan Surat Terbaru</h5>
+                <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -197,10 +303,10 @@
     <!-- Pengaduan Terbaru -->
     @if($recent_pengaduan->count() > 0)
     <div class="col-12 mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <h6 class="mb-0"><i class="ti ti-message-report me-2"></i>Pengaduan Terbaru</h6>
-                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-info">Lihat Semua</a>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="ti ti-message-report me-2"></i>Pengaduan Terbaru</h5>
+                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -208,7 +314,6 @@
                         <thead class="table-light">
                             <tr>
                                 <th>Nomor Pengaduan</th>
-                                <th>Kategori</th>
                                 <th>Judul</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
@@ -219,13 +324,7 @@
                             @foreach($recent_pengaduan as $pengaduan)
                             <tr>
                                 <td><strong>{{ $pengaduan->nomor_pengaduan }}</strong></td>
-                                <td>
-                                    <span class="badge bg-light text-dark">
-                                        <i class="ti {{ $pengaduan->kategori_icon }} me-1"></i>
-                                        {{ Str::limit($pengaduan->kategori, 15) }}
-                                    </span>
-                                </td>
-                                <td>{{ Str::limit($pengaduan->judul, 30) }}</td>
+                                <td>{{ Str::limit($pengaduan->judul, 40) }}</td>
                                 <td>{{ $pengaduan->created_at->format('d M Y') }}</td>
                                 <td>
                                     <span class="badge {{ $pengaduan->status_badge }}">
@@ -246,207 +345,93 @@
         </div>
     </div>
     @endif
-
-    <!-- Berita Desa Section -->
-    <div class="col-12 mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="ti ti-news me-2"></i>Berita Terbaru Desa</h5>
-                <span class="badge bg-light text-primary">{{ $beritas->count() }} Berita</span>
-            </div>
-            <div class="card-body p-0">
-                @if($beritas->count() > 0)
-                <div id="beritaCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        @foreach($beritas as $key => $berita)
-                        <button type="button" data-bs-target="#beritaCarousel" data-bs-slide-to="{{ $key }}" 
-                                class="{{ $key == 0 ? 'active' : '' }}" 
-                                aria-current="{{ $key == 0 ? 'true' : 'false' }}" 
-                                aria-label="Slide {{ $key + 1 }}"></button>
-                        @endforeach
-                    </div>
-                    
-                    <div class="carousel-inner">
-                        @foreach($beritas as $key => $berita)
-                        <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                            <div class="row g-0">
-                                @if($berita->gambar)
-                                <div class="col-md-5">
-                                    <img src="{{ asset('storage/' . $berita->gambar) }}" 
-                                         class="d-block w-100" 
-                                         alt="{{ $berita->judul }}"
-                                         style="height: 350px; object-fit: cover;">
-                                </div>
-                                <div class="col-md-7">
-                                @else
-                                <div class="col-md-12">
-                                @endif
-                                    <div class="card-body p-4">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <span class="badge bg-primary me-2">
-                                                <i class="ti ti-calendar me-1"></i>
-                                                {{ $berita->tanggal_publikasi->format('d M Y') }}
-                                            </span>
-                                            <span class="badge bg-info">
-                                                <i class="ti ti-user me-1"></i>
-                                                {{ $berita->user->name }}
-                                            </span>
-                                        </div>
-                                        
-                                        <h3 class="mb-3">{{ $berita->judul }}</h3>
-                                        <p class="text-muted" style="text-align: justify; line-height: 1.8;">
-                                            {{ Str::limit($berita->isi, 300) }}
-                                        </p>
-                                        
-                                        @if(strlen($berita->isi) > 300)
-                                        <button type="button" class="btn btn-outline-primary btn-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#beritaModal{{ $berita->id }}">
-                                            <i class="ti ti-book-2"></i> Baca Selengkapnya
-                                        </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal untuk berita lengkap -->
-                        <div class="modal fade" id="beritaModal{{ $berita->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">{{ $berita->judul }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        @if($berita->gambar)
-                                        <img src="{{ asset('storage/' . $berita->gambar) }}" 
-                                             class="img-fluid rounded mb-3" 
-                                             alt="{{ $berita->judul }}">
-                                        @endif
-                                        
-                                        <div class="d-flex align-items-center mb-3">
-                                            <span class="badge bg-primary me-2">
-                                                <i class="ti ti-calendar me-1"></i>
-                                                {{ $berita->tanggal_publikasi->format('d F Y') }}
-                                            </span>
-                                            <span class="badge bg-info">
-                                                <i class="ti ti-user me-1"></i>
-                                                {{ $berita->user->name }}
-                                            </span>
-                                        </div>
-                                        
-                                        <div style="text-align: justify; line-height: 1.8; white-space: pre-line;">
-                                            {{ $berita->isi }}
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    
-                    <button class="carousel-control-prev" type="button" data-bs-target="#beritaCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#beritaCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-                @else
-                <div class="text-center py-5">
-                    <i class="ti ti-news-off f-40 text-muted mb-3"></i>
-                    <p class="text-muted">Belum ada berita terbaru</p>
-                </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <!-- Welcome Section -->
-    <div class="col-12 mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center">
-                <h2 class="mb-3 text-primary">
-                    Selamat Datang, <span class="fw-bold">{{ Auth::user()->name }}</span>!
-                </h2>
-
-                @if (!$user->is_verified)
-                    <div class="alert alert-warning d-flex align-items-center justify-content-between shadow-sm"
-                        role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
-                            <div>
-                                <strong>Akun Anda belum terverifikasi.</strong> Silakan verifikasi terlebih dahulu untuk
-                                mengakses semua fitur layanan desa.
-                            </div>
-                        </div>
-
-                        <a href="{{ route('verify.form') }}" id="verify-button"
-                            class="btn btn-warning btn-sm fw-bold">Verifikasi Sekarang</a>
-                    </div>
-                @endif
-
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <p class="lead mb-4">
-                    Ini adalah <span class="fw-bold text-success">Dashboard Sistem Informasi Desa Candi</span>.  
-                    Gunakan menu di samping untuk mengelola pengajuan surat, pengaduan, dan memantau berbagai informasi desa.
-                </p>
-
-                <div class="row mt-4">
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-primary h-100">
-                            <div class="card-body">
-                                <i class="bi bi-file-text-fill fs-2 text-primary"></i>
-                                <h5 class="card-title mt-2">Pengajuan Surat</h5>
-                                <p class="card-text">Ajukan berbagai jenis surat administrasi desa secara online.</p>
-                                <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-sm btn-primary">
-                                    <i class="ti ti-arrow-right me-1"></i>Lihat
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-info h-100">
-                            <div class="card-body">
-                                <i class="bi bi-chat-left-dots-fill fs-2 text-info"></i>
-                                <h5 class="card-title mt-2">Pengaduan</h5>
-                                <p class="card-text">Sampaikan pengaduan atau aspirasi Anda kepada pemerintah desa.</p>
-                                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-info">
-                                    <i class="ti ti-arrow-right me-1"></i>Lihat
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-success h-100">
-                            <div class="card-body">
-                                <i class="bi bi-person-circle fs-2 text-success"></i>
-                                <h5 class="card-title mt-2">Profil Saya</h5>
-                                <p class="card-text">Kelola informasi akun dan data pribadi Anda.</p>
-                                <a href="/myprofile" class="btn btn-sm btn-success">
-                                    <i class="ti ti-arrow-right me-1"></i>Lihat
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <style>
+/* Card Animations */
+.stat-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+.hover-card {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+/* Avatar Styles */
+.avatar-lg {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.avatar-md {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.bg-light-primary {
+    background-color: #e7f1ff !important;
+}
+
+.bg-light-success {
+    background-color: #e6f7f3 !important;
+}
+
+.bg-light-danger {
+    background-color: #ffe6e6 !important;
+}
+
+.bg-light-warning {
+    background-color: #fff3cd !important;
+}
+
+.bg-light-info {
+    background-color: #e1f5ff !important;
+}
+
+/* Quick Action Cards */
+.quick-action-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border: 2px solid #f0f0f0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.quick-action-card:hover {
+    border-color: #4680ff;
+    background-color: #f9fbff;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(70, 128, 255, 0.2);
+}
+
+/* Counter Animation */
+.counter {
+    font-weight: 600;
+    color: #4680ff;
+}
+
+/* Carousel Styles */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     background-color: rgba(0, 0, 0, 0.5);
@@ -467,78 +452,24 @@
 }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Chart Jenis Kelamin
-        const genderCtx = document.getElementById('genderChart');
-        if (genderCtx) {
-            const genderData = @json($penduduk_by_gender);
-            new Chart(genderCtx, {
-                type: 'pie',
-                data: {
-                    labels: genderData.map(item => item.jenis_kelamin),
-                    datasets: [{
-                        data: genderData.map(item => item.total),
-                        backgroundColor: ['#4680ff', '#ff6b9d'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+        // Counter Animation
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const count = parseInt(counter.dataset.count);
+            let current = 0;
+            const increment = Math.ceil(count / 30);
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= count) {
+                    current = count;
+                    clearInterval(timer);
                 }
-            });
-        }
-
-        // Chart Agama
-        const agamaCtx = document.getElementById('agamaChart');
-        if (agamaCtx) {
-            const agamaData = @json($penduduk_by_agama);
-            new Chart(agamaCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: agamaData.map(item => item.agama),
-                    datasets: [{
-                        data: agamaData.map(item => item.total),
-                        backgroundColor: [
-                            '#4680ff',
-                            '#2ca87f',
-                            '#ff6b9d',
-                            '#f4bd0e',
-                            '#9c27b0',
-                            '#ff9800'
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
-
-        // Auto slide carousel
-        var myCarousel = document.querySelector('#beritaCarousel');
-        if (myCarousel) {
-            var carousel = new bootstrap.Carousel(myCarousel, {
-                interval: 5000,
-                wrap: true
-            });
-        }
+                counter.textContent = current.toLocaleString('id-ID');
+            }, 50);
+        });
 
         // Verify button handler
         const verifyButton = document.getElementById('verify-button');

@@ -133,7 +133,8 @@
                 <div class="card-body">
                     <form action="<?php echo e(route('admin.pengajuan-surat.update-status', $pengajuanSurat->id)); ?>" 
                           method="POST" 
-                          enctype="multipart/form-data">
+                          enctype="multipart/form-data"
+                          id="updateStatusForm">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('PATCH'); ?>
 
@@ -146,7 +147,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" required>
+unset($__errorArgs, $__bag); ?>" required id="statusSelect">
                                 <option value="Menunggu" <?php echo e($pengajuanSurat->status == 'Menunggu' ? 'selected' : ''); ?>>
                                     Menunggu
                                 </option>
@@ -170,6 +171,9 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                            <small class="form-text text-muted d-block mt-1" id="statusWarning" style="color: #dc3545;">
+                                <i class="ti ti-alert-circle"></i> Surat jadi harus diupload sebelum status "Selesai" dapat dipilih
+                            </small>
                         </div>
 
                         <div class="mb-3">
@@ -207,7 +211,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                   accept=".pdf">
+                                   accept=".pdf"
+                                   id="fileSuratJadi">
                             <?php $__errorArgs = ['file_surat_jadi'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -231,7 +236,7 @@ unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
                                 <i class="ti ti-device-floppy"></i> Update Status
                             </button>
                             <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="btn btn-secondary">
@@ -269,5 +274,52 @@ unset($__errorArgs, $__bag); ?>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('statusSelect');
+    const fileSuratJadi = document.getElementById('fileSuratJadi');
+    const statusWarning = document.getElementById('statusWarning');
+    const submitBtn = document.getElementById('submitBtn');
+    const updateStatusForm = document.getElementById('updateStatusForm');
+    
+    // Check if surat jadi exists
+    const suratJadiExists = <?php echo e($pengajuanSurat->file_surat_jadi ? 'true' : 'false'); ?>;
+    
+    // Function to check if status can be set to "Selesai"
+    function validateStatus() {
+        const selectedStatus = statusSelect.value;
+        const hasNewFile = fileSuratJadi.files.length > 0;
+        const hasExistingFile = suratJadiExists;
+        
+        if (selectedStatus === 'Selesai' && !hasNewFile && !hasExistingFile) {
+            statusWarning.style.display = 'block';
+            submitBtn.disabled = true;
+            return false;
+        } else {
+            statusWarning.style.display = 'none';
+            submitBtn.disabled = false;
+            return true;
+        }
+    }
+    
+    // Listen to status change
+    statusSelect.addEventListener('change', validateStatus);
+    
+    // Listen to file input change
+    fileSuratJadi.addEventListener('change', validateStatus);
+    
+    // Validate on form submit
+    updateStatusForm.addEventListener('submit', function(e) {
+        if (!validateStatus()) {
+            e.preventDefault();
+            alert('Surat jadi harus diupload sebelum status dapat diubah menjadi "Selesai"');
+        }
+    });
+    
+    // Initial check
+    validateStatus();
+});
+</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\LARAVEL12\appdesa\resources\views/admin/pengajuan-surat/show.blade.php ENDPATH**/ ?>

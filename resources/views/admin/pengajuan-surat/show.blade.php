@@ -131,13 +131,14 @@
                 <div class="card-body">
                     <form action="{{ route('admin.pengajuan-surat.update-status', $pengajuanSurat->id) }}" 
                           method="POST" 
-                          enctype="multipart/form-data">
+                          enctype="multipart/form-data"
+                          id="updateStatusForm">
                         @csrf
                         @method('PATCH')
 
                         <div class="mb-3">
                             <label class="form-label">Status <span class="text-danger">*</span></label>
-                            <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                            <select name="status" class="form-select @error('status') is-invalid @enderror" required id="statusSelect">
                                 <option value="Menunggu" {{ $pengajuanSurat->status == 'Menunggu' ? 'selected' : '' }}>
                                     Menunggu
                                 </option>
@@ -154,6 +155,9 @@
                             @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <small class="form-text text-muted d-block mt-1" id="statusWarning" style="color: #dc3545;">
+                                <i class="ti ti-alert-circle"></i> Surat jadi harus diupload sebelum status "Selesai" dapat dipilih
+                            </small>
                         </div>
 
                         <div class="mb-3">
@@ -170,7 +174,8 @@
                             <label class="form-label">Upload Surat Jadi (PDF)</label>
                             <input type="file" name="file_surat_jadi" 
                                    class="form-control @error('file_surat_jadi') is-invalid @enderror" 
-                                   accept=".pdf">
+                                   accept=".pdf"
+                                   id="fileSuratJadi">
                             @error('file_surat_jadi')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -187,7 +192,7 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
                                 <i class="ti ti-device-floppy"></i> Update Status
                             </button>
                             <a href="{{ route('admin.pengajuan-surat.index') }}" class="btn btn-secondary">
@@ -225,4 +230,51 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('statusSelect');
+    const fileSuratJadi = document.getElementById('fileSuratJadi');
+    const statusWarning = document.getElementById('statusWarning');
+    const submitBtn = document.getElementById('submitBtn');
+    const updateStatusForm = document.getElementById('updateStatusForm');
+    
+    // Check if surat jadi exists
+    const suratJadiExists = {{ $pengajuanSurat->file_surat_jadi ? 'true' : 'false' }};
+    
+    // Function to check if status can be set to "Selesai"
+    function validateStatus() {
+        const selectedStatus = statusSelect.value;
+        const hasNewFile = fileSuratJadi.files.length > 0;
+        const hasExistingFile = suratJadiExists;
+        
+        if (selectedStatus === 'Selesai' && !hasNewFile && !hasExistingFile) {
+            statusWarning.style.display = 'block';
+            submitBtn.disabled = true;
+            return false;
+        } else {
+            statusWarning.style.display = 'none';
+            submitBtn.disabled = false;
+            return true;
+        }
+    }
+    
+    // Listen to status change
+    statusSelect.addEventListener('change', validateStatus);
+    
+    // Listen to file input change
+    fileSuratJadi.addEventListener('change', validateStatus);
+    
+    // Validate on form submit
+    updateStatusForm.addEventListener('submit', function(e) {
+        if (!validateStatus()) {
+            e.preventDefault();
+            alert('Surat jadi harus diupload sebelum status dapat diubah menjadi "Selesai"');
+        }
+    });
+    
+    // Initial check
+    validateStatus();
+});
+</script>
 @endsection

@@ -180,6 +180,15 @@ class PengajuanSuratController extends Controller
             'file_surat_jadi' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
+        // Validasi: Status Selesai membutuhkan file surat jadi
+        if ($validated['status'] === 'Selesai') {
+            if (!$request->hasFile('file_surat_jadi') && !$pengajuanSurat->file_surat_jadi) {
+                return redirect()->back()
+                    ->withErrors(['file_surat_jadi' => 'Surat jadi harus diupload sebelum status dapat diubah menjadi "Selesai"'])
+                    ->withInput();
+            }
+        }
+
         $data = [
             'status' => $validated['status'],
             'catatan_admin' => $validated['catatan_admin'],

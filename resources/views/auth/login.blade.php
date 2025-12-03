@@ -13,6 +13,27 @@
             -moz-appearance: textfield;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // NIK validation - max 16 digits
+            const nikInput = document.querySelector('input[name="nik"]');
+            if (nikInput) {
+                nikInput.addEventListener('input', function(e) {
+                    // Limit to 16 digits by converting to string and trimming
+                    if (this.value && this.value.length > 16) {
+                        this.value = this.value.substring(0, 16);
+                    }
+                });
+                
+                nikInput.addEventListener('keypress', function(e) {
+                    // Prevent input if already 16 digits
+                    if (this.value && this.value.length >= 16 && e.key !== 'Backspace') {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+    </script>
     <div class="card my-5">
         <form method="POST" action="{{ route('login.post') }}">
             @csrf
