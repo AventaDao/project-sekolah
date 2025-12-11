@@ -11,6 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Ensure sptjm_acta exists first
+        if (!Schema::hasColumn('pengajuan_surats', 'sptjm_acta')) {
+            Schema::table('pengajuan_surats', function (Blueprint $table) {
+                $table->text('sptjm_acta')->nullable();
+            });
+        }
+
         // Add the missing acta columns
         if (!Schema::hasColumn('pengajuan_surats', 'fc_akta_kelahiran_ibu_acta')) {
             Schema::table('pengajuan_surats', function (Blueprint $table) {
