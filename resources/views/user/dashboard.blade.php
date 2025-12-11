@@ -23,7 +23,7 @@
     </div>
 
     <!-- Alert Verifikasi -->
-    @if (!$user->is_verified)
+    @if (isset($user) && is_object($user) && !$user->is_verified)
     <div class="col-12 mb-3">
         <div class="alert alert-warning d-flex align-items-center justify-content-between shadow-sm" role="alert">
             <div class="d-flex align-items-center">
@@ -208,6 +208,75 @@
         </div>
     </div>
 
+    <!-- Berita Desa Section with Carousel -->
+    <div class="col-12 mt-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="ti ti-news me-2"></i>Berita Desa Terbaru</h5>
+            </div>
+            <div class="card-body p-0">
+                @if(isset($beritas) && count($beritas) > 0)
+                    <div id="beritaCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @foreach($beritas as $index => $berita)
+                            <div class="carousel-item @if($index === 0) active @endif">
+                                <div class="berita-item">
+                                    <div class="row align-items-center g-0">
+                                        @if(!empty($berita->gambar))
+                                        <div class="col-md-6">
+                                            <img src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}" 
+                                                 class="img-fluid w-100" style="height: 350px; object-fit: cover; display: block;">
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-between" style="height: 350px;">
+                                        @else
+                                        <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="height: 350px;">
+                                            <i class="ti ti-photo" style="font-size: 96px; color: #ccc;"></i>
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-between" style="height: 350px;">
+                                        @endif
+                                            <div>
+                                                <h4 class="mb-3">
+                                                    <a href="{{ route('berita.show', $berita->id) }}" class="text-decoration-none text-dark">
+                                                        {{ $berita->judul }}
+                                                    </a>
+                                                </h4>
+                                                <p class="text-muted mb-3" style="font-size: 14px; line-height: 1.6;">
+                                                    {{ Str::limit($berita->isi, 150) }}
+                                                </p>
+                                                <small class="text-muted d-block">
+                                                    <i class="ti ti-calendar me-1"></i> {{ optional($berita->tanggal_publikasi)->format('d M Y') ?? optional($berita->created_at)->format('d M Y') }}
+                                                    @if($berita->user)
+                                                    <span class="ms-2">
+                                                        <i class="ti ti-user me-1"></i> {{ $berita->user->name }}
+                                                    </span>
+                                                    @endif
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Carousel Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#beritaCarousel" data-bs-slide="prev">
+                            <i class="ti ti-chevron-left" style="font-size: 32px; color: #4680ff;"></i>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#beritaCarousel" data-bs-slide="next">
+                            <i class="ti ti-chevron-right" style="font-size: 32px; color: #4680ff;"></i>
+                        </button>
+                    </div>
+                @else
+                <div class="p-5 text-center text-muted">
+                    <i class="ti ti-inbox" style="font-size: 64px; opacity: 0.3;"></i>
+                    <p class="mt-3">Belum ada berita desa</p>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="col-12 mt-4">
         <div class="card border-0 shadow-sm">
@@ -368,6 +437,15 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
 }
 
+/* Berita Item Styles */
+.berita-item {
+    transition: all 0.2s ease;
+}
+
+.berita-item:hover {
+    background-color: #f9fbff;
+}
+
 /* Avatar Styles */
 .avatar-lg {
     width: 60px;
@@ -432,19 +510,55 @@
 }
 
 /* Carousel Styles */
+#beritaCarousel {
+    position: relative;
+}
+
+#beritaCarousel .carousel-control-prev,
+#beritaCarousel .carousel-control-next {
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+#beritaCarousel .carousel-control-prev:hover,
+#beritaCarousel .carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(70, 128, 255, 0.1);
+}
+
+#beritaCarousel .carousel-control-prev {
+    left: 15px;
+}
+
+#beritaCarousel .carousel-control-next {
+    right: 15px;
+}
+
+#beritaCarousel .carousel-indicators button {
+    background-color: #ccc !important;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+}
+
+#beritaCarousel .carousel-indicators button.active {
+    background-color: #4680ff !important;
+    opacity: 1;
+}
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    padding: 20px;
-}
-
-.carousel-indicators button {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.carousel-indicators button.active {
-    background-color: #4680ff;
+    background-image: none;
+    display: none;
 }
 
 .carousel-item {

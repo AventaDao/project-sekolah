@@ -10,12 +10,23 @@ use Illuminate\Support\Facades\Storage;
 class BeritaDesaController extends Controller
 {
     /**
-     * Display a listing of berita for admin
+     * Display a listing of berita (public and admin)
      */
     public function index()
     {
+        // Check if admin or public user based on route
+        if (request()->is('admin/*') || Auth::check() && Auth::user()->role === 'admin') {
+            // Admin view with all beritas (draft + publish)
+            $beritas = BeritaDesa::with('user')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+            return view('admin.berita.index', compact('beritas'));
+        }
+        
+        // Public view with only published beritas
         $beritas = BeritaDesa::with('user')
-            ->orderBy('created_at', 'desc')
+            ->where('status', 'publish')
+            ->orderBy('tanggal_publikasi', 'desc')
             ->paginate(10);
         
         return view('admin.berita.index', compact('beritas'));
@@ -69,11 +80,27 @@ class BeritaDesaController extends Controller
     }
 
     /**
-     * Display the specified berita
+     * Display the specified berita (public and admin)
      */
     public function show(BeritaDesa $beritum)
     {
-        return view('admin.berita.show', compact('beritum'));
+        // Get related beritas (different id, same status)
+        $related_beritas = BeritaDesa::where('status', 'publish')
+            ->where('id', '!=', $beritum->id)
+            ->orderBy('tanggal_publikasi', 'desc')
+            ->get();
+        
+        // Check if admin route
+        if (request()->is('admin/*') || Auth::check() && Auth::user()->role === 'admin') {
+            return view('admin.berita.show', compact('beritum'));
+        }
+        
+        // Public route - only show published beritas
+        if ($beritum->status !== 'publish') {
+            abort(404);
+        }
+        
+        return view('admin.berita.show', compact('beritum', 'related_beritas'));
     }
 
     /**

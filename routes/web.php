@@ -23,6 +23,12 @@ Route::get('/contact-us', function () {
     return view('contact');
 })->name('contact');
 
+// Public Berita Routes
+Route::prefix('berita')->name('berita.')->group(function () {
+    Route::get('/', [BeritaDesaController::class, 'index'])->name('index');
+    Route::get('/{berita}', [BeritaDesaController::class, 'show'])->name('show');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Email Verification Routes
