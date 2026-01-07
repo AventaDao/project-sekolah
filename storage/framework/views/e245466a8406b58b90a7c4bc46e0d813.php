@@ -3,7 +3,7 @@
     <!-- [Head] start -->
 
     <head>
-        <title>@yield('title')</title>
+        <title><?php echo $__env->yieldContent('title'); ?></title>
         <!-- [Meta] -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -16,22 +16,22 @@
 
         <!-- [Favicon] icon -->
 
-        <link rel="icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
+        <link rel="icon" href="<?php echo e(asset('assets/images/favicon.svg')); ?>" type="image/x-icon">
         <!-- [Google Font] Family -->
         <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
             id="main-font-link">
         <!-- [Tabler Icons] https://tablericons.com -->
-        <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+        <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/tabler-icons.min.css')); ?>">
         <!-- [Feather Icons] https://feathericons.com -->
-        <link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}">
+        <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/feather.css')); ?>">
         <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-        <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css') }}">
+        <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/fontawesome.css')); ?>">
         <!-- [Material Icons] https://fonts.google.com/icons -->
-        <link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}">
+        <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/material.css')); ?>">
         <!-- [Template CSS Files] -->
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
-        <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
+        <link rel="stylesheet" href="<?php echo e(asset('assets/css/style.css')); ?>" id="main-style-link">
+        <link rel="stylesheet" href="<?php echo e(asset('assets/css/style-preset.css')); ?>">
 
     </head>
     <!-- [Head] end -->
@@ -51,28 +51,28 @@
                 <div class="m-header justify-content-center">
                     <a href="/" class="b-brand text-dark text-capitalize fw-bold">
                         <!-- ========   Change your logo from here   ============ -->
-                        @if(auth()->check())
-                            <span class="fs-4">{{ auth()->user()->role }} Dashboard</span>
-                        @else
+                        <?php if(auth()->check()): ?>
+                            <span class="fs-4"><?php echo e(auth()->user()->role); ?> Dashboard</span>
+                        <?php else: ?>
                             <span class="fs-4">Login</span>
-                        @endif
+                        <?php endif; ?>
                     </a>
                 </div>
                 <div class="navbar-content">
                     <ul class="pc-navbar">
-                        <li class="pc-item {{ request()->is('dashboard') ? 'active' : '' }}">
+                        <li class="pc-item <?php echo e(request()->is('dashboard') ? 'active' : ''); ?>">
                             <a href="/dashboard" class="pc-link">
                                 <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                                 <span class="pc-mtext">Dashboard</span>
                             </a>
                         </li>
-                        @if (auth()->check())
-                            @if (auth()->user()->role === 'admin')
-                                @include('admin.sidebar')
-                            @else
-                                @include('user.sidebar')
-                            @endif
-                        @endif
+                        <?php if(auth()->check()): ?>
+                            <?php if(auth()->user()->role === 'admin'): ?>
+                                <?php echo $__env->make('admin.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                            <?php else: ?>
+                                <?php echo $__env->make('user.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
 
 
 
@@ -205,19 +205,19 @@
                             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                                 href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
                                 aria-expanded="false">
-                                <img src="{{ $avatar }}" alt="user-image" class="user-avtar">
-                                <span>{{ $name }}</span>
+                                <img src="<?php echo e($avatar); ?>" alt="user-image" class="user-avtar">
+                                <span><?php echo e($name); ?></span>
                             </a>
                             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                                 <div class="dropdown-header">
                                     <div class="d-flex mb-1 align-items-center">
                                         <div class="flex-shrink-0">
-                                            <img src="{{ $avatar }}" alt="user-image"
+                                            <img src="<?php echo e($avatar); ?>" alt="user-image"
                                                 class="user-avtar wid-35">
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-1">{{ $name }}</h6>
-                                            <span>{{ $role }}</span>
+                                            <h6 class="mb-1"><?php echo e($name); ?></h6>
+                                            <span><?php echo e($role); ?></span>
                                         </div>
 
                                     </div>
@@ -245,8 +245,8 @@
                                             <span>My Profile</span>
                                         </a>
 
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
+                                        <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                            <?php echo csrf_field(); ?>
                                             <button type="submit" class="dropdown-item">
                                                 <i class="ti ti-power"></i>
                                                 <span>Logout</span>
@@ -280,7 +280,7 @@
 
         <!-- [ Main Content ] start -->
         <div class="pc-container">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
         <!-- [ Main Content ] end -->
         <footer class="pc-footer">
@@ -300,16 +300,16 @@
         </footer>
 
         <!-- [Page Specific JS] start -->
-        <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
-        <script src="{{ asset('assets/js/pages/dashboard-default.js') }}"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/apexcharts.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/pages/dashboard-default.js')); ?>"></script>
         <!-- [Page Specific JS] end -->
         <!-- Required Js -->
-        <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
-        <script src="{{ asset('assets/js/pcoded.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/popper.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/simplebar.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/bootstrap.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/fonts/custom-font.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/pcoded.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/feather.min.js')); ?>"></script>
         <!-- SweetAlert2 Library -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -355,55 +355,56 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Success notification
-                @if(session('success'))
+                <?php if(session('success')): ?>
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: '{{ session('success') }}',
+                        text: '<?php echo e(session('success')); ?>',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#4680ff'
                     });
-                @endif
+                <?php endif; ?>
 
                 // Error notification
-                @if(session('error'))
+                <?php if(session('error')): ?>
                     Swal.fire({
                         icon: 'error',
                         title: 'Terjadi Kesalahan!',
-                        text: '{{ session('error') }}',
+                        text: '<?php echo e(session('error')); ?>',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#ff5370'
                     });
-                @endif
+                <?php endif; ?>
 
                 // Warning notification
-                @if(session('warning'))
+                <?php if(session('warning')): ?>
                     Swal.fire({
                         icon: 'warning',
                         title: 'Peringatan!',
-                        text: '{{ session('warning') }}',
+                        text: '<?php echo e(session('warning')); ?>',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#f4bd0e'
                     });
-                @endif
+                <?php endif; ?>
 
                 // Info notification
-                @if(session('info'))
+                <?php if(session('info')): ?>
                     Swal.fire({
                         icon: 'info',
                         title: 'Informasi',
-                        text: '{{ session('info') }}',
+                        text: '<?php echo e(session('info')); ?>',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#4680ff'
                     });
-                @endif
+                <?php endif; ?>
             });
         </script>
         <!-- Floating Pengaduan (hanya untuk user, bukan admin) -->
-@if(Auth::check() && Auth::user()->role !== 'admin')
-    @include('component.floating-pengaduan')
-@endif
+<?php if(Auth::check() && Auth::user()->role !== 'admin'): ?>
+    <?php echo $__env->make('component.floating-pengaduan', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php endif; ?>
     </body>
     <!-- [Body] end -->
 
 </html>
+<?php /**PATH C:\ukk26\resources\views/layouts/dashboard.blade.php ENDPATH**/ ?>

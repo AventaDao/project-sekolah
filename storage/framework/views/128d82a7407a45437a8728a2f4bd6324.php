@@ -1,11 +1,9 @@
-@extends('layouts.landing')
+<?php $__env->startSection('title', 'Selamat Datang di Sistem Informasi Desa'); ?>
 
-@section('title', 'Selamat Datang di Sistem Informasi Desa')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- [ Header ] start -->
     <header id="home" class="hero-section d-flex align-items-center"
-        style="position: relative; min-height: 100vh; background: url('{{ asset('assets/images/my/ppdesa.jpeg') }}') no-repeat center center; background-size: cover; background-attachment: fixed;">
+        style="position: relative; min-height: 100vh; background: url('<?php echo e(asset('assets/images/my/ppdesa.jpeg')); ?>') no-repeat center center; background-size: cover; background-attachment: fixed;">
         
         <!-- Animated Overlay -->
         <div class="hero-overlay"></div>
@@ -43,7 +41,7 @@
                     </h5>
                     
                     <div class="my-5 wow fadeInUp" data-wow-delay="0.6s">
-                        <a href="{{ route('login') }}"
+                        <a href="<?php echo e(route('login')); ?>"
                             class="btn btn-primary btn-lg btn-animated d-inline-flex align-items-center me-3 mb-3 mb-md-0">
                             Masuk Sistem 
                             <i class="ti ti-arrow-right ms-2 arrow-icon"></i>
@@ -316,7 +314,7 @@
 
     <!-- [ CTA ] start -->
     <section class="cta-section"
-        style="position: relative; padding: 120px 0; background: url('{{ asset('assets/images/my/join-us.png') }}') no-repeat center center; background-size: cover; background-attachment: fixed;">
+        style="position: relative; padding: 120px 0; background: url('<?php echo e(asset('assets/images/my/join-us.png')); ?>') no-repeat center center; background-size: cover; background-attachment: fixed;">
         <div class="cta-overlay"></div>
         <div class="container" style="position: relative; z-index: 2;">
             <div class="row justify-content-center">
@@ -328,7 +326,7 @@
                     <p class="cta-subtitle wow fadeInUp" data-wow-delay="0.4s">
                         Wujudkan tata kelola desa yang modern, transparan, dan efisien bersama aplikasi kami.
                     </p>
-                    <a href="{{ route('login') }}" class="btn btn-light btn-lg btn-animated wow fadeInUp" data-wow-delay="0.6s">
+                    <a href="<?php echo e(route('login')); ?>" class="btn btn-light btn-lg btn-animated wow fadeInUp" data-wow-delay="0.6s">
                         Masuk Sistem <i class="ti ti-arrow-right ms-2 arrow-icon"></i>
                     </a>
                 </div>
@@ -1308,7 +1306,7 @@
     </style>
 
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo e(env('GOOGLE_MAPS_API_KEY')); ?>&libraries=places"></script>
 
     <script>
         // Initialize Google Maps
@@ -1521,4 +1519,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.landing', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ukk26\resources\views/welcome.blade.php ENDPATH**/ ?>

@@ -1,7 +1,6 @@
-@extends('layouts.dashboard')
-@section('title', 'Detail Pengajuan Surat')
+<?php $__env->startSection('title', 'Detail Pengajuan Surat'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pc-content">
     <!-- Breadcrumb -->
     <div class="page-header">
@@ -10,7 +9,7 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('pengajuan-surat.index') }}">Pengajuan Surat</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo e(route('pengajuan-surat.index')); ?>">Pengajuan Surat</a></li>
                         <li class="breadcrumb-item" aria-current="page">Detail</li>
                     </ul>
                 </div>
@@ -25,12 +24,12 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Detail Pengajuan Surat</h5>
                     <div>
-                        @if($pengajuanSurat->status == 'Selesai')
-                            <a href="{{ route('pengajuan-surat.print', $pengajuanSurat->id) }}" class="btn btn-primary btn-sm me-2" target="_blank">
+                        <?php if($pengajuanSurat->status == 'Selesai'): ?>
+                            <a href="<?php echo e(route('pengajuan-surat.print', $pengajuanSurat->id)); ?>" class="btn btn-primary btn-sm me-2" target="_blank">
                                 <i class="ti ti-eye me-1"></i> Preview
                             </a>
-                        @endif
-                        <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-secondary btn-sm">
+                        <?php endif; ?>
+                        <a href="<?php echo e(route('pengajuan-surat.index')); ?>" class="btn btn-secondary btn-sm">
                             <i class="ti ti-arrow-left"></i> Kembali
                         </a>
                     </div>
@@ -38,8 +37,9 @@
                 <div class="card-body">
                     <!-- Status Badge -->
                     <div class="mb-4">
-                        <span class="badge {{ $pengajuanSurat->status_badge }} fs-6 px-3 py-2">
-                            <i class="ti ti-file-check me-1"></i> Status: {{ $pengajuanSurat->status }}
+                        <span class="badge <?php echo e($pengajuanSurat->status_badge); ?> fs-6 px-3 py-2">
+                            <i class="ti ti-file-check me-1"></i> Status: <?php echo e($pengajuanSurat->status); ?>
+
                         </span>
                     </div>
 
@@ -51,17 +51,17 @@
                                 <tr>
                                     <td width="40%" class="text-muted">Nomor Pengajuan</td>
                                     <td width="5%">:</td>
-                                    <td><strong>{{ $pengajuanSurat->nomor_pengajuan }}</strong></td>
+                                    <td><strong><?php echo e($pengajuanSurat->nomor_pengajuan); ?></strong></td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Jenis Surat</td>
                                     <td>:</td>
-                                    <td><strong>{{ $pengajuanSurat->jenis_surat }}</strong></td>
+                                    <td><strong><?php echo e($pengajuanSurat->jenis_surat); ?></strong></td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Tanggal Pengajuan</td>
                                     <td>:</td>
-                                    <td>{{ $pengajuanSurat->created_at->format('d F Y H:i') }} WIB</td>
+                                    <td><?php echo e($pengajuanSurat->created_at->format('d F Y H:i')); ?> WIB</td>
                                 </tr>
                             </table>
                         </div>
@@ -71,22 +71,23 @@
                                     <td width="40%" class="text-muted">Status</td>
                                     <td width="5%">:</td>
                                     <td>
-                                        <span class="badge {{ $pengajuanSurat->status_badge }}">
-                                            {{ $pengajuanSurat->status }}
+                                        <span class="badge <?php echo e($pengajuanSurat->status_badge); ?>">
+                                            <?php echo e($pengajuanSurat->status); ?>
+
                                         </span>
                                     </td>
                                 </tr>
-                                @if($pengajuanSurat->tanggal_selesai)
+                                <?php if($pengajuanSurat->tanggal_selesai): ?>
                                 <tr>
                                     <td class="text-muted">Tanggal Selesai</td>
                                     <td>:</td>
-                                    <td>{{ $pengajuanSurat->tanggal_selesai->format('d F Y H:i') }} WIB</td>
+                                    <td><?php echo e($pengajuanSurat->tanggal_selesai->format('d F Y H:i')); ?> WIB</td>
                                 </tr>
-                                @endif
+                                <?php endif; ?>
                                 <tr>
                                     <td class="text-muted">Terakhir Diupdate</td>
                                     <td>:</td>
-                                    <td>{{ $pengajuanSurat->updated_at->format('d F Y H:i') }} WIB</td>
+                                    <td><?php echo e($pengajuanSurat->updated_at->format('d F Y H:i')); ?> WIB</td>
                                 </tr>
                             </table>
                         </div>
@@ -109,7 +110,7 @@
                                     </div>
                                     <p class="text-muted mb-0">
                                         <i class="ti ti-clock me-1"></i>
-                                        {{ $pengajuanSurat->created_at->format('d F Y H:i') }} WIB
+                                        <?php echo e($pengajuanSurat->created_at->format('d F Y H:i')); ?> WIB
                                     </p>
                                 </div>
                             </div>
@@ -117,61 +118,65 @@
                             <!-- Step 2: Diproses -->
                             <div class="timeline-item">
                                 <div class="timeline-bar"></div>
-                                <div class="timeline-dot {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'bg-success' : 'bg-secondary' }}">
-                                    <i class="ti {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'ti-check' : 'ti-hourglass' }}"></i>
+                                <div class="timeline-dot <?php echo e(($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'bg-success' : 'bg-secondary'); ?>">
+                                    <i class="ti <?php echo e(($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'ti-check' : 'ti-hourglass'); ?>"></i>
                                 </div>
                                 <div class="timeline-content">
                                     <div class="d-flex align-items-center mb-1">
                                         <h6 class="mb-0"><strong>Dalam Proses</strong></h6>
-                                        <span class="badge {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'bg-success' : 'bg-secondary' }} ms-2">
-                                            {{ ($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'Selesai' : 'Menunggu' }}
+                                        <span class="badge <?php echo e(($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'bg-success' : 'bg-secondary'); ?> ms-2">
+                                            <?php echo e(($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak') ? 'Selesai' : 'Menunggu'); ?>
+
                                         </span>
                                     </div>
-                                    @if($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak')
+                                    <?php if($pengajuanSurat->tanggal_diproses || $pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak'): ?>
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-clock me-1"></i>
-                                            {{ ($pengajuanSurat->tanggal_diproses ?? $pengajuanSurat->updated_at)->format('d F Y H:i') }} WIB
+                                            <?php echo e(($pengajuanSurat->tanggal_diproses ?? $pengajuanSurat->updated_at)->format('d F Y H:i')); ?> WIB
                                         </p>
-                                        @if($pengajuanSurat->tanggal_diproses && $pengajuanSurat->created_at)
+                                        <?php if($pengajuanSurat->tanggal_diproses && $pengajuanSurat->created_at): ?>
                                         <small class="text-muted">
-                                            Waktu pemrosesan: {{ $pengajuanSurat->tanggal_diproses->diffForHumans($pengajuanSurat->created_at, ['parts' => 2]) }}
+                                            Waktu pemrosesan: <?php echo e($pengajuanSurat->tanggal_diproses->diffForHumans($pengajuanSurat->created_at, ['parts' => 2])); ?>
+
                                         </small>
-                                        @endif
-                                    @else
+                                        <?php endif; ?>
+                                    <?php else: ?>
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-hourglass me-1"></i>
                                             Menunggu pemrosesan...
                                         </p>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
                             <!-- Step 3: Selesai/Ditolak -->
-                            @if($pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak')
+                            <?php if($pengajuanSurat->status === 'Selesai' || $pengajuanSurat->status === 'Ditolak'): ?>
                             <div class="timeline-item">
                                 <div class="timeline-bar"></div>
-                                <div class="timeline-dot {{ $pengajuanSurat->status === 'Selesai' ? 'bg-success' : 'bg-danger' }}">
-                                    <i class="ti {{ $pengajuanSurat->status === 'Selesai' ? 'ti-check' : 'ti-x' }}"></i>
+                                <div class="timeline-dot <?php echo e($pengajuanSurat->status === 'Selesai' ? 'bg-success' : 'bg-danger'); ?>">
+                                    <i class="ti <?php echo e($pengajuanSurat->status === 'Selesai' ? 'ti-check' : 'ti-x'); ?>"></i>
                                 </div>
                                 <div class="timeline-content">
                                     <div class="d-flex align-items-center mb-1">
-                                        <h6 class="mb-0"><strong>{{ $pengajuanSurat->status === 'Selesai' ? 'Selesai' : 'Ditolak' }}</strong></h6>
-                                        <span class="badge {{ $pengajuanSurat->status === 'Selesai' ? 'bg-success' : 'bg-danger' }} ms-2">
-                                            {{ $pengajuanSurat->status }}
+                                        <h6 class="mb-0"><strong><?php echo e($pengajuanSurat->status === 'Selesai' ? 'Selesai' : 'Ditolak'); ?></strong></h6>
+                                        <span class="badge <?php echo e($pengajuanSurat->status === 'Selesai' ? 'bg-success' : 'bg-danger'); ?> ms-2">
+                                            <?php echo e($pengajuanSurat->status); ?>
+
                                         </span>
                                     </div>
                                     <p class="text-muted mb-0">
                                         <i class="ti ti-clock me-1"></i>
-                                        {{ ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)->format('d F Y H:i') }} WIB
+                                        <?php echo e(($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)->format('d F Y H:i')); ?> WIB
                                     </p>
-                                    @if($pengajuanSurat->tanggal_diproses && ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak))
+                                    <?php if($pengajuanSurat->tanggal_diproses && ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)): ?>
                                         <small class="text-muted">
-                                            Waktu penyelesaian: {{ ($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)->diffForHumans($pengajuanSurat->tanggal_diproses, ['parts' => 2]) }}
+                                            Waktu penyelesaian: <?php echo e(($pengajuanSurat->status === 'Selesai' ? $pengajuanSurat->tanggal_selesai : $pengajuanSurat->tanggal_ditolak)->diffForHumans($pengajuanSurat->tanggal_diproses, ['parts' => 2])); ?>
+
                                         </small>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                            @else
+                            <?php else: ?>
                             <div class="timeline-item">
                                 <div class="timeline-bar"></div>
                                 <div class="timeline-dot bg-secondary">
@@ -188,7 +193,7 @@
                                     </p>
                                 </div>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -259,74 +264,78 @@
                     <!-- Keperluan -->
                     <h5 class="mb-3 text-primary border-bottom pb-2">Keperluan</h5>
                     <div class="mb-4">
-                        <p class="text-muted">{{ $pengajuanSurat->keperluan }}</p>
+                        <p class="text-muted"><?php echo e($pengajuanSurat->keperluan); ?></p>
                     </div>
 
                     <!-- Detail Spesifik Berdasarkan Jenis Surat -->
-                    <h5 class="mb-3 text-primary border-bottom pb-2">Detail {{ $pengajuanSurat->jenis_surat }}</h5>
+                    <h5 class="mb-3 text-primary border-bottom pb-2">Detail <?php echo e($pengajuanSurat->jenis_surat); ?></h5>
                     <div class="mb-4">
-                        @php
+                        <?php
                             $suratTypes = \App\Models\PengajuanSurat::getSuratTypes();
                             $fields = $suratTypes[$pengajuanSurat->jenis_surat]['fields'] ?? [];
-                        @endphp
+                        ?>
                         
-                        @if(count($fields) > 0)
+                        <?php if(count($fields) > 0): ?>
                             <table class="table table-striped">
-                                @foreach($fields as $fieldName => $fieldConfig)
-                                    @php
+                                <?php $__currentLoopData = $fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldName => $fieldConfig): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $fieldValue = $pengajuanSurat->$fieldName;
-                                    @endphp
-                                    @if($fieldValue)
+                                    ?>
+                                    <?php if($fieldValue): ?>
                                     <tr>
-                                        <td width="30%" class="text-muted fw-5"><strong>{{ $fieldConfig['label'] }}</strong></td>
+                                        <td width="30%" class="text-muted fw-5"><strong><?php echo e($fieldConfig['label']); ?></strong></td>
                                         <td width="70%">
-                                            @if($fieldConfig['type'] === 'textarea')
-                                                <p class="mb-0">{{ nl2br($fieldValue) }}</p>
-                                            @elseif($fieldConfig['type'] === 'date')
-                                                {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
-                                            @elseif($fieldConfig['type'] === 'number' && strpos($fieldName, 'jumlah') !== false)
-                                                Rp. {{ number_format($fieldValue, 0, ',', '.') }}
-                                            @else
-                                                {{ $fieldValue }}
-                                            @endif
+                                            <?php if($fieldConfig['type'] === 'textarea'): ?>
+                                                <p class="mb-0"><?php echo e(nl2br($fieldValue)); ?></p>
+                                            <?php elseif($fieldConfig['type'] === 'date'): ?>
+                                                <?php echo e(\Carbon\Carbon::parse($fieldValue)->format('d F Y')); ?>
+
+                                            <?php elseif($fieldConfig['type'] === 'number' && strpos($fieldName, 'jumlah') !== false): ?>
+                                                Rp. <?php echo e(number_format($fieldValue, 0, ',', '.')); ?>
+
+                                            <?php else: ?>
+                                                <?php echo e($fieldValue); ?>
+
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
-                                    @endif
-                                @endforeach
+                                    <?php endif; ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </table>
-                        @else
+                        <?php else: ?>
                             <p class="text-muted">Tidak ada detail spesifik untuk jenis surat ini.</p>
-                        @endif
+                        <?php endif; ?>
                     </div>
 
                     <!-- Keterangan Tambahan -->
-                    @if($pengajuanSurat->keterangan_tambahan)
+                    <?php if($pengajuanSurat->keterangan_tambahan): ?>
                     <h5 class="mb-3 text-primary border-bottom pb-2">Keterangan Tambahan</h5>
                     <div class="mb-4">
-                        <p class="text-muted">{{ $pengajuanSurat->keterangan_tambahan }}</p>
+                        <p class="text-muted"><?php echo e($pengajuanSurat->keterangan_tambahan); ?></p>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Surat Pengantar RW -->
                     <h5 class="mb-3 text-primary border-bottom pb-2">Surat Pengantar RW</h5>
                     <div class="mb-4">
-                        <a href="{{ route('pengajuan-surat.download-pengantar', $pengajuanSurat->id) }}" 
+                        <a href="<?php echo e(route('pengajuan-surat.download-pengantar', $pengajuanSurat->id)); ?>" 
                            class="btn btn-outline-primary">
                             <i class="ti ti-download"></i> Download Surat Pengantar RW
                         </a>
                     </div>
 
                     <!-- Catatan Admin -->
-                    @if($pengajuanSurat->catatan_admin)
+                    <?php if($pengajuanSurat->catatan_admin): ?>
                     <h5 class="mb-3 text-primary border-bottom pb-2">Catatan dari Admin</h5>
                     <div class="alert alert-info mb-4">
                         <i class="ti ti-info-circle me-2"></i>
-                        {{ $pengajuanSurat->catatan_admin }}
+                        <?php echo e($pengajuanSurat->catatan_admin); ?>
+
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Surat Jadi -->
-                    @if($pengajuanSurat->file_surat_jadi)
+                    <?php if($pengajuanSurat->file_surat_jadi): ?>
                     <h5 class="mb-3 text-primary border-bottom pb-2">Surat Jadi</h5>
                     <div class="alert alert-success d-flex align-items-center mb-4">
                         <i class="ti ti-circle-check f-24 me-3"></i>
@@ -336,30 +345,31 @@
                         </div>
                     </div>
                     <div class="mb-4">
-                        <a href="{{ route('pengajuan-surat.download-surat-jadi', $pengajuanSurat->id) }}" 
+                        <a href="<?php echo e(route('pengajuan-surat.download-surat-jadi', $pengajuanSurat->id)); ?>" 
                            class="btn btn-success">
                             <i class="ti ti-download"></i> Download Surat Jadi
                         </a>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Action Buttons -->
-                    @if($pengajuanSurat->status === 'Menunggu')
+                    <?php if($pengajuanSurat->status === 'Menunggu'): ?>
                     <div class="mt-4 border-top pt-3">
-                        <form action="{{ route('pengajuan-surat.destroy', $pengajuanSurat->id) }}" 
+                        <form action="<?php echo e(route('pengajuan-surat.destroy', $pengajuanSurat->id)); ?>" 
                               method="POST" 
                               onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan ini?')">
-                            @csrf
-                            @method('DELETE')
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
                             <button type="submit" class="btn btn-danger">
                                 <i class="ti ti-trash"></i> Batalkan Pengajuan
                             </button>
                         </form>
                     </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ukk26\resources\views/user/pengajuan-surat/show.blade.php ENDPATH**/ ?>

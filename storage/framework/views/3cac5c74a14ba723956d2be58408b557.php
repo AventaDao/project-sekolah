@@ -1,5 +1,5 @@
-<li class="pc-item {{ request()->is('pengajuan-surat*') ? 'active' : '' }}">
-    <a href="{{ route('pengajuan-surat.index') }}" class="pc-link">
+<li class="pc-item <?php echo e(request()->is('pengajuan-surat*') ? 'active' : ''); ?>">
+    <a href="<?php echo e(route('pengajuan-surat.index')); ?>" class="pc-link">
         <span class="pc-micon"><i class="ti ti-file-text"></i></span>
         <span class="pc-mtext">Pengajuan Surat</span>
     </a>
@@ -12,27 +12,27 @@
     </a>
     <ul class="pc-submenu" id="pengaduanSubmenu" style="display: none; list-style: none; padding-left: 0;">
         <li class="pc-item">
-            <a href="{{ route('pengaduan.create') }}?kategori={{ urlencode('Kendala Sistem Informasi Desa') }}" class="pc-link">
+            <a href="<?php echo e(route('pengaduan.create')); ?>?kategori=<?php echo e(urlencode('Kendala Sistem Informasi Desa')); ?>" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-alert-circle"></i></span>
                 <span class="pc-mtext">Kendala Sistem</span>
             </a>
         </li>
         <li class="pc-item">
-            <a href="{{ route('pengaduan.create') }}?kategori={{ urlencode('Bantuan Sistem Informasi Desa') }}" class="pc-link">
+            <a href="<?php echo e(route('pengaduan.create')); ?>?kategori=<?php echo e(urlencode('Bantuan Sistem Informasi Desa')); ?>" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-question-mark"></i></span>
                 <span class="pc-mtext">Bantuan Sistem</span>
             </a>
         </li>
         <li class="pc-item">
-            <a href="{{ route('pengaduan.create') }}?kategori={{ urlencode('Laporan Kejadian Lapangan') }}" class="pc-link">
+            <a href="<?php echo e(route('pengaduan.create')); ?>?kategori=<?php echo e(urlencode('Laporan Kejadian Lapangan')); ?>" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-clipboard-check"></i></span>
                 <span class="pc-mtext">Laporan Kejadian di Lapangan</span>
             </a>
         </li>
     </ul>
 </li>
-<li class="pc-item {{ request()->is('activities*') ? 'active' : '' }}">
-    <a href="{{ route('activities.index') }}" class="pc-link">
+<li class="pc-item <?php echo e(request()->is('activities*') ? 'active' : ''); ?>">
+    <a href="<?php echo e(route('activities.index')); ?>" class="pc-link">
         <span class="pc-micon"><i class="ti ti-history"></i></span>
         <span class="pc-mtext">Riwayat Aktivitas</span>
     </a>
@@ -98,3 +98,4 @@ function toggleSubmenu(element, event) {
     }
 }
 </script>
+<?php /**PATH C:\ukk26\resources\views/user/sidebar.blade.php ENDPATH**/ ?>

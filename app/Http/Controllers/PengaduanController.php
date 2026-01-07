@@ -37,7 +37,7 @@ class PengaduanController extends Controller
     /**
      * Show the form for creating a new pengaduan
      */
-    public function create()
+    public function create(Request $request)
     {
         $kategoris = [
             'Kendala Sistem Informasi Desa',
@@ -45,7 +45,9 @@ class PengaduanController extends Controller
             'Laporan Kejadian Lapangan'
         ];
         
-        return view('user.pengaduan.create', compact('kategoris'));
+        $selectedKategori = $request->query('kategori');
+        
+        return view('user.pengaduan.create', compact('kategoris', 'selectedKategori'));
     }
 
     /**

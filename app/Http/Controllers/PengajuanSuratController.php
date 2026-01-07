@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\SvgWriter;
 
 class PengajuanSuratController extends Controller
 {
@@ -337,8 +340,22 @@ class PengajuanSuratController extends Controller
         // Ambil data user untuk laporan
         $user = $pengajuanSurat->user;
         
-        // Generate PDF menggunakan dompdf
-        $pdf = Pdf::loadView('user.pengajuan-surat.pdf-export', compact('pengajuanSurat', 'user'));
+        // Generate QR Code sebagai PNG base64 untuk html2pdf compatibility
+        try {
+            $qrCode = new QrCode(route('letter.verify', $pengajuanSurat->id));
+            $writer = new PngWriter();
+            $result = $writer->write($qrCode);
+            $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($result->getString());
+        } catch (\Exception $e) {
+            // Fallback ke SVG jika PNG gagal (GD extension tidak tersedia)
+            $qrCode = new QrCode(route('letter.verify', $pengajuanSurat->id));
+            $writer = new SvgWriter();
+            $result = $writer->write($qrCode);
+            $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($result->getString());
+        }
+        
+        // Generate PDF menggunakan dompdf dengan tampilan pdf-export yang rapi
+        $pdf = Pdf::loadView('user.pengajuan-surat.pdf-export', compact('pengajuanSurat', 'user', 'qrCodeBase64'));
         
         // Setting ukuran kertas dan orientasi
         $pdf->setPaper('A4', 'portrait');
@@ -364,7 +381,25 @@ class PengajuanSuratController extends Controller
 
         $user = $pengajuanSurat->user;
         
-        return view('user.pengajuan-surat.pdf-preview', compact('pengajuanSurat', 'user'));
+        // Generate QR Code sebagai PNG file untuk html2pdf compatibility
+        try {
+            $qrCode = new QrCode(route('letter.verify', $pengajuanSurat->id));
+            $writer = new PngWriter();
+            $result = $writer->write($qrCode);
+            
+            // Ensure qr-codes directory exists
+            Storage::disk('public')->makeDirectory('qr-codes', 0755, true);
+            
+            // Save QR code ke storage dengan nama unik
+            $qrFileName = 'qr-' . $pengajuanSurat->id . '-' . time() . '.png';
+            Storage::disk('public')->put('qr-codes/' . $qrFileName, $result->getString());
+            $qrCodeUrl = asset('storage/qr-codes/' . $qrFileName);
+        } catch (\Exception $e) {
+            // Fallback ke online QR service jika PNG gagal
+            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode(route('letter.verify', $pengajuanSurat->id));
+        }
+        
+        return view('user.pengajuan-surat.pdf-preview', compact('pengajuanSurat', 'user', 'qrCodeUrl'));
     }
 
     /**

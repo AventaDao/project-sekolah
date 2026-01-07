@@ -23,6 +23,12 @@ Route::get('/contact-us', function () {
     return view('contact');
 })->name('contact');
 
+// Contact form submission (public)
+Route::post('/contact/send', [\App\Http\Controllers\ContactController::class, 'send'])->name('contact.send');
+
+// Letter Verification (public - untuk verifikasi surat)
+Route::get('/surat/verify/{id}', [\App\Http\Controllers\LetterVerificationController::class, 'verify'])->name('letter.verify');
+
 // Public Berita Routes
 Route::prefix('berita')->name('berita.')->group(function () {
     Route::get('/', [BeritaDesaController::class, 'index'])->name('index');
@@ -149,6 +155,13 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/', [PengaduanController::class, 'adminIndex'])->name('index');
             Route::get('/{pengaduan}', [PengaduanController::class, 'show'])->name('show');
             Route::patch('/{pengaduan}/tanggapan', [PengaduanController::class, 'updateTanggapan'])->name('update-tanggapan');
+        });
+
+        // Messages (Contact) management for admin
+        Route::prefix('messages')->name('messages.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\AdminMessagesController::class, 'index'])->name('index');
+            Route::get('/{message}', [\App\Http\Controllers\AdminMessagesController::class, 'show'])->name('show');
+            Route::post('/{message}/reply', [\App\Http\Controllers\AdminMessagesController::class, 'reply'])->name('reply');
         });
 
         // Other Admin Routes (placeholder)

@@ -1,7 +1,6 @@
-@extends('layouts.dashboard')
-@section('title', 'Buat Pengaduan Baru')
+<?php $__env->startSection('title', 'Buat Pengaduan Baru'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pc-content">
     <!-- Breadcrumb -->
     <div class="page-header">
@@ -10,7 +9,7 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('pengaduan.index') }}">Pengaduan</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo e(route('pengaduan.index')); ?>">Pengaduan</a></li>
                         <li class="breadcrumb-item" aria-current="page">Buat Pengaduan</li>
                     </ul>
                 </div>
@@ -26,41 +25,58 @@
                     <h5>Form Buat Pengaduan Baru</h5>
                 </div>
                 <div class="card-body">
-                    @if ($errors->any())
+                    <?php if($errors->any()): ?>
                     <div class="alert alert-danger">
                         <strong>Terdapat kesalahan:</strong>
                         <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
-                    <form action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                    <form action="<?php echo e(route('pengaduan.store')); ?>" method="POST" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
                         
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Kategori Pengaduan <span class="text-danger">*</span></label>
-                                <select name="kategori" class="form-select @error('kategori') is-invalid @enderror" required id="kategoriSelect">
+                                <select name="kategori" class="form-select <?php $__errorArgs = ['kategori'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" required id="kategoriSelect">
                                     <option value="">-- Pilih Kategori Pengaduan --</option>
-                                    @foreach($kategoris as $key => $kategori)
-                                    <option value="{{ $kategori }}" 
-                                            {{ (old('kategori') ?? $selectedKategori ?? request('kategori')) == $kategori ? 'selected' : '' }}>
-                                        @if($kategori == 'Kendala Sistem Informasi Desa')
-                                            🐛 {{ $kategori }}
-                                        @elseif($kategori == 'Bantuan Sistem Informasi Desa')
-                                            ❓ {{ $kategori }}
-                                        @else
-                                            ⚠️ {{ $kategori }}
-                                        @endif
+                                    <?php $__currentLoopData = $kategoris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($kategori); ?>" 
+                                            <?php echo e((old('kategori') ?? $selectedKategori ?? request('kategori')) == $kategori ? 'selected' : ''); ?>>
+                                        <?php if($kategori == 'Kendala Sistem Informasi Desa'): ?>
+                                            🐛 <?php echo e($kategori); ?>
+
+                                        <?php elseif($kategori == 'Bantuan Sistem Informasi Desa'): ?>
+                                            ❓ <?php echo e($kategori); ?>
+
+                                        <?php else: ?>
+                                            ⚠️ <?php echo e($kategori); ?>
+
+                                        <?php endif; ?>
                                     </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
-                                @error('kategori')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['kategori'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <small class="form-text text-muted">Pilih kategori yang sesuai dengan pengaduan Anda</small>
                             </div>
 
@@ -82,31 +98,73 @@
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Judul Pengaduan <span class="text-danger">*</span></label>
-                                <input type="text" name="judul" class="form-control @error('judul') is-invalid @enderror" 
-                                       value="{{ old('judul') }}" required placeholder="Ringkasan singkat pengaduan Anda">
-                                @error('judul')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" name="judul" class="form-control <?php $__errorArgs = ['judul'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                       value="<?php echo e(old('judul')); ?>" required placeholder="Ringkasan singkat pengaduan Anda">
+                                <?php $__errorArgs = ['judul'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Deskripsi Pengaduan <span class="text-danger">*</span></label>
-                                <textarea name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" 
-                                          rows="6" required placeholder="Jelaskan pengaduan Anda secara detail...">{{ old('deskripsi') }}</textarea>
-                                @error('deskripsi')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <textarea name="deskripsi" class="form-control <?php $__errorArgs = ['deskripsi'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                          rows="6" required placeholder="Jelaskan pengaduan Anda secara detail..."><?php echo e(old('deskripsi')); ?></textarea>
+                                <?php $__errorArgs = ['deskripsi'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <small class="form-text text-muted">Jelaskan masalah/kejadian dengan sejelas mungkin</small>
                             </div>
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Lampiran (Opsional)</label>
                                 <input type="file" name="lampiran" 
-                                       class="form-control @error('lampiran') is-invalid @enderror" 
+                                       class="form-control <?php $__errorArgs = ['lampiran'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                        accept=".pdf,.jpg,.jpeg,.png" onchange="previewFile(event)">
-                                @error('lampiran')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['lampiran'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <small class="form-text text-muted">
                                     Upload screenshot atau foto pendukung. Format: PDF, JPG, JPEG, PNG. Maksimal 2MB.
                                 </small>
@@ -135,7 +193,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="ti ti-send"></i> Kirim Pengaduan
                             </button>
-                            <a href="{{ route('pengaduan.index') }}" class="btn btn-secondary">
+                            <a href="<?php echo e(route('pengaduan.index')); ?>" class="btn btn-secondary">
                                 <i class="ti ti-arrow-left"></i> Kembali
                             </a>
                         </div>
@@ -201,4 +259,5 @@ function previewFile(event) {
     }
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ukk26\resources\views/user/pengaduan/create.blade.php ENDPATH**/ ?>
