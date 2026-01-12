@@ -170,7 +170,7 @@
                                     <img src="{{ $qrCodeUrl }}" alt="QR Code Verifikasi" style="width: 100px; height: 100px; border: 1px solid #999; padding: 2px;" crossorigin="anonymous">
                                 @endif
                             </div>
-                            <p style="margin: 0; font-size: 16px; font-weight: 500;">Sugianto Kusuma</p>
+                            <p style="margin: 0; font-size: 16px; font-weight: 500;">Kepala Desa Kedung Kendo</p>
                             <p style="margin: 2px 0 0 0; font-size: 13px; color: #999;">(Scan untuk verifikasi)</p>
                         </div>
                     </div>
