@@ -37,7 +37,7 @@
                         <h6 class="mb-2">Lokasi</h6>
                         <div style="width:100%;height:200px;overflow:hidden;border-radius:6px;">
                             <!-- Ganti src iframe dengan embed maps desa Anda -->
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.7619!2d110.8136!3d-7.4089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a3c5c5c5c5c5d%3A0x1234567890abcdef!2sDesa%20Kedung%20Kendo!5e0!3m2!1sid!2sid!4v1609459200000" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                         </div>
                     </div>
                 </div>

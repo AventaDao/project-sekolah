@@ -66,10 +66,10 @@
                     </li>
                     <!-- <li class="nav-item pe-1">
                         <a class="nav-link {{ request()->is('profil-desa') ? 'active' : '' }}" href="/profil-desa">Profil Desa</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item pe-1">
                         <a class="nav-link {{ request()->is('kontak') ? 'active' : '' }}" href="/contact-us">Kontak</a>
-                    </li> -->
+                    </li>
                     @if (auth()->check())
                         <li class="nav-item">
                             <a class="btn btn-primary" href="/myprofile">Hai, {{ auth()->user()->name }}</a>
