@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Carbon;
+use App\Mail\ReplyMessageMail;
 
 class AdminMessagesController extends Controller
 {
@@ -33,16 +34,13 @@ class AdminMessagesController extends Controller
             'replied_at' => Carbon::now(),
         ]);
 
-        // Send reply email to user
+        // Send reply email to user with styled template
         try {
-            Mail::raw($data['reply'], function ($m) use ($message) {
-                $m->to($message->email)
-                  ->subject($message->support_id . ' - Balasan: ' . $message->subject);
-            });
+            Mail::to($message->email)->send(new ReplyMessageMail($message, $data['reply'], $message->support_id));
+            return back()->with('status', 'Balasan berhasil dikirim.');
         } catch (\Exception $e) {
-            return back()->with('status', 'Balasan disimpan, namun pengiriman email gagal.');
+            \Log::error('Email reply failed: ' . $e->getMessage());
+            return back()->with('status', 'Balasan disimpan, namun pengiriman email gagal: ' . $e->getMessage());
         }
-
-        return back()->with('status', 'Balasan berhasil dikirim.');
     }
 }

@@ -381,23 +381,10 @@ class PengajuanSuratController extends Controller
 
         $user = $pengajuanSurat->user;
         
-        // Generate QR Code sebagai PNG file untuk html2pdf compatibility
-        try {
-            $qrCode = new QrCode(route('letter.verify', $pengajuanSurat->id));
-            $writer = new PngWriter();
-            $result = $writer->write($qrCode);
-            
-            // Ensure qr-codes directory exists
-            Storage::disk('public')->makeDirectory('qr-codes', 0755, true);
-            
-            // Save QR code ke storage dengan nama unik
-            $qrFileName = 'qr-' . $pengajuanSurat->id . '-' . time() . '.png';
-            Storage::disk('public')->put('qr-codes/' . $qrFileName, $result->getString());
-            $qrCodeUrl = asset('storage/qr-codes/' . $qrFileName);
-        } catch (\Exception $e) {
-            // Fallback ke online QR service jika PNG gagal
-            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode(route('letter.verify', $pengajuanSurat->id));
-        }
+        // Generate QR Code menggunakan online service
+        // URL akan otomatis menyesuaikan dengan server yang sedang digunakan (localhost atau ngrok)
+        $verifyUrl = route('letter.verify', $pengajuanSurat->id);
+        $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($verifyUrl);
         
         return view('user.pengajuan-surat.pdf-preview', compact('pengajuanSurat', 'user', 'qrCodeUrl'));
     }

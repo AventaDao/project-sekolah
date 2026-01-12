@@ -1,7 +1,6 @@
-@extends('layouts.dashboard')
-@section('title', 'Pengajuan Surat')
+<?php $__env->startSection('title', 'Pengajuan Surat'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pc-content">
     <!-- Breadcrumb -->
     <div class="page-header">
@@ -22,9 +21,9 @@
         </div>
     </div>
 
-    @if(!$is_verified_user)
-        @include('component.verif-content')
-    @else
+    <?php if(!$is_verified_user): ?>
+        <?php echo $__env->make('component.verif-content', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <?php else: ?>
     <!-- Main Content -->
     <div class="row">
         <div class="col-sm-12">
@@ -47,24 +46,26 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Daftar Pengajuan Surat</h5>
-                    <a href="{{ route('pengajuan-surat.create') }}" class="btn btn-primary">
+                    <a href="<?php echo e(route('pengajuan-surat.create')); ?>" class="btn btn-primary">
                         <i class="ti ti-plus"></i> Ajukan Surat Baru
                     </a>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
+                    <?php if(session('success')): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    @endif
+                        <?php echo e(session('success')); ?>
 
-                    @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    @endif
+                    <?php endif; ?>
+
+                    <?php if(session('error')): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?php echo e(session('error')); ?>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <?php endif; ?>
 
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -79,70 +80,73 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($pengajuans as $key => $pengajuan)
+                                <?php $__empty_1 = true; $__currentLoopData = $pengajuans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $pengajuan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td>{{ $pengajuans->firstItem() + $key }}</td>
-                                    <td><strong>{{ $pengajuan->nomor_pengajuan }}</strong></td>
-                                    <td>{{ $pengajuan->jenis_surat }}</td>
-                                    <td>{{ $pengajuan->created_at->format('d M Y H:i') }}</td>
+                                    <td><?php echo e($pengajuans->firstItem() + $key); ?></td>
+                                    <td><strong><?php echo e($pengajuan->nomor_pengajuan); ?></strong></td>
+                                    <td><?php echo e($pengajuan->jenis_surat); ?></td>
+                                    <td><?php echo e($pengajuan->created_at->format('d M Y H:i')); ?></td>
                                     <td>
-                                        <span class="badge {{ $pengajuan->status_badge }}">
-                                            {{ $pengajuan->status }}
+                                        <span class="badge <?php echo e($pengajuan->status_badge); ?>">
+                                            <?php echo e($pengajuan->status); ?>
+
                                         </span>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('pengajuan-surat.show', $pengajuan->id) }}" 
+                                            <a href="<?php echo e(route('pengajuan-surat.show', $pengajuan->id)); ?>" 
                                                class="btn btn-sm btn-info" title="Detail">
                                                 <i class="ti ti-eye"></i>
                                             </a>
                                             
-                                            @if($pengajuan->file_surat_jadi && $pengajuan->status === 'Selesai')
-                                            <a href="{{ route('pengajuan-surat.download-surat-jadi', $pengajuan->id) }}" 
+                                            <?php if($pengajuan->file_surat_jadi && $pengajuan->status === 'Selesai'): ?>
+                                            <a href="<?php echo e(route('pengajuan-surat.download-surat-jadi', $pengajuan->id)); ?>" 
                                                class="btn btn-sm btn-success" title="Download Surat">
                                                 <i class="ti ti-download"></i>
                                             </a>
-                                            @endif
+                                            <?php endif; ?>
 
-                                            @if($pengajuan->status === 'Menunggu')
-                                            <form action="{{ route('pengajuan-surat.destroy', $pengajuan->id) }}" 
+                                            <?php if($pengajuan->status === 'Menunggu'): ?>
+                                            <form action="<?php echo e(route('pengajuan-surat.destroy', $pengajuan->id)); ?>" 
                                                   method="POST" 
                                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengajuan ini?')"
                                                   class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
                                                     <i class="ti ti-trash"></i>
                                                 </button>
                                             </form>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="6" class="text-center py-4">
                                         <div class="mb-3">
                                             <i class="ti ti-file-off f-40 text-muted"></i>
                                         </div>
                                         <p class="text-muted">Belum ada pengajuan surat</p>
-                                        <a href="{{ route('pengajuan-surat.create') }}" class="btn btn-primary btn-sm mt-2">
+                                        <a href="<?php echo e(route('pengajuan-surat.create')); ?>" class="btn btn-primary btn-sm mt-2">
                                             <i class="ti ti-plus"></i> Buat Pengajuan
                                         </a>
                                     </td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="d-flex justify-content-end mt-3">
-                        {{ $pengajuans->links() }}
+                        <?php echo e($pengajuans->links()); ?>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\User\Documents\UKK\project-sekolah\resources\views/user/pengajuan-surat/index.blade.php ENDPATH**/ ?>

@@ -22,6 +22,12 @@
         <span class="pc-mtext">Kelola Pengaduan</span>
     </a>
 </li>
+<li class="pc-item {{ request()->is('admin/messages*') ? 'active' : '' }}">
+    <a href="{{ route('admin.messages.index') }}" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-mail"></i></span>
+        <span class="pc-mtext">Balas Pesan</span>
+    </a>
+</li>
 <li class="pc-item {{ request()->is('admin/activities*') ? 'active' : '' }}">
     <a href="{{ route('admin.activities.index') }}" class="pc-link">
         <span class="pc-micon"><i class="ti ti-history"></i></span>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $pengajuanSurat->jenis_surat }} - {{ $pengajuanSurat->nomor_pengajuan }}</title>
+    <title><?php echo e($pengajuanSurat->jenis_surat); ?> - <?php echo e($pengajuanSurat->nomor_pengajuan); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/tabler-icons.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -17,8 +17,8 @@
                 <div class="col-md-12">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h5 class="mb-0">{{ $pengajuanSurat->jenis_surat }}</h5>
-                            <small class="text-muted">{{ $pengajuanSurat->nomor_pengajuan }}</small>
+                            <h5 class="mb-0"><?php echo e($pengajuanSurat->jenis_surat); ?></h5>
+                            <small class="text-muted"><?php echo e($pengajuanSurat->nomor_pengajuan); ?></small>
                         </div>
                         <div>
                             <button class="btn btn-danger btn-sm me-2" onclick="downloadPDF()">
@@ -27,7 +27,7 @@
                             <button class="btn btn-primary btn-sm me-2" onclick="window.print()">
                                 <i class="ti ti-printer me-1"></i> Cetak
                             </button>
-                            <a href="{{ route('pengajuan-surat.show', $pengajuanSurat->id) }}" class="btn btn-secondary btn-sm">
+                            <a href="<?php echo e(route('pengajuan-surat.show', $pengajuanSurat->id)); ?>" class="btn btn-secondary btn-sm">
                                 <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
                         </div>
@@ -52,8 +52,8 @@
 
                 <!-- Letter Title -->
                 <div style="text-align: center; margin-bottom: 15px;">
-                    <h2 style="font-weight: 700; margin: 0 0 3px 0; font-size: 23px; text-decoration: underline;">{{ $pengajuanSurat->jenis_surat }}</h2>
-                    <p style="margin: 0; font-size: 16px;">No. {{ $pengajuanSurat->nomor_pengajuan }}</p>
+                    <h2 style="font-weight: 700; margin: 0 0 3px 0; font-size: 23px; text-decoration: underline;"><?php echo e($pengajuanSurat->jenis_surat); ?></h2>
+                    <p style="margin: 0; font-size: 16px;">No. <?php echo e($pengajuanSurat->nomor_pengajuan); ?></p>
                 </div>
 
                 <!-- Letter Body -->
@@ -63,26 +63,31 @@
                     <!-- Data Pemohon -->
                     <div style="margin-bottom: 18px; font-size: 16px;">
                         <div style="margin-bottom: 3px; line-height: 1.3;">
-                            <span style="font-weight: bold; display: inline-block; width: 130px;">Nama</span>: {{ $pengajuanSurat->user->nama_lengkap ?? '-' }}
+                            <span style="font-weight: bold; display: inline-block; width: 130px;">Nama</span>: <?php echo e($pengajuanSurat->user->nama_lengkap ?? '-'); ?>
+
                         </div>
                         <div style="margin-bottom: 3px; line-height: 1.3;">
-                            <span style="font-weight: bold; display: inline-block; width: 130px;">NIK</span>: {{ $pengajuanSurat->user->nik ?? '-' }}
+                            <span style="font-weight: bold; display: inline-block; width: 130px;">NIK</span>: <?php echo e($pengajuanSurat->user->nik ?? '-'); ?>
+
                         </div>
                         <div style="margin-bottom: 3px; line-height: 1.3;">
-                            <span style="font-weight: bold; display: inline-block; width: 130px;">Tempat, Tgl Lahir</span>: {{ $pengajuanSurat->user->tempat_lahir ?? '-' }}, {{ $pengajuanSurat->user->tanggal_lahir ? \Carbon\Carbon::parse($pengajuanSurat->user->tanggal_lahir)->format('d F Y') : '-' }}
+                            <span style="font-weight: bold; display: inline-block; width: 130px;">Tempat, Tgl Lahir</span>: <?php echo e($pengajuanSurat->user->tempat_lahir ?? '-'); ?>, <?php echo e($pengajuanSurat->user->tanggal_lahir ? \Carbon\Carbon::parse($pengajuanSurat->user->tanggal_lahir)->format('d F Y') : '-'); ?>
+
                         </div>
                         <div style="margin-bottom: 3px; line-height: 1.3;">
-                            <span style="font-weight: bold; display: inline-block; width: 130px;">Alamat</span>: {{ $pengajuanSurat->user->alamat ?? '-' }} RT {{ $pengajuanSurat->user->rt ?? '-' }} RW {{ $pengajuanSurat->user->rw ?? '-' }}
+                            <span style="font-weight: bold; display: inline-block; width: 130px;">Alamat</span>: <?php echo e($pengajuanSurat->user->alamat ?? '-'); ?> RT <?php echo e($pengajuanSurat->user->rt ?? '-'); ?> RW <?php echo e($pengajuanSurat->user->rw ?? '-'); ?>
+
                         </div>
                         <div style="margin-bottom: 3px; line-height: 1.3;">
-                            <span style="font-weight: bold; display: inline-block; width: 130px;">No. Telepon</span>: {{ $pengajuanSurat->user->no_telepon ?? '-' }}
+                            <span style="font-weight: bold; display: inline-block; width: 130px;">No. Telepon</span>: <?php echo e($pengajuanSurat->user->no_telepon ?? '-'); ?>
+
                         </div>
                     </div>
 
                     <p style="margin-bottom: 14px;">Dengan penuh tanggung jawab, kami nyatakan bahwa data tersebut di atas adalah benar adanya.</p>
 
                     <!-- Dynamic Fields Section -->
-                    @php
+                    <?php
                         $jenisSurat = $pengajuanSurat->jenis_surat;
                         $allSuratTypes = \App\Models\PengajuanSurat::getSuratTypes();
                         $fields = $allSuratTypes[$jenisSurat]['fields'] ?? [];
@@ -92,9 +97,9 @@
                                 $textFields[$fieldName] = $fieldConfig;
                             }
                         }
-                    @endphp
+                    ?>
 
-                    @php
+                    <?php
                         $hasFilledFields = false;
                         foreach ($textFields as $fieldName => $fieldConfig) {
                             if ($pengajuanSurat->{$fieldName} !== null && $pengajuanSurat->{$fieldName} !== '') {
@@ -102,56 +107,62 @@
                                 break;
                             }
                         }
-                    @endphp
+                    ?>
 
-                    @if($hasFilledFields)
+                    <?php if($hasFilledFields): ?>
                         <p style="margin-bottom: 14px; font-weight: 500; font-size: 16px;">Keterangan Pengajuan:</p>
                         <div style="margin-bottom: 12px;">
-                            @foreach($textFields as $fieldName => $fieldConfig)
-                                @php
+                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldName => $fieldConfig): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $fieldValue = $pengajuanSurat->{$fieldName};
                                     $isTextarea = $fieldConfig['type'] === 'textarea';
                                     $isSelect = $fieldConfig['type'] === 'select';
                                     $isDate = $fieldConfig['type'] === 'date';
                                     $isNumber = $fieldConfig['type'] === 'number';
-                                @endphp
+                                ?>
                                 
-                                @if($fieldValue !== null && $fieldValue !== '')
+                                <?php if($fieldValue !== null && $fieldValue !== ''): ?>
                                     <div style="margin-bottom: 3px; line-height: 1.3; font-size: 16px;">
-                                        <span style="font-weight: bold; display: inline-block; width: 130px;">{{ $fieldConfig['label'] }}</span>: 
-                                        @if($isTextarea)
-                                            <span style="white-space: pre-wrap; word-wrap: break-word;">{{ $fieldValue }}</span>
-                                        @elseif($isDate)
-                                            {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
-                                        @elseif($isNumber)
-                                            @if(str_contains(strtolower($fieldConfig['label']), 'luas'))
-                                                {{ number_format($fieldValue, 2, ',', '.') }} m²
-                                            @elseif(str_contains(strtolower($fieldConfig['label']), 'harga|nominal|jumlah'))
-                                                Rp. {{ number_format($fieldValue, 0, ',', '.') }}
-                                            @else
-                                                {{ $fieldValue }}
-                                            @endif
-                                        @else
-                                            {{ $fieldValue }}
-                                        @endif
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endif
+                                        <span style="font-weight: bold; display: inline-block; width: 130px;"><?php echo e($fieldConfig['label']); ?></span>: 
+                                        <?php if($isTextarea): ?>
+                                            <span style="white-space: pre-wrap; word-wrap: break-word;"><?php echo e($fieldValue); ?></span>
+                                        <?php elseif($isDate): ?>
+                                            <?php echo e(\Carbon\Carbon::parse($fieldValue)->format('d F Y')); ?>
 
-                    @if($pengajuanSurat->keperluan)
+                                        <?php elseif($isNumber): ?>
+                                            <?php if(str_contains(strtolower($fieldConfig['label']), 'luas')): ?>
+                                                <?php echo e(number_format($fieldValue, 2, ',', '.')); ?> m²
+                                            <?php elseif(str_contains(strtolower($fieldConfig['label']), 'harga|nominal|jumlah')): ?>
+                                                Rp. <?php echo e(number_format($fieldValue, 0, ',', '.')); ?>
+
+                                            <?php else: ?>
+                                                <?php echo e($fieldValue); ?>
+
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <?php echo e($fieldValue); ?>
+
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if($pengajuanSurat->keperluan): ?>
                         <div style="margin-bottom: 12px; font-size: 16px;">
                             <div style="margin-bottom: 3px; line-height: 1.3;">
-                                <span style="font-weight: bold; display: inline-block; width: 130px;">Keperluan</span>: {{ $pengajuanSurat->keperluan }}
+                                <span style="font-weight: bold; display: inline-block; width: 130px;">Keperluan</span>: <?php echo e($pengajuanSurat->keperluan); ?>
+
                             </div>
-                            @if($pengajuanSurat->keterangan_tambahan)
+                            <?php if($pengajuanSurat->keterangan_tambahan): ?>
                             <div style="margin-bottom: 3px; line-height: 1.3;">
-                                <span style="font-weight: bold; display: inline-block; width: 130px;">Keterangan</span>: {{ $pengajuanSurat->keterangan_tambahan }}
+                                <span style="font-weight: bold; display: inline-block; width: 130px;">Keterangan</span>: <?php echo e($pengajuanSurat->keterangan_tambahan); ?>
+
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <!-- Signature Section -->
@@ -161,14 +172,14 @@
                             <p style="margin: 0 0 10px 0; font-size: 16px;">Pemohon</p>
                             <div style="margin: 0 0 8px 0; min-height: 120px; display: flex; align-items: flex-end; justify-content: center;">
                             </div>
-                            <p style="margin: 0; font-size: 16px; font-weight: 500;">{{ $pengajuanSurat->user->nama_lengkap ?? '-' }}</p>
+                            <p style="margin: 0; font-size: 16px; font-weight: 500;"><?php echo e($pengajuanSurat->user->nama_lengkap ?? '-'); ?></p>
                         </div>
                         <div style="width: 49%; text-align: center;">
                             <p style="margin: 0 0 10px 0; font-size: 16px;">Mengetahui</p>
                             <div style="margin: 0 0 8px 0; min-height: 120px; display: flex; align-items: center; justify-content: center;">
-                                @if($qrCodeUrl)
-                                    <img src="{{ $qrCodeUrl }}" alt="QR Code Verifikasi" style="width: 100px; height: 100px; border: 1px solid #999; padding: 2px;" crossorigin="anonymous">
-                                @endif
+                                <?php if($qrCodeUrl): ?>
+                                    <img src="<?php echo e($qrCodeUrl); ?>" alt="QR Code Verifikasi" style="width: 100px; height: 100px; border: 1px solid #999; padding: 2px;" crossorigin="anonymous">
+                                <?php endif; ?>
                             </div>
                             <p style="margin: 0; font-size: 16px; font-weight: 500;">Kepala Desa Kedung Kendo</p>
                             <p style="margin: 2px 0 0 0; font-size: 13px; color: #999;">(Scan untuk verifikasi)</p>
@@ -179,7 +190,7 @@
                 <!-- Footer -->
                 <!-- <div style="text-align: center; padding-top: 20px; border-top: 1px solid #ddd; margin-top: 30px; font-size: 11px; color: #999;">
                     <p style="margin: 5px 0;">Dokumen ini dicetak dari Sistem Informasi Desa Kedung Kendo</p>
-                    <p style="margin: 5px 0;">Tanggal: {{ now()->format('d F Y') }} | Nomor: {{ $pengajuanSurat->nomor_pengajuan }}</p>
+                    <p style="margin: 5px 0;">Tanggal: <?php echo e(now()->format('d F Y')); ?> | Nomor: <?php echo e($pengajuanSurat->nomor_pengajuan); ?></p>
                 </div> -->
             </div>
         </div>
@@ -242,7 +253,7 @@
         const element = document.getElementById('letterContent');
         const opt = {
             margin: 5,
-            filename: '{{ $pengajuanSurat->nomor_pengajuan }}.pdf',
+            filename: '<?php echo e($pengajuanSurat->nomor_pengajuan); ?>.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
                 scale: 2,
@@ -260,3 +271,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php /**PATH C:\Users\User\Documents\UKK\project-sekolah\resources\views/user/pengajuan-surat/pdf-preview.blade.php ENDPATH**/ ?>

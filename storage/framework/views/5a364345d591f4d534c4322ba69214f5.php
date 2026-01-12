@@ -1,16 +1,14 @@
-@extends('layouts.landing')
+<?php $__env->startSection('title', 'Pratayang TTD - ' . $pengajuanSurat->jenis_surat); ?>
 
-@section('title', 'Pratayang TTD - ' . $pengajuanSurat->jenis_surat)
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pc-content" style="padding: 40px 0;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <!-- Header Section -->
                 <div class="mb-4">
-                    <h3 class="fw-bold text-primary mb-2">Pratayang TTD Lembar {{ $pengajuanSurat->jenis_surat }}</h3>
-                    <p class="text-muted mb-3">Validasi dokumen {{ $pengajuanSurat->jenis_surat }}</p>
+                    <h3 class="fw-bold text-primary mb-2">Pratayang TTD Lembar <?php echo e($pengajuanSurat->jenis_surat); ?></h3>
+                    <p class="text-muted mb-3">Validasi dokumen <?php echo e($pengajuanSurat->jenis_surat); ?></p>
                     <a href="/" class="text-decoration-none">
                         <i class="ti ti-home me-1"></i>Beranda
                     </a>
@@ -26,7 +24,7 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <small class="text-muted d-block mb-1">Nama Lengkap</small>
-                                        <p class="fw-bold mb-0">{{ $pengajuanSurat->user->nama_lengkap ?? '-' }}</p>
+                                        <p class="fw-bold mb-0"><?php echo e($pengajuanSurat->user->nama_lengkap ?? '-'); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -34,28 +32,28 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <small class="text-muted d-block mb-1">NIK</small>
-                                        <p class="fw-bold mb-0">{{ $pengajuanSurat->user->nik ?? '-' }}</p>
+                                        <p class="fw-bold mb-0"><?php echo e($pengajuanSurat->user->nik ?? '-'); ?></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        @if($pengajuanSurat->user->alamat || $pengajuanSurat->user->no_telepon)
+                        <?php if($pengajuanSurat->user->alamat || $pengajuanSurat->user->no_telepon): ?>
                         <div class="row mb-3">
-                            @if($pengajuanSurat->user->alamat)
+                            <?php if($pengajuanSurat->user->alamat): ?>
                             <div class="col-md-6 mb-3">
                                 <small class="text-muted d-block mb-1">Alamat</small>
-                                <p class="mb-0">{{ $pengajuanSurat->user->alamat }}</p>
+                                <p class="mb-0"><?php echo e($pengajuanSurat->user->alamat); ?></p>
                             </div>
-                            @endif
-                            @if($pengajuanSurat->user->no_telepon)
+                            <?php endif; ?>
+                            <?php if($pengajuanSurat->user->no_telepon): ?>
                             <div class="col-md-6 mb-3">
                                 <small class="text-muted d-block mb-1">No. Telepon</small>
-                                <p class="fw-bold mb-0">{{ $pengajuanSurat->user->no_telepon }}</p>
+                                <p class="fw-bold mb-0"><?php echo e($pengajuanSurat->user->no_telepon); ?></p>
                             </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -67,33 +65,33 @@
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3">
                                 <small class="text-muted d-block mb-1">Jenis Surat</small>
-                                <p class="fw-bold mb-0">{{ $pengajuanSurat->jenis_surat }}</p>
+                                <p class="fw-bold mb-0"><?php echo e($pengajuanSurat->jenis_surat); ?></p>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <small class="text-muted d-block mb-1">Nomor Pengajuan</small>
-                                <p class="fw-bold mb-0">{{ $pengajuanSurat->nomor_pengajuan }}</p>
+                                <p class="fw-bold mb-0"><?php echo e($pengajuanSurat->nomor_pengajuan); ?></p>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3">
                                 <small class="text-muted d-block mb-1">Tanggal Pengajuan</small>
-                                <p class="mb-0">{{ $pengajuanSurat->created_at->format('d M Y') }}</p>
+                                <p class="mb-0"><?php echo e($pengajuanSurat->created_at->format('d M Y')); ?></p>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <small class="text-muted d-block mb-1">Status Pengajuan</small>
-                                <p class="mb-0"><span class="badge {{ $pengajuanSurat->status_badge }}">{{ $pengajuanSurat->status }}</span></p>
+                                <p class="mb-0"><span class="badge <?php echo e($pengajuanSurat->status_badge); ?>"><?php echo e($pengajuanSurat->status); ?></span></p>
                             </div>
                         </div>
 
-                        @if($pengajuanSurat->tanggal_selesai)
+                        <?php if($pengajuanSurat->tanggal_selesai): ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <small class="text-muted d-block mb-1">Tanggal Selesai</small>
-                                <p class="mb-0">{{ $pengajuanSurat->tanggal_selesai->format('d M Y') }}</p>
+                                <p class="mb-0"><?php echo e($pengajuanSurat->tanggal_selesai->format('d M Y')); ?></p>
                             </div>
                         </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -141,4 +139,6 @@
         <p class="mb-0">© 2026 Sistem Informasi Desa | Verifikasi Surat Resmi</p>
     </div>
 </footer>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.landing', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\User\Documents\UKK\project-sekolah\resources\views/user/pengajuan-surat/verify.blade.php ENDPATH**/ ?>
