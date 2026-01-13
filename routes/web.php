@@ -246,6 +246,13 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/dashboard/stats', [\App\Http\Controllers\DashboardController::class, 'stats'])->name('dashboard.stats');
 
         /*
+        | Debug Routes (Development only)
+        */
+        if (app()->environment(['local', 'testing'])) {
+            require __DIR__ . '/debug-email.php';
+        }
+
+        /*
         | Activities Routes (User)
         */
         Route::prefix('activities')->name('activities.')->group(function () {

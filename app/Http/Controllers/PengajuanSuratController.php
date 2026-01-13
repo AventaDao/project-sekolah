@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\PengajuanSurat;
 use App\Models\Activity;
+use App\Mail\SuratSelesaiMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
@@ -230,7 +232,45 @@ class PengajuanSuratController extends Controller
             }
         }
 
+        // Check if status will change to "Selesai" BEFORE updating
+        $isChangingToSelesai = ($validated['status'] === 'Selesai' && $pengajuanSurat->status !== 'Selesai');
+        
+        \Log::info('Update status pengajuan surat', [
+            'nomor_pengajuan' => $pengajuanSurat->nomor_pengajuan,
+            'status_lama' => $pengajuanSurat->status,
+            'status_baru' => $validated['status'],
+            'isChangingToSelesai' => $isChangingToSelesai,
+            'user_email' => $pengajuanSurat->user->email ?? 'No email'
+        ]);
+
         $pengajuanSurat->update($data);
+
+        // Send email notification if status changed to "Selesai"
+        if ($isChangingToSelesai) {
+            try {
+                // Refresh to get updated data
+                $pengajuanSurat->refresh();
+                Mail::to($pengajuanSurat->user->email)
+                    ->send(new SuratSelesaiMail($pengajuanSurat));
+                \Log::info('✓ Email notifikasi surat selesai berhasil dikirim', [
+                    'nomor_pengajuan' => $pengajuanSurat->nomor_pengajuan,
+                    'ke_email' => $pengajuanSurat->user->email
+                ]);
+            } catch (\Exception $e) {
+                // Log error but don't fail the request
+                \Log::error('✗ Failed to send email notification', [
+                    'nomor_pengajuan' => $pengajuanSurat->nomor_pengajuan,
+                    'ke_email' => $pengajuanSurat->user->email,
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]);
+            }
+        } else {
+            \Log::info('Email tidak dikirim karena kondisi tidak terpenuhi', [
+                'isChangingToSelesai' => $isChangingToSelesai
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', 'Status pengajuan berhasil diperbarui');
