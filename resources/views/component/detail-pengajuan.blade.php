@@ -24,59 +24,59 @@
         </h5>
     </div>
     <div class="card-body">
-        <div class="row">
-            @foreach($textFields as $fieldName => $fieldConfig)
-                @php
-                    $fieldValue = $pengajuanSurat->{$fieldName};
-                    $isTextarea = $fieldConfig['type'] === 'textarea';
-                    $isSelect = $fieldConfig['type'] === 'select';
-                    $isDate = $fieldConfig['type'] === 'date';
-                    $isNumber = $fieldConfig['type'] === 'number';
-                @endphp
-                
-                @if($fieldValue !== null && $fieldValue !== '')
-                    <div class="col-md-{{ $isTextarea ? '12' : '6' }} mb-3">
-                        <div class="form-group">
-                            <label class="form-label text-muted" style="font-size: 12px;">
-                                @if($fieldConfig['required'])
-                                    <i class="ti ti-circle-filled me-1" style="font-size: 6px; vertical-align: middle;"></i>
-                                @endif
-                                {{ $fieldConfig['label'] }}
-                            </label>
-                            
-                            @if($isTextarea)
-                                <div class="alert alert-light border" style="background-color: #f9f9f9;">
-                                    <p class="mb-0" style="white-space: pre-wrap; word-wrap: break-word;">
-                                        {{ $fieldValue }}
-                                    </p>
-                                </div>
-                            @elseif($isDate)
-                                <div class="badge bg-light text-dark">
-                                    <i class="ti ti-calendar me-1"></i>
-                                    {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
-                                </div>
-                            @elseif($isNumber)
-                                <div class="fw-semibold">
-                                    @if(str_contains(strtolower($fieldConfig['label']), 'luas') || 
-                                        str_contains(strtolower($fieldConfig['label']), 'jumlah'))
-                                        @if(str_contains(strtolower($fieldConfig['label']), 'luas'))
-                                            {{ number_format($fieldValue, 2, ',', '.') }} m²
-                                        @else
-                                            Rp. {{ number_format($fieldValue, 0, ',', '.') }}
-                                        @endif
-                                    @else
-                                        {{ $fieldValue }}
+        <div class="table-responsive">
+            <table class="table table-borderless" style="text-align: left;">
+                <tbody>
+                    @foreach($textFields as $fieldName => $fieldConfig)
+                        @php
+                            $fieldValue = $pengajuanSurat->{$fieldName};
+                            $isTextarea = $fieldConfig['type'] === 'textarea';
+                            $isSelect = $fieldConfig['type'] === 'select';
+                            $isDate = $fieldConfig['type'] === 'date';
+                            $isNumber = $fieldConfig['type'] === 'number';
+                        @endphp
+                        
+                        @if($fieldValue !== null && $fieldValue !== '')
+                            <tr>
+                                <td width="30%" class="text-muted fw-semibold">
+                                    @if($fieldConfig['required'])
+                                        <i class="ti ti-circle-filled me-1" style="font-size: 6px; vertical-align: middle;"></i>
                                     @endif
-                                </div>
-                            @else
-                                <div class="fw-semibold">
-                                    {{ $fieldValue }}
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-            @endforeach
+                                    {{ $fieldConfig['label'] }}
+                                </td>
+                                <td width="5%" style="text-align: center;">:</td>
+                                <td style="text-align: left !important;">
+                                    @if($isTextarea)
+                                        <p class="mb-0" style="white-space: pre-wrap; word-wrap: break-word; text-align: left;">
+                                            {{ $fieldValue }}
+                                        </p>
+                                    @elseif($isDate)
+                                        <span class="badge bg-light text-dark">
+                                            <i class="ti ti-calendar me-1"></i>
+                                            {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
+                                        </span>
+                                    @elseif($isNumber)
+                                        <strong style="display: block; text-align: left;">
+                                            @if(str_contains(strtolower($fieldConfig['label']), 'luas') || 
+                                                str_contains(strtolower($fieldConfig['label']), 'jumlah'))
+                                                @if(str_contains(strtolower($fieldConfig['label']), 'luas'))
+                                                    {{ number_format($fieldValue, 2, ',', '.') }} m²
+                                                @else
+                                                    Rp. {{ number_format($fieldValue, 0, ',', '.') }}
+                                                @endif
+                                            @else
+                                                {{ $fieldValue }}
+                                            @endif
+                                        </strong>
+                                    @else
+                                        <strong style="display: block; text-align: left;">{{ $fieldValue }}</strong>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
         </div>
 
         @php

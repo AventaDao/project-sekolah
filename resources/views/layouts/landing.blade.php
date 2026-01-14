@@ -26,9 +26,28 @@
     <style>
         .navbar {
             transition: background .2s ease-in-out;
+            background: linear-gradient(135deg, #4680ff 0%, #2c3e50 100%) !important;
+            box-shadow: 0 5px 20px rgba(70, 128, 255, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 999;
         }
         .navbar.default {
             transition: background .2s ease-in-out;
+            background: linear-gradient(135deg, #4680ff 0%, #2c3e50 100%) !important;
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .navbar-dark .navbar-nav .nav-link:hover,
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-dark .navbar-brand {
+            filter: brightness(1.2);
         }
     </style>
 </head>

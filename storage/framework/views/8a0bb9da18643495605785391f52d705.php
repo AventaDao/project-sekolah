@@ -1,8 +1,6 @@
-@extends('layouts.dashboard')
+<?php $__env->startSection('title', 'My Profile'); ?>
 
-@section('title', 'My Profile')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* Ensure avatar is always square and not stretched */
         .chat-avtar img {
@@ -180,10 +178,10 @@
         }
     </style>
     
-    @php
+    <?php
         // Data sudah di-cache dari ProfileController
         // Tidak perlu parsing ulang di sini
-    @endphp
+    ?>
 
     <div class="pc-content">
         <!-- [ breadcrumb ] start -->
@@ -218,41 +216,41 @@
                                     <div class="profile-card-header">
                                         <div class="profile-avatar-container">
                                             <img class="profile-avatar"
-                                                src="{{ $avatarUrl }}"
-                                                alt="{{ $user->nama_lengkap }}"
+                                                src="<?php echo e($avatarUrl); ?>"
+                                                alt="<?php echo e($user->nama_lengkap); ?>"
                                                 width="180"
                                                 height="180"
                                                 loading="eager"
                                                 decoding="async">
                                         </div>
-                                        <h5 class="mb-0" style="font-size: 22px; margin-bottom: 8px;">{{ $user->nama_lengkap }}</h5>
-                                        <p class="text-muted text-sm" style="margin-bottom: 0;">{{ $user->pekerjaan ?? 'N/A' }}</p>
+                                        <h5 class="mb-0" style="font-size: 22px; margin-bottom: 8px;"><?php echo e($user->nama_lengkap); ?></h5>
+                                        <p class="text-muted text-sm" style="margin-bottom: 0;"><?php echo e($user->pekerjaan ?? 'N/A'); ?></p>
                                     </div>
                                     <div class="card-body">
                                         <hr class="my-3">
                                         <div class="mb-3">
                                             <i class="ti ti-mail me-2"></i>
-                                            <p class="mb-0 text-truncate"><small>{{ $user->email }}</small></p>
+                                            <p class="mb-0 text-truncate"><small><?php echo e($user->email); ?></small></p>
                                         </div>
                                         <div class="mb-3">
                                             <i class="ti ti-phone me-2"></i>
-                                            <p class="mb-0">{{ $user->no_telepon ?? 'N/A' }}</p>
+                                            <p class="mb-0"><?php echo e($user->no_telepon ?? 'N/A'); ?></p>
                                         </div>
                                         <div class="mb-3">
                                             <i class="ti ti-id me-2"></i>
-                                            <p class="mb-0">{{ $user->nik }}</p>
+                                            <p class="mb-0"><?php echo e($user->nik); ?></p>
                                         </div>
                                         <hr class="my-3">
                                         <div class="mb-3" style="text-align: center;">
-                                            <span class="badge bg-primary">{{ ucfirst($user->role) }}</span>
-                                            @if($user->is_verified)
+                                            <span class="badge bg-primary"><?php echo e(ucfirst($user->role)); ?></span>
+                                            <?php if($user->is_verified): ?>
                                                 <span class="badge bg-success">Terverifikasi</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="badge bg-warning">Belum Terverifikasi</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                         <div class="mt-3">
-                                            <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-sm w-100">
+                                            <a href="<?php echo e(route('profile.edit')); ?>" class="btn btn-primary btn-sm w-100">
                                                 <i class="ti ti-edit me-1"></i> Edit Profil
                                             </a>
                                         </div>
@@ -268,55 +266,56 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Nama Lengkap</strong></p>
-                                                <p class="mb-0">{{ $user->nama_lengkap }}</p>
+                                                <p class="mb-0"><?php echo e($user->nama_lengkap); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>NIK</strong></p>
-                                                <p class="mb-0">{{ $user->nik }}</p>
+                                                <p class="mb-0"><?php echo e($user->nik); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Tempat Lahir</strong></p>
-                                                <p class="mb-0">{{ $user->tempat_lahir ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->tempat_lahir ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Tanggal Lahir</strong></p>
-                                                <p class="mb-0">{{ $formatTanggal }}</p>
+                                                <p class="mb-0"><?php echo e($formatTanggal); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Umur</strong></p>
-                                                <p class="mb-0">{{ $umur ? $umur . ' tahun' : 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($umur ? $umur . ' tahun' : 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Jenis Kelamin</strong></p>
                                                 <p class="mb-0">
-                                                    @if($user->jenis_kelamin === 'L')
+                                                    <?php if($user->jenis_kelamin === 'L'): ?>
                                                         Laki-laki
-                                                    @elseif($user->jenis_kelamin === 'P')
+                                                    <?php elseif($user->jenis_kelamin === 'P'): ?>
                                                         Perempuan
-                                                    @else
-                                                        {{ $user->jenis_kelamin ?? 'N/A' }}
-                                                    @endif
+                                                    <?php else: ?>
+                                                        <?php echo e($user->jenis_kelamin ?? 'N/A'); ?>
+
+                                                    <?php endif; ?>
                                                 </p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Agama</strong></p>
-                                                <p class="mb-0">{{ $user->agama ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->agama ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Status Perkawinan</strong></p>
-                                                <p class="mb-0">{{ $user->status_perkawinan ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->status_perkawinan ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Kewarganegaraan</strong></p>
-                                                <p class="mb-0">{{ $user->kewarganegaraan ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->kewarganegaraan ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Pekerjaan</strong></p>
-                                                <p class="mb-0">{{ $user->pekerjaan ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->pekerjaan ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Pendidikan Terakhir</strong></p>
-                                                <p class="mb-0">{{ $user->pendidikan_terakhir ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->pendidikan_terakhir ?? 'N/A'); ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -330,35 +329,35 @@
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Alamat Lengkap</strong></p>
-                                                <p class="mb-0">{{ $user->alamat ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->alamat ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>RT</strong></p>
-                                                <p class="mb-0">{{ $user->rt ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->rt ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-2 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>RW</strong></p>
-                                                <p class="mb-0">{{ $user->rw ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->rw ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-4 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Desa</strong></p>
-                                                <p class="mb-0">{{ $user->desa ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->desa ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-4 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Kecamatan</strong></p>
-                                                <p class="mb-0">{{ $user->kecamatan ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->kecamatan ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Kabupaten</strong></p>
-                                                <p class="mb-0">{{ $user->kabupaten ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->kabupaten ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Provinsi</strong></p>
-                                                <p class="mb-0">{{ $user->provinsi ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->provinsi ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-4 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Kode Pos</strong></p>
-                                                <p class="mb-0">{{ $user->kode_pos ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->kode_pos ?? 'N/A'); ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -372,11 +371,11 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Nama Ayah</strong></p>
-                                                <p class="mb-0">{{ $user->nama_ayah ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->nama_ayah ?? 'N/A'); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Nama Ibu</strong></p>
-                                                <p class="mb-0">{{ $user->nama_ibu ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->nama_ibu ?? 'N/A'); ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -390,11 +389,11 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>Email</strong></p>
-                                                <p class="mb-0">{{ $user->email }}</p>
+                                                <p class="mb-0"><?php echo e($user->email); ?></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <p class="text-muted text-sm mb-1"><strong>No. Telepon</strong></p>
-                                                <p class="mb-0">{{ $user->no_telepon ?? 'N/A' }}</p>
+                                                <p class="mb-0"><?php echo e($user->no_telepon ?? 'N/A'); ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -408,4 +407,6 @@
         </div>
         <!-- [ Main Content ] end -->
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/myprofile.blade.php ENDPATH**/ ?>

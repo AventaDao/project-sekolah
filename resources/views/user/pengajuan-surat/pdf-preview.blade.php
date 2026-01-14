@@ -42,12 +42,19 @@
         <div class="col-lg-8 offset-lg-2">
             <div id="letterContent" style="background: white; padding: 30px 35px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
                 
-                <!-- Letter Header -->
-                <div style="text-align: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 12px;">
-                    <div style="margin-bottom: 8px;">
+                <!-- Letter Header with Icon -->
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 12px;">
+                    <!-- Icon -->
+                    <div style="flex-shrink: 0; margin-right: 15px;">
+                        <img src="{{ asset('assets/images/my/icon-sda.png') }}" alt="Logo Sidoarjo" style="width: 70px; height: 70px; object-fit: contain;" crossorigin="anonymous">
+                    </div>
+                    <!-- Text -->
+                    <div style="text-align: center; flex-grow: 1;">
                         <h3 style="font-weight: 700; margin: 0; font-size: 23px;">PEMERINTAH DESA KEDUNGKENDO</h3>
                         <p style="margin: 2px 0; font-size: 17px;">Kecamatan Candi Kabupaten Sidoarjo</p>
                     </div>
+                    <!-- Spacer untuk balance -->
+                    <div style="flex-shrink: 0; width: 70px; margin-left: 15px;"></div>
                 </div>
 
                 <!-- Letter Title -->

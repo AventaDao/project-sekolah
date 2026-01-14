@@ -49,18 +49,19 @@
 
     <!-- Statistik Cards User -->
     <div class="col-md-6 col-xl-4">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
-            <div class="card-body">
+        <div class="card stat-card stat-card-pengajuan border-0 shadow-md">
+            <div class="stat-card-bg"></div>
+            <div class="card-body position-relative z-1">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="text-muted mb-1">Pengajuan Saya</p>
-                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['my_pengajuan_menunggu'] + $stats['my_pengajuan_diproses'] + $stats['my_pengajuan_selesai']); ?>">0</h3>
-                        <small class="text-success">
+                        <p class="text-muted mb-1 fw-600">Pengajuan Saya</p>
+                        <h3 class="mb-0 counter stat-number" data-count="<?php echo e($stats['my_pengajuan_menunggu'] + $stats['my_pengajuan_diproses'] + $stats['my_pengajuan_selesai']); ?>">0</h3>
+                        <small class="stat-badge">
                             <i class="ti ti-trending-up"></i> Total Pengajuan
                         </small>
                     </div>
-                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-file-text text-success" style="font-size: 32px;"></i>
+                    <div class="stat-icon stat-icon-green">
+                        <i class="ti ti-file-text"></i>
                     </div>
                 </div>
             </div>
@@ -68,18 +69,19 @@
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
-            <div class="card-body">
+        <div class="card stat-card stat-card-pengaduan border-0 shadow-md">
+            <div class="stat-card-bg"></div>
+            <div class="card-body position-relative z-1">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="text-muted mb-1">Pengaduan Saya</p>
-                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['my_pengaduan_menunggu'] + $stats['my_pengaduan_selesai']); ?>">0</h3>
-                        <small class="text-success">
+                        <p class="text-muted mb-1 fw-600">Pengaduan Saya</p>
+                        <h3 class="mb-0 counter stat-number" data-count="<?php echo e($stats['my_pengaduan_menunggu'] + $stats['my_pengaduan_selesai']); ?>">0</h3>
+                        <small class="stat-badge">
                             <i class="ti ti-trending-up"></i> Total Pengaduan
                         </small>
                     </div>
-                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-message-report text-success" style="font-size: 32px;"></i>
+                    <div class="stat-icon stat-icon-orange">
+                        <i class="ti ti-message-report"></i>
                     </div>
                 </div>
             </div>
@@ -87,18 +89,19 @@
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
-            <div class="card-body">
+        <div class="card stat-card stat-card-surat border-0 shadow-md">
+            <div class="stat-card-bg"></div>
+            <div class="card-body position-relative z-1">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="text-muted mb-1">Total Surat Disetujui (Global)</p>
-                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['surat_disetujui']); ?>">0</h3>
-                        <small class="text-success">
+                        <p class="text-muted mb-1 fw-600">Surat Disetujui (Global)</p>
+                        <h3 class="mb-0 counter stat-number" data-count="<?php echo e($stats['surat_disetujui']); ?>">0</h3>
+                        <small class="stat-badge">
                             <i class="ti ti-circle-check"></i> Status Selesai
                         </small>
                     </div>
-                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-file-check text-success" style="font-size: 32px;"></i>
+                    <div class="stat-icon stat-icon-cyan">
+                        <i class="ti ti-file-check"></i>
                     </div>
                 </div>
             </div>
@@ -290,37 +293,52 @@
                 <h5 class="mb-0"><i class="ti ti-bolt me-2"></i>Menu Cepat</h5>
             </div>
             <div class="card-body">
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-md-4">
-                        <a href="<?php echo e(route('pengajuan-surat.create')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-primary rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-file-plus text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('pengajuan-surat.create')); ?>" class="quick-action-card quick-action-ajukan">
+                            <div class="quick-action-content">
+                                <div class="quick-action-icon-wrapper">
+                                    <div class="quick-action-icon bg-gradient-primary">
+                                        <i class="ti ti-file-plus"></i>
+                                    </div>
                                 </div>
-                                <h6 class="mb-0">Ajukan Surat</h6>
-                                <small class="text-muted">Buat pengajuan baru</small>
+                                <h6 class="quick-action-title">Ajukan Surat</h6>
+                                <p class="quick-action-desc">Buat pengajuan baru</p>
+                            </div>
+                            <div class="quick-action-arrow">
+                                <i class="ti ti-arrow-right"></i>
                             </div>
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="<?php echo e(route('pengajuan-surat.index')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-success rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-file-text text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('pengajuan-surat.index')); ?>" class="quick-action-card quick-action-riwayat">
+                            <div class="quick-action-content">
+                                <div class="quick-action-icon-wrapper">
+                                    <div class="quick-action-icon bg-gradient-success">
+                                        <i class="ti ti-file-text"></i>
+                                    </div>
                                 </div>
-                                <h6 class="mb-0">Riwayat Pengajuan</h6>
-                                <small class="text-muted">Lihat semua pengajuan</small>
+                                <h6 class="quick-action-title">Riwayat Pengajuan</h6>
+                                <p class="quick-action-desc">Lihat semua pengajuan</p>
+                            </div>
+                            <div class="quick-action-arrow">
+                                <i class="ti ti-arrow-right"></i>
                             </div>
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="<?php echo e(route('pengaduan.index')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-info rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-message-report text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('pengaduan.index')); ?>" class="quick-action-card quick-action-pengaduan">
+                            <div class="quick-action-content">
+                                <div class="quick-action-icon-wrapper">
+                                    <div class="quick-action-icon bg-gradient-info">
+                                        <i class="ti ti-message-report"></i>
+                                    </div>
                                 </div>
-                                <h6 class="mb-0">Pengaduan Saya</h6>
-                                <small class="text-muted">Kelola pengaduan</small>
+                                <h6 class="quick-action-title">Pengaduan Saya</h6>
+                                <p class="quick-action-desc">Kelola pengaduan</p>
+                            </div>
+                            <div class="quick-action-arrow">
+                                <i class="ti ti-arrow-right"></i>
                             </div>
                         </a>
                     </div>
@@ -425,120 +443,482 @@
 </div>
 
 <style>
-/* Card Animations */
+/* ============================================
+   MODERN GRADIENT + GLASSMORPHISM DASHBOARD
+   ============================================ */
+
+/* Statistik Cards dengan Gradient Unik */
 .stat-card {
-    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.3) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.stat-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.stat-card-pengajuan .stat-card-bg {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e7e5d 100%);
+}
+
+.stat-card-pengaduan .stat-card-bg {
+    background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+}
+
+.stat-card-surat .stat-card-bg {
+    background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%);
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
 }
 
-.hover-card {
-    transition: all 0.3s ease;
+.stat-card:hover .stat-icon {
+    transform: scale(1.15) rotate(5deg);
 }
 
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+.stat-number {
+    background: linear-gradient(135deg, #4680ff 0%, #667eea 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 28px;
 }
 
-/* Berita Item Styles */
-.berita-item {
-    transition: all 0.2s ease;
-}
-
-.berita-item:hover {
-    background-color: #f9fbff;
-}
-
-/* Avatar Styles */
-.avatar-lg {
-    width: 60px;
-    height: 60px;
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 32px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
 }
 
+.stat-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: inherit;
+    filter: blur(10px);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.stat-icon-green {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e7e5d 100%);
+    box-shadow: 0 8px 30px rgba(44, 168, 127, 0.3);
+}
+
+.stat-icon-orange {
+    background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+    box-shadow: 0 8px 30px rgba(255, 152, 0, 0.3);
+}
+
+.stat-icon-cyan {
+    background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%);
+    box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3);
+}
+
+.stat-badge {
+    color: #6c757d;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.stat-card:hover .stat-badge {
+    color: #4680ff;
+}
+
+/* Shadow Enhancement */
+.shadow-md {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Status Cards dengan Warna Vibrant */
+.hover-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.hover-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.hover-card:hover::before {
+    left: 100%;
+}
+
+.hover-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar dengan Gradient */
 .avatar-md {
+    min-width: 50px;
     width: 50px;
     height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
 }
 
-.bg-light-primary {
-    background-color: #e7f1ff !important;
+.avatar-md.bg-warning {
+    background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+    box-shadow: 0 8px 20px rgba(255, 152, 0, 0.25);
 }
 
-.bg-light-success {
-    background-color: #e6f7f3 !important;
+.avatar-md.bg-info {
+    background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%);
+    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.25);
 }
 
-.bg-light-danger {
-    background-color: #ffe6e6 !important;
+.avatar-md.bg-success {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e7e5d 100%);
+    box-shadow: 0 8px 20px rgba(44, 168, 127, 0.25);
 }
 
-.bg-light-warning {
-    background-color: #fff3cd !important;
+.hover-card:hover .avatar-md {
+    transform: scale(1.1) rotate(-5deg);
 }
 
-.bg-light-info {
-    background-color: #e1f5ff !important;
+/* Progress Bar Gradient */
+.progress {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    height: 8px;
 }
 
-/* Quick Action Cards */
+.progress-bar {
+    background: linear-gradient(90deg, #4680ff 0%, #667eea 100%);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.progress-bar.bg-warning {
+    background: linear-gradient(90deg, #ff9800 0%, #ff6f00 100%) !important;
+}
+
+.progress-bar.bg-info {
+    background: linear-gradient(90deg, #00d4ff 0%, #00a8cc 100%) !important;
+}
+
+.progress-bar.bg-success {
+    background: linear-gradient(90deg, #2ca87f 0%, #1e7e5d 100%) !important;
+}
+
+/* Quick Action Cards - Enhanced 3D Design */
 .quick-action-card {
     text-decoration: none;
     color: inherit;
-    display: block;
-    border: 2px solid #f0f0f0;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: none;
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 28px 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.quick-action-card:hover {
-    border-color: #4680ff;
-    background-color: #f9fbff;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(70, 128, 255, 0.2);
+.quick-action-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(70, 128, 255, 0) 0%, rgba(102, 126, 234, 0.15) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
 }
 
-/* Counter Animation */
-.counter {
+.quick-action-card::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(70, 128, 255, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.quick-action-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.quick-action-icon-wrapper {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.quick-action-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+    font-weight: 700;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.quick-action-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: inherit;
+    filter: blur(15px);
+    opacity: 0.6;
+    z-index: -1;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #4680ff 0%, #357abd 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e7e5d 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #00d4ff 0%, #00a8cc 100%);
+}
+
+.quick-action-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.quick-action-desc {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.quick-action-arrow {
+    position: relative;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(70, 128, 255, 0.1);
+    color: #4680ff;
+    font-size: 18px;
     font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: auto;
+}
+
+/* Hover Effects */
+.quick-action-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 60px rgba(70, 128, 255, 0.25);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+}
+
+.quick-action-card:hover::before {
+    opacity: 1;
+}
+
+.quick-action-card:hover::after {
+    opacity: 1;
+}
+
+.quick-action-card:hover .quick-action-icon {
+    transform: scale(1.12) translateY(-8px);
+}
+
+.quick-action-card:hover .quick-action-title {
+    color: #4680ff;
+    transform: translateY(-2px);
+}
+
+.quick-action-card:hover .quick-action-desc {
+    color: #4680ff;
+}
+
+.quick-action-card:hover .quick-action-arrow {
+    background: rgba(70, 128, 255, 0.2);
+    transform: translateX(4px);
+}
+
+.quick-action-ajukan:hover .bg-gradient-primary {
+    filter: brightness(1.15);
+}
+
+.quick-action-riwayat:hover .bg-gradient-success {
+    filter: brightness(1.15);
+}
+
+.quick-action-pengaduan:hover .bg-gradient-info {
+    filter: brightness(1.15);
+}
+
+/* Card Header Styling */
+.card {
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+/* Exclude Welcome Card from generic card styling */
+.card.bg-primary {
+    background: linear-gradient(135deg, #4680ff 0%, #2c3e50 100%) !important;
+    border: none !important;
+    backdrop-filter: none;
+}
+
+.card.bg-primary .card-body {
+    padding: 2rem !important;
+}
+
+.card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(70, 128, 255, 0.05) 100%) !important;
+    border-bottom: 1px solid rgba(70, 128, 255, 0.1) !important;
+    border-radius: 12px 12px 0 0;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.alert-warning {
+    background: rgba(255, 152, 0, 0.08) !important;
+    border-color: rgba(255, 152, 0, 0.2) !important;
+}
+
+.alert-success {
+    background: rgba(44, 168, 127, 0.08) !important;
+    border-color: rgba(44, 168, 127, 0.2) !important;
+}
+
+/* Title Styling */
+h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    background: linear-gradient(135deg, #4680ff 0%, #667eea 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Counter Animation Enhanced */
+.counter {
+    font-weight: 700;
     color: #4680ff;
 }
 
 /* Carousel Styles */
 #beritaCarousel {
     position: relative;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 #beritaCarousel .carousel-control-prev,
 #beritaCarousel .carousel-control-next {
-    background-color: rgba(255, 255, 255, 0.8);
+    background: rgba(70, 128, 255, 0.15);
     width: 50px;
     height: 50px;
     border-radius: 50%;
     top: 50%;
     transform: translateY(-50%);
-    border: none;
+    border: 2px solid rgba(70, 128, 255, 0.3);
     opacity: 0.7;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 #beritaCarousel .carousel-control-prev:hover,
 #beritaCarousel .carousel-control-next:hover {
     opacity: 1;
-    background-color: rgba(70, 128, 255, 0.1);
+    background: rgba(70, 128, 255, 0.25);
+    border-color: #4680ff;
+    transform: translateY(-50%) scale(1.1);
 }
 
 #beritaCarousel .carousel-control-prev {
@@ -549,28 +929,75 @@
     right: 15px;
 }
 
-#beritaCarousel .carousel-indicators button {
-    background-color: #ccc !important;
-    opacity: 0.6;
+.berita-item {
     transition: all 0.3s ease;
-    width: 10px !important;
-    height: 10px !important;
-    border-radius: 50% !important;
 }
 
-#beritaCarousel .carousel-indicators button.active {
-    background-color: #4680ff !important;
-    opacity: 1;
+.berita-item:hover {
+    background: linear-gradient(135deg, rgba(70, 128, 255, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-image: none;
-    display: none;
+/* Table Styling */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
 }
 
-.carousel-item {
-    min-height: 350px;
+.table tbody tr {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(70, 128, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    backdropfilter: blur(10px);
+}
+
+.table tbody tr:hover {
+    background: rgba(70, 128, 255, 0.08);
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.table thead {
+    background: linear-gradient(135deg, rgba(70, 128, 255, 0.1) 0%, rgba(102, 126, 234, 0.05) 100%);
+}
+
+.table thead th {
+    color: #4680ff;
+    font-weight: 600;
+    border: none;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+/* Badge Styling */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 15px;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .stat-number {
+        font-size: 22px;
+    }
+}
+
+/* Z-index helper */
+.z-1 {
+    position: relative;
+    z-index: 1;
 }
 </style>
 

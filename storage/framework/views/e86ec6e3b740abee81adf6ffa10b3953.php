@@ -1,7 +1,6 @@
-@extends('layouts.dashboard')
-@section('title', 'Kelola Pengajuan Surat')
+<?php $__env->startSection('title', 'Kelola Pengaduan Warga'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pc-content">
     <!-- Breadcrumb dengan Styling Modern -->
     <div class="page-header">
@@ -16,7 +15,7 @@
                                 </a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <i class="ti ti-file-text"></i> Kelola Pengajuan Surat
+                                <i class="ti ti-message-circle"></i> Kelola Pengaduan
                             </li>
                         </ol>
                     </nav>
@@ -24,9 +23,9 @@
                 <div class="col-md-12">
                     <div class="page-header-content">
                         <h2 class="page-title">
-                            <i class="ti ti-file-text"></i> Kelola Pengajuan Surat
+                            <i class="ti ti-message-circle"></i> Kelola Pengaduan Warga
                         </h2>
-                        <p class="page-subtitle">Kelola semua pengajuan surat warga dengan mudah</p>
+                        <p class="page-subtitle">Kelola semua pengaduan warga dengan mudah</p>
                     </div>
                 </div>
             </div>
@@ -49,7 +48,8 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="stat-label mb-0">Menunggu</h6>
                             <p class="stat-value mb-0">
-                                {{ $pengajuans->where('status', 'Menunggu')->count() }}
+                                <?php echo e($pengaduans->where('status', 'Menunggu')->count()); ?>
+
                             </p>
                         </div>
                     </div>
@@ -69,7 +69,8 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="stat-label mb-0">Diproses</h6>
                             <p class="stat-value mb-0">
-                                {{ $pengajuans->where('status', 'Diproses')->count() }}
+                                <?php echo e($pengaduans->where('status', 'Diproses')->count()); ?>
+
                             </p>
                         </div>
                     </div>
@@ -89,7 +90,8 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="stat-label mb-0">Selesai</h6>
                             <p class="stat-value mb-0">
-                                {{ $pengajuans->where('status', 'Selesai')->count() }}
+                                <?php echo e($pengaduans->where('status', 'Selesai')->count()); ?>
+
                             </p>
                         </div>
                     </div>
@@ -109,7 +111,8 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="stat-label mb-0">Ditolak</h6>
                             <p class="stat-value mb-0">
-                                {{ $pengajuans->where('status', 'Ditolak')->count() }}
+                                <?php echo e($pengaduans->where('status', 'Ditolak')->count()); ?>
+
                             </p>
                         </div>
                     </div>
@@ -123,93 +126,97 @@
                 <div class="card-header-modern">
                     <div class="header-left">
                         <h5 class="card-title">
-                            <i class="ti ti-list"></i> Daftar Pengajuan Surat Warga
+                            <i class="ti ti-list"></i> Daftar Pengaduan Warga
                         </h5>
                     </div>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
+                    <?php if(session('success')): ?>
                     <div class="alert alert-success-modern alert-dismissible fade show" role="alert">
                         <div class="alert-content">
                             <i class="ti ti-circle-check"></i>
-                            <span>{{ session('success') }}</span>
+                            <span><?php echo e(session('success')); ?></span>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <div class="table-responsive">
                         <table class="table table-modern">
                             <thead>
                                 <tr>
                                     <th class="col-num">No</th>
-                                    <th>Nomor Pengajuan</th>
-                                    <th>Nama Pemohon</th>
-                                    <th>Jenis Surat</th>
-                                    <th>Tanggal Pengajuan</th>
+                                    <th>Nomor Pengaduan</th>
+                                    <th>Nama Pelapor</th>
+                                    <th>Kategori</th>
+                                    <th>Judul</th>
+                                    <th>Tanggal</th>
                                     <th class="col-status">Status</th>
                                     <th class="col-action">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($pengajuans as $key => $pengajuan)
+                                <?php $__empty_1 = true; $__currentLoopData = $pengaduans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $pengaduan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr class="table-row-modern">
                                     <td class="col-num">
-                                        <span class="row-number">{{ $pengajuans->firstItem() + $key }}</span>
+                                        <span class="row-number"><?php echo e($pengaduans->firstItem() + $key); ?></span>
                                     </td>
                                     <td>
-                                        <strong class="nomor-pengajuan">{{ $pengajuan->nomor_pengajuan }}</strong>
+                                        <strong class="nomor-pengaduan"><?php echo e($pengaduan->nomor_pengaduan); ?></strong>
                                     </td>
                                     <td>
-                                        <span class="pemohon-name">{{ $pengajuan->user->name }}</span>
+                                        <span class="pelapor-name"><?php echo e($pengaduan->user->name); ?></span>
                                     </td>
                                     <td>
-                                        <span class="jenis-badge">{{ $pengajuan->jenis_surat }}</span>
+                                        <span class="kategori-badge">
+                                            <i class="ti <?php echo e($pengaduan->kategori_icon); ?>"></i>
+                                            <?php echo e(Str::limit($pengaduan->kategori, 15)); ?>
+
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="judul-text"><?php echo e(Str::limit($pengaduan->judul, 30)); ?></span>
                                     </td>
                                     <td>
                                         <span class="tanggal-text">
                                             <i class="ti ti-calendar"></i>
-                                            {{ $pengajuan->created_at->format('d M Y') }}
+                                            <?php echo e($pengaduan->created_at->format('d M Y')); ?>
+
                                         </span>
-                                        <small class="text-muted d-block">{{ $pengajuan->created_at->format('H:i') }}</small>
                                     </td>
                                     <td class="col-status">
-                                        <span class="badge status-badge {{ $pengajuan->status_badge }}">
-                                            {{ $pengajuan->status }}
+                                        <span class="badge status-badge <?php echo e($pengaduan->status_badge); ?>">
+                                            <?php echo e($pengaduan->status); ?>
+
                                         </span>
                                     </td>
                                     <td class="col-action">
-                                        <a href="{{ route('admin.pengajuan-surat.show', $pengajuan->id) }}" 
-                                           class="btn-action btn-view" title="Detail & Proses">
+                                        <a href="<?php echo e(route('admin.pengaduan.show', $pengaduan->id)); ?>" 
+                                           class="btn-action btn-view" title="Detail & Tanggapi">
                                             <i class="ti ti-eye"></i>
                                         </a>
-                                        @if($pengajuan->surat_pengantar_rw)
-                                        <a href="{{ route('admin.pengajuan-surat.download-pengantar', $pengajuan->id) }}" 
-                                           class="btn-action btn-download" title="Download Surat Pengantar">
-                                            <i class="ti ti-download"></i>
-                                        </a>
-                                        @endif
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="7" class="p-0">
+                                    <td colspan="8" class="p-0">
                                         <div class="empty-state">
                                             <div class="empty-state-icon">
-                                                <i class="ti ti-file-off"></i>
+                                                <i class="ti ti-message-off"></i>
                                             </div>
-                                            <p class="empty-state-title">Belum Ada Pengajuan Surat</p>
-                                            <p class="empty-state-desc">Tidak ada pengajuan surat dari warga</p>
+                                            <p class="empty-state-title">Belum Ada Pengaduan</p>
+                                            <p class="empty-state-desc">Tidak ada pengaduan dari warga</p>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="pagination-wrapper">
-                        {{ $pengajuans->links() }}
+                        <?php echo e($pengaduans->links()); ?>
+
                     </div>
                 </div>
             </div>
@@ -219,7 +226,7 @@
 
 <style>
 /* ============================================
-   ADMIN PENGAJUAN SURAT INDEX - MODERN STYLING
+   ADMIN PENGADUAN INDEX - MODERN STYLING
    ============================================ */
 
 /* Breadcrumb Modern */
@@ -449,11 +456,11 @@
 }
 
 .table-modern thead th:first-child {
-    border-radius: 8px 0 0 0;
+    border-radius: 8px 0 0 8px;
 }
 
 .table-modern thead th:last-child {
-    border-radius: 0 8px 0 0;
+    border-radius: 0 8px 8px 0;
 }
 
 .table-row-modern {
@@ -496,25 +503,38 @@
     font-size: 12px;
 }
 
-.nomor-pengajuan {
+.nomor-pengaduan {
     color: #2c3e50;
     font-size: 14px;
 }
 
-.pemohon-name {
+.pelapor-name {
     color: #2c3e50;
     font-size: 14px;
     font-weight: 500;
 }
 
-.jenis-badge {
+.kategori-badge {
     background: rgba(70, 128, 255, 0.1);
     color: #4680ff;
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.kategori-badge i {
+    font-size: 14px;
+}
+
+.judul-text {
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .tanggal-text {
@@ -524,6 +544,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .tanggal-text i {
@@ -551,7 +572,6 @@
     cursor: pointer;
     text-decoration: none;
     font-size: 16px;
-    margin-right: 8px;
 }
 
 .btn-view {
@@ -562,17 +582,6 @@
 .btn-view:hover {
     background: rgba(0, 212, 255, 0.25);
     box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.btn-download {
-    background: rgba(44, 168, 127, 0.15);
-    color: #2ca87f;
-}
-
-.btn-download:hover {
-    background: rgba(44, 168, 127, 0.25);
-    box-shadow: 0 4px 12px rgba(44, 168, 127, 0.2);
     transform: translateY(-2px);
 }
 
@@ -642,4 +651,5 @@
     }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/admin/pengaduan/index.blade.php ENDPATH**/ ?>

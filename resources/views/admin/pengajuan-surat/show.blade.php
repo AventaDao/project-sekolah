@@ -36,7 +36,7 @@
 
                     <!-- Status Badge -->
                     <div class="mb-4">
-                        <span class="badge {{ $pengajuanSurat->status_badge }} fs-6 px-3 py-2">
+                        <span class="badge {{ $pengajuanSurat->status_badge }} fs-6 px-3 py-2" id="statusBadge">
                             <i class="ti ti-file-check me-1"></i> Status: {{ $pengajuanSurat->status }}
                         </span>
                     </div>
@@ -155,9 +155,6 @@
                             @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted d-block mt-1" id="statusWarning" style="color: #dc3545;">
-                                <i class="ti ti-alert-circle"></i> Surat jadi harus diupload sebelum status "Selesai" dapat dipilih
-                            </small>
                         </div>
 
                         <div class="mb-3">
@@ -168,27 +165,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <small class="form-text text-muted">Catatan akan dilihat oleh pemohon</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Upload Surat Jadi (PDF)</label>
-                            <input type="file" name="file_surat_jadi" 
-                                   class="form-control @error('file_surat_jadi') is-invalid @enderror" 
-                                   accept=".pdf"
-                                   id="fileSuratJadi">
-                            @error('file_surat_jadi')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">
-                                Upload surat yang sudah jadi (format PDF, max 5MB)
-                            </small>
-                            @if($pengajuanSurat->file_surat_jadi)
-                            <div class="mt-2">
-                                <small class="text-success">
-                                    <i class="ti ti-circle-check"></i> Surat sudah diupload sebelumnya
-                                </small>
-                            </div>
-                            @endif
                         </div>
 
                         <div class="d-grid gap-2">
@@ -231,50 +207,533 @@
     </div>
 </div>
 
+<style>
+/* ============================================
+   ADMIN PENGAJUAN SURAT SHOW - MODERN STYLING
+   ============================================ */
+
+/* Breadcrumb Modern */
+.breadcrumb {
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+    color: #4680ff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.breadcrumb-item a:hover {
+    color: #357abd;
+    transform: translateX(2px);
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid rgba(70, 128, 255, 0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-4px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(70, 128, 255, 0.1) 0%, rgba(44, 168, 127, 0.08) 100%) !important;
+    border-bottom: 1px solid rgba(70, 128, 255, 0.15) !important;
+    padding: 24px !important;
+    border-radius: 15px 15px 0 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h5 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0;
+}
+
+.card-body {
+    padding: 32px !important;
+}
+
+/* Status Badge Styling */
+.badge {
+    padding: 10px 16px !important;
+    border-radius: 10px !important;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%) !important;
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+    color: white;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #0c7baa 100%) !important;
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+    color: white;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #229070 100%) !important;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+    color: white;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+    color: white;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.2);
+    color: white;
+}
+
+/* Heading Styling */
+h5.text-primary {
+    color: #4680ff !important;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 2px solid rgba(70, 128, 255, 0.2) !important;
+}
+
+h5.text-primary i {
+    font-size: 20px;
+}
+
+h6 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+/* Table Styling */
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.table-wrapper {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.table td {
+    padding: 12px 16px;
+    border: none;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.table tr {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.table tr:hover {
+    background: rgba(70, 128, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(70, 128, 255, 0.1);
+}
+
+.table tr:hover td {
+    transform: translateX(4px);
+}
+
+.table td strong {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.table td:first-child {
+    color: #4680ff;
+    font-weight: 600;
+}
+
+.table td.text-muted {
+    color: #6c757d !important;
+}
+
+/* Alert Styling */
+.alert {
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 18px 22px !important;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.alert:hover {
+    transform: translateX(4px);
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1) !important;
+    color: #28a745;
+    border-left-color: #28a745;
+}
+
+.alert-info {
+    background: rgba(70, 128, 255, 0.1) !important;
+    color: #4680ff;
+    border-left-color: #4680ff;
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545;
+    border-left-color: #dc3545;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+/* Form Styling */
+.form-label {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid rgba(70, 128, 255, 0.2) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #4680ff !important;
+    box-shadow: 0 0 0 0.2rem rgba(70, 128, 255, 0.15) !important;
+    background: white;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+.form-text {
+    color: #999;
+    font-size: 12px;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+/* Button Styling */
+.btn {
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4680ff 0%, #357abd 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(70, 128, 255, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(70, 128, 255, 0.35);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.15);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(108, 117, 125, 0.25);
+    color: white;
+}
+
+.btn-outline-primary {
+    border: 2px solid #4680ff;
+    color: #4680ff;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: #4680ff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(70, 128, 255, 0.25);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #229070 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.25);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.35);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.25);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.35);
+    color: white;
+}
+
+.btn-close {
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.d-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.d-grid .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* List Styling */
+.list-unstyled {
+    padding: 0;
+    margin: 0;
+}
+
+.list-unstyled li {
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(70, 128, 255, 0.05);
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.list-unstyled li:hover {
+    background: rgba(70, 128, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.list-unstyled small {
+    display: block;
+    margin-top: 4px;
+}
+
+/* Paragraph & Text */
+p {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+p.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+p.text-muted {
+    color: #6c757d !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .card-header h5 {
+        font-size: 18px;
+    }
+    
+    .card-body {
+        padding: 20px !important;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    h5.text-primary {
+        font-size: 16px;
+    }
+    
+    .row {
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+    
+    .col-lg-4,
+    .col-lg-8 {
+        padding-left: 12px;
+        padding-right: 12px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Utility Classes */
+.mb-4 {
+    margin-bottom: 28px !important;
+}
+
+.mb-3 {
+    margin-bottom: 20px !important;
+}
+
+.mb-2 {
+    margin-bottom: 12px !important;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.mt-4 {
+    margin-top: 28px !important;
+}
+
+.mt-3 {
+    margin-top: 20px !important;
+}
+
+.pt-3 {
+    padding-top: 20px !important;
+}
+
+.me-1 {
+    margin-right: 6px !important;
+}
+
+.me-2 {
+    margin-right: 8px !important;
+}
+
+.me-3 {
+    margin-right: 12px !important;
+}
+
+.ms-2 {
+    margin-left: 8px !important;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const statusSelect = document.getElementById('statusSelect');
-    const fileSuratJadi = document.getElementById('fileSuratJadi');
-    const statusWarning = document.getElementById('statusWarning');
-    const submitBtn = document.getElementById('submitBtn');
-    const updateStatusForm = document.getElementById('updateStatusForm');
+    const statusBadge = document.getElementById('statusBadge');
     
-    // Check if surat jadi exists
-    const suratJadiExists = {{ $pengajuanSurat->file_surat_jadi ? 'true' : 'false' }};
-    
-    // Function to check if status can be set to "Selesai"
-    function validateStatus() {
-        const selectedStatus = statusSelect.value;
-        const hasNewFile = fileSuratJadi.files.length > 0;
-        const hasExistingFile = suratJadiExists;
-        
-        if (selectedStatus === 'Selesai' && !hasNewFile && !hasExistingFile) {
-            statusWarning.style.display = 'block';
-            submitBtn.disabled = true;
-            return false;
-        } else {
-            statusWarning.style.display = 'none';
-            submitBtn.disabled = false;
-            return true;
-        }
-    }
+    // Status badge classes
+    const badgeClasses = {
+        'Menunggu': 'bg-warning',
+        'Diproses': 'bg-info',
+        'Selesai': 'bg-success',
+        'Ditolak': 'bg-danger'
+    };
     
     // Listen to status change
-    statusSelect.addEventListener('change', validateStatus);
-    
-    // Listen to file input change
-    fileSuratJadi.addEventListener('change', validateStatus);
-    
-    // Validate on form submit
-    updateStatusForm.addEventListener('submit', function(e) {
-        if (!validateStatus()) {
-            e.preventDefault();
-            alert('Surat jadi harus diupload sebelum status dapat diubah menjadi "Selesai"');
-        }
+    statusSelect.addEventListener('change', function() {
+        const selectedStatus = this.value;
+        const badgeClass = badgeClasses[selectedStatus];
+        
+        // Update badge class
+        statusBadge.className = `badge ${badgeClass} fs-6 px-3 py-2`;
+        
+        // Update badge text
+        statusBadge.innerHTML = `<i class="ti ti-file-check me-1"></i> Status: ${selectedStatus}`;
     });
-    
-    // Initial check
-    validateStatus();
 });
 </script>
 @endsection

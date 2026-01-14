@@ -158,7 +158,7 @@ class PengajuanSurat extends Model
                 'label' => 'Surat Domisili',
                 'deskripsi' => 'Surat keterangan yang menyatakan tempat tinggal seseorang',
                 'fields' => [
-                    'alamat_domisili' => ['label' => 'Alamat Lengkap', 'type' => 'textarea', 'required' => true, 'autoFill' => true],
+                    'alamat_domisili' => ['label' => 'Alamat Lengkap', 'type' => 'text', 'required' => true, 'autoFill' => true],
                     'rt_domisili' => ['label' => 'RT', 'type' => 'text', 'required' => true, 'autoFill' => true],
                     'rw_domisili' => ['label' => 'RW', 'type' => 'text', 'required' => true, 'autoFill' => true],
                     'tanggal_mulai_tinggal' => ['label' => 'Tanggal Mulai Tinggal', 'type' => 'date', 'required' => true],

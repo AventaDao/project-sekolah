@@ -182,32 +182,12 @@ class PengajuanSuratController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:Menunggu,Diproses,Selesai,Ditolak',
             'catatan_admin' => 'nullable|string',
-            'file_surat_jadi' => 'nullable|file|mimes:pdf|max:5120',
         ]);
-
-        // Validasi: Status Selesai membutuhkan file surat jadi
-        if ($validated['status'] === 'Selesai') {
-            if (!$request->hasFile('file_surat_jadi') && !$pengajuanSurat->file_surat_jadi) {
-                return redirect()->back()
-                    ->withErrors(['file_surat_jadi' => 'Surat jadi harus diupload sebelum status dapat diubah menjadi "Selesai"'])
-                    ->withInput();
-            }
-        }
 
         $data = [
             'status' => $validated['status'],
             'catatan_admin' => $validated['catatan_admin'],
         ];
-
-        // Upload file surat jadi jika ada
-        if ($request->hasFile('file_surat_jadi')) {
-            // Hapus file lama jika ada
-            if ($pengajuanSurat->file_surat_jadi) {
-                Storage::disk('public')->delete($pengajuanSurat->file_surat_jadi);
-            }
-            
-            $data['file_surat_jadi'] = $request->file('file_surat_jadi')->store('surat-jadi', 'public');
-        }
 
         // Set tanggal diproses jika berubah dari Menunggu ke Diproses
         if ($validated['status'] === 'Diproses' && $pengajuanSurat->status !== 'Diproses') {

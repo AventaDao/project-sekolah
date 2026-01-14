@@ -37,7 +37,7 @@
     <!-- [Head] end -->
     <!-- [Body] Start -->
 
-    <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
+    <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" style="background: linear-gradient(135deg, #f8f9ff 0%, #e7f1ff 100%); min-height: 100vh;">
         <!-- [ Pre-loader ] start -->
         <div class="loader-bg">
             <div class="loader-track">
@@ -205,7 +205,7 @@
                             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                                 href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
                                 aria-expanded="false">
-                                <img src="<?php echo e($avatar); ?>" alt="user-image" class="user-avtar">
+                                <img src="<?php echo e($avatar); ?>" alt="user-image" class="user-avtar" onerror="this.style.display='none'">
                                 <span><?php echo e($name); ?></span>
                             </a>
                             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
@@ -213,7 +213,7 @@
                                     <div class="d-flex mb-1 align-items-center">
                                         <div class="flex-shrink-0">
                                             <img src="<?php echo e($avatar); ?>" alt="user-image"
-                                                class="user-avtar wid-35">
+                                                class="user-avtar wid-35" onerror="this.style.display='none'">
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1"><?php echo e($name); ?></h6>
@@ -279,7 +279,7 @@
 
 
         <!-- [ Main Content ] start -->
-        <div class="pc-container">
+        <div class="pc-container" style="background: transparent;">
             <?php echo $__env->yieldContent('content'); ?>
         </div>
         <!-- [ Main Content ] end -->

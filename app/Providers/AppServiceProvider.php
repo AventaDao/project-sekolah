@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,27 +19,28 @@ class AppServiceProvider extends ServiceProvider
                 $name = $user->nama_lengkap;
                 $role = $user->role;
                 
-                // Handle avatar: check if user has avatar in storage, fallback to default or provider avatar
-                if ($user->provider == null) {
-                    // Local user: check if avatar exists in storage
-                    if ($user->avatar && strpos($user->avatar, 'avatars/') === 0) {
-                        $avatar = asset('storage/' . $user->avatar);
-                    } else if ($user->avatar) {
-                        // Fallback for old avatar format
-                        $avatar = url('assets/images/user/' . $user->avatar);
+                // Handle avatar
+                if ($user->avatar) {
+                    // Check if avatar is in storage format (avatars/ folder)
+                    if (strpos($user->avatar, 'avatars/') === 0) {
+                        // Use Storage::url() untuk file di public storage
+                        $avatar = Storage::disk('public')->url($user->avatar);
+                    } elseif (strpos($user->avatar, 'http') === 0) {
+                        // Already a full URL (from provider)
+                        $avatar = $user->avatar;
                     } else {
-                        // No avatar: use default
-                        $avatar = url('assets/images/avatar-default.png');
+                        // Old avatar format in public/assets/images/user/
+                        $avatar = asset('assets/images/user/' . $user->avatar);
                     }
                 } else {
-                    // Social provider user: use provider avatar
-                    $avatar = $user->avatar;
+                    // No avatar: use default
+                    $avatar = asset('assets/images/avatar-default.png');
                 }
 
                 $view->with(compact('user', 'name', 'role', 'avatar'));
             } else {
                 $view->with([
-                    'avatar' => url('assets/images/avatar-default.png'),
+                    'avatar' => asset('assets/images/avatar-default.png'),
                     'name' => 'Guest',
                     'role' => null,
                     'user' => null

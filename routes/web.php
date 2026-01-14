@@ -23,6 +23,12 @@ Route::get('/contact-us', function () {
     return view('contact');
 })->name('contact');
 
+// Test Avatar Route (for debugging)
+Route::get('/test-avatar', function () {
+    $users = \App\Models\User::all();
+    return view('test-avatar', ['users' => $users]);
+});
+
 // Contact form submission (public)
 Route::post('/contact/send', [\App\Http\Controllers\ContactController::class, 'send'])->name('contact.send');
 
@@ -105,11 +111,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Logout Route
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Profile Route
-    Route::get('/myprofile', function () {
-        return view('myprofile');
-    })->name('myprofile');
-
+    // Profile Routes
+    Route::get('/myprofile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('myprofile');
     Route::get('/edit-profile', [AuthController::class, 'editProfile'])->name('profile.edit');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 

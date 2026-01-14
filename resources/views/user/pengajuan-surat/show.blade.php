@@ -286,6 +286,48 @@
                                                 {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
                                             @elseif($fieldConfig['type'] === 'number' && strpos($fieldName, 'jumlah') !== false)
                                                 Rp. {{ number_format($fieldValue, 0, ',', '.') }}
+                                            @elseif($fieldConfig['type'] === 'file')
+                                                <div class="file-preview-container">
+                                                    @php
+                                                        $filePath = $fieldValue;
+                                                        $fileExt = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                                                        $isImage = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                                                        $isPdf = $fileExt === 'pdf';
+                                                    @endphp
+                                                    
+                                                    @if($isImage)
+                                                        <!-- Image Preview -->
+                                                        <div style="margin-bottom: 10px;">
+                                                            <img src="{{ Storage::disk('public')->url($filePath) }}" 
+                                                                 alt="{{ $fieldConfig['label'] }}"
+                                                                 style="max-width: 300px; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                                        </div>
+                                                    @elseif($isPdf)
+                                                        <!-- PDF Preview with Embed -->
+                                                        <div style="margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                                            <embed src="{{ Storage::disk('public')->url($filePath) }}" 
+                                                                   type="application/pdf" 
+                                                                   width="100%" 
+                                                                   height="400px" 
+                                                                   style="border: none;">
+                                                        </div>
+                                                    @else
+                                                        <!-- Generic File Preview -->
+                                                        <div style="padding: 15px; background: #f5f5f5; border-radius: 8px; border-left: 4px solid #667eea;">
+                                                            <i class="ti ti-file" style="font-size: 24px; color: #667eea;"></i>
+                                                            <p style="margin: 10px 0 0 0; color: #333;">
+                                                                <strong>File:</strong> {{ basename($filePath) }}
+                                                            </p>
+                                                        </div>
+                                                    @endif
+                                                    
+                                                    <!-- Download Button -->
+                                                    <a href="{{ Storage::disk('public')->url($filePath) }}" 
+                                                       download 
+                                                       class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="ti ti-download"></i> Download {{ $fieldConfig['label'] }}
+                                                    </a>
+                                                </div>
                                             @else
                                                 {{ $fieldValue }}
                                             @endif
@@ -362,4 +404,537 @@
         </div>
     </div>
 </div>
+
+<style>
+/* ============================================
+   PENGAJUAN SURAT USER SHOW - MODERN STYLING
+   ============================================ */
+
+/* Breadcrumb Modern */
+.breadcrumb {
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+    color: #4680ff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.breadcrumb-item a:hover {
+    color: #357abd;
+    transform: translateX(2px);
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid rgba(70, 128, 255, 0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-4px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(70, 128, 255, 0.1) 0%, rgba(44, 168, 127, 0.08) 100%) !important;
+    border-bottom: 1px solid rgba(70, 128, 255, 0.15) !important;
+    padding: 24px !important;
+    border-radius: 15px 15px 0 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h5 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0;
+}
+
+.card-body {
+    padding: 32px !important;
+}
+
+/* Status Badge Styling */
+.badge {
+    padding: 10px 16px !important;
+    border-radius: 10px !important;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%) !important;
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #0c7baa 100%) !important;
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #229070 100%) !important;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.2);
+}
+
+/* Heading Styling */
+h5.text-primary {
+    color: #4680ff !important;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 2px solid rgba(70, 128, 255, 0.2) !important;
+}
+
+h5.text-primary i {
+    font-size: 20px;
+}
+
+h6 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+/* Table Styling */
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table td {
+    padding: 12px 16px;
+    border: none;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+.table tr {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.table tr:hover {
+    background: rgba(70, 128, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(70, 128, 255, 0.1);
+}
+
+.table tr:hover td {
+    transform: translateX(4px);
+}
+
+.table-striped tbody tr:first-child td {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table-striped tbody tr:first-child td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.table td strong {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.table td:first-child {
+    color: #4680ff;
+    font-weight: 600;
+}
+
+.table td.text-muted {
+    color: #6c757d !important;
+}
+
+/* Row Styling */
+.row {
+    margin-bottom: 0;
+}
+
+.row .col-md-6 {
+    margin-bottom: 24px;
+}
+
+/* Timeline Styling */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-left {
+    padding-left: 0;
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 32px;
+    position: relative;
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-item:nth-child(3) { animation-delay: 0.3s; }
+
+.timeline-bar {
+    position: absolute;
+    left: 15px;
+    top: 50px;
+    width: 3px;
+    height: calc(100% + 32px);
+    background: linear-gradient(180deg, rgba(70, 128, 255, 0.3) 0%, rgba(44, 168, 127, 0.3) 100%);
+}
+
+.timeline-item:last-child .timeline-bar {
+    display: none;
+}
+
+.timeline-dot {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 1;
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.timeline-dot:hover {
+    transform: scale(1.1);
+}
+
+.timeline-dot.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #229070 100%);
+}
+
+.timeline-dot.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.timeline-dot.bg-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+}
+
+.timeline-content {
+    margin-left: 24px;
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 16px 20px;
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.timeline-item:hover .timeline-content {
+    background: rgba(70, 128, 255, 0.08);
+    border-left-color: #4680ff;
+}
+
+.timeline-content h6 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.timeline-content p {
+    font-size: 14px;
+    margin: 6px 0;
+    color: #6c757d;
+}
+
+.timeline-content small {
+    font-size: 12px;
+    display: block;
+    color: #999;
+    margin-top: 6px;
+}
+
+/* Alert Styling */
+.alert {
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 18px 22px !important;
+    margin-bottom: 24px;
+    backdrop-filter: blur(10px);
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.alert:hover {
+    transform: translateX(4px);
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1) !important;
+    color: #28a745;
+    border-left-color: #28a745;
+}
+
+.alert-info {
+    background: rgba(70, 128, 255, 0.1) !important;
+    color: #4680ff;
+    border-left-color: #4680ff;
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545;
+    border-left-color: #dc3545;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+/* Button Styling */
+.btn {
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4680ff 0%, #357abd 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(70, 128, 255, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(70, 128, 255, 0.35);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.15);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(108, 117, 125, 0.25);
+    color: white;
+}
+
+.btn-outline-primary {
+    border: 2px solid #4680ff;
+    color: #4680ff;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: #4680ff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(70, 128, 255, 0.25);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #229070 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.25);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.35);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.25);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.35);
+    color: white;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+/* Paragraph & Text */
+p {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+p.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+/* File Preview */
+.file-preview-container {
+    padding: 16px;
+    background: rgba(70, 128, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(70, 128, 255, 0.1);
+}
+
+.file-preview-container img,
+.file-preview-container embed {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.file-preview-container img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(70, 128, 255, 0.2);
+}
+
+/* Border Top */
+.border-top {
+    border-top: 1px solid rgba(70, 128, 255, 0.1) !important;
+}
+
+/* Utility Classes */
+.mb-4 {
+    margin-bottom: 28px !important;
+}
+
+.mb-3 {
+    margin-bottom: 20px !important;
+}
+
+.mt-4 {
+    margin-top: 28px !important;
+}
+
+.pt-3 {
+    padding-top: 20px !important;
+}
+
+.me-2 {
+    margin-right: 8px !important;
+}
+
+.me-3 {
+    margin-right: 12px !important;
+}
+
+.ms-2 {
+    margin-left: 8px !important;
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .card-header h5 {
+        font-size: 18px;
+    }
+    
+    .card-body {
+        padding: 20px !important;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .timeline-content {
+        margin-left: 16px;
+        padding: 12px 16px;
+    }
+    
+    .table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    h5.text-primary {
+        font-size: 16px;
+    }
+}
+</style>
 @endsection

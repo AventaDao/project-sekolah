@@ -572,6 +572,9 @@ class AuthController extends Controller
 
         $user->update($data);
 
+        // Clear cached profile data
+        \App\Http\Controllers\ProfileController::clearCache($user->id);
+
         // Log activity
         Activity::log('profile_update', 'Update profil berhasil', $user->id, 'User');
 

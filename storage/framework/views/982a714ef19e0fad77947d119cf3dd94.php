@@ -1,5 +1,5 @@
 <div class="row">
-    <!-- Header Welcome Card -->
+    <!-- Header Welcome Card dengan Gradient Modern -->
     <div class="col-12 mb-4">
         <div class="card bg-primary text-white border-0 shadow-lg" style="background: linear-gradient(135deg, #4680ff 0%, #2c3e50 100%);">
             <div class="card-body p-4">
@@ -23,20 +23,21 @@
         </div>
     </div>
 
-    <!-- Statistik Cards dengan Animasi -->
+    <!-- Statistik Cards Admin dengan Modern Styling -->
     <div class="col-md-6 col-xl-4">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #4680ff !important;">
-            <div class="card-body">
+        <div class="card stat-card stat-card-admin stat-card-penduduk border-0">
+            <div class="stat-card-bg"></div>
+            <div class="card-body position-relative z-1">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="text-muted mb-1">Total Penduduk</p>
-                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['total_penduduk']); ?>">0</h3>
-                        <small class="text-success">
+                        <p class="stat-label mb-1">Total Penduduk</p>
+                        <h3 class="mb-0 counter stat-number" data-count="<?php echo e($stats['total_penduduk']); ?>">0</h3>
+                        <small class="stat-badge">
                             <i class="ti ti-trending-up"></i> Data Terkini
                         </small>
                     </div>
-                    <div class="avatar-lg bg-light-primary rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-users text-primary" style="font-size: 32px;"></i>
+                    <div class="stat-icon stat-icon-blue">
+                        <i class="ti ti-users"></i>
                     </div>
                 </div>
             </div>
@@ -44,19 +45,20 @@
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #2ca87f !important;">
-            <div class="card-body">
+        <div class="card stat-card stat-card-admin stat-card-kelahiran border-0">
+            <div class="stat-card-bg"></div>
+            <div class="card-body position-relative z-1">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="text-muted mb-1">Kelahiran Bulan Ini</p>
-                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['kelahiran_bulan_ini']); ?>">0</h3>
-                        <small class="text-success">
+                        <p class="stat-label mb-1">Kelahiran Bulan Ini</p>
+                        <h3 class="mb-0 stat-number"><span class="text-success">+</span><span class="counter" data-count="<?php echo e($stats['kelahiran_bulan_ini']); ?>">0</span></h3>
+                        <small class="stat-badge">
                             <i class="ti ti-arrow-up"></i> <?php echo e(now()->format('F Y')); ?>
 
                         </small>
                     </div>
-                    <div class="avatar-lg bg-light-success rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-baby-bottle text-success" style="font-size: 32px;"></i>
+                    <div class="stat-icon stat-icon-green">
+                        <i class="ti ti-trending-up"></i>
                     </div>
                 </div>
             </div>
@@ -64,144 +66,145 @@
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card stat-card border-0 shadow-sm" style="border-left: 4px solid #dc2626 !important;">
-            <div class="card-body">
+        <div class="card stat-card stat-card-admin stat-card-kematian border-0">
+            <div class="stat-card-bg"></div>
+            <div class="card-body position-relative z-1">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <p class="text-muted mb-1">Kematian Bulan Ini</p>
-                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['kematian_bulan_ini']); ?>">0</h3>
-                        <small class="text-danger">
+                        <p class="stat-label mb-1">Kematian Bulan Ini</p>
+                        <h3 class="mb-0 stat-number"><span class="text-danger">−</span><span class="counter" data-count="<?php echo e($stats['kematian_bulan_ini']); ?>">0</span></h3>
+                        <small class="stat-badge">
                             <i class="ti ti-circle-minus"></i> <?php echo e(now()->format('F Y')); ?>
 
                         </small>
                     </div>
-                    <div class="avatar-lg bg-light-danger rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="ti ti-heartbreak text-danger" style="font-size: 32px;"></i>
+                    <div class="stat-icon stat-icon-red">
+                        <i class="ti ti-trending-down"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pengajuan Surat Cards -->
-    <div class="col-12 mt-3">
-        <h5 class="mb-3"><i class="ti ti-file-text me-2"></i>Status Pengajuan Surat</h5>
+    <!-- Status Pengajuan Surat -->
+    <div class="col-12 mt-5">
+        <h5 class="page-subtitle-header mb-4"><i class="ti ti-file-text me-2"></i>Status Pengajuan Surat</h5>
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card hover-card border-0 shadow-sm">
+        <div class="card status-card border-0" style="background: rgba(255, 152, 0, 0.08);">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-md bg-warning rounded me-3">
-                        <i class="ti ti-clock text-white" style="font-size: 24px;"></i>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="status-label mb-1">Menunggu Verifikasi</p>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_menunggu']); ?>">0</h3>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-1">Menunggu Verifikasi</p>
-                        <h4 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_menunggu']); ?>">0</h4>
+                    <div class="status-icon" style="background: rgba(255, 152, 0, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="ti ti-clock" style="color: #ff9800; font-size: 28px;"></i>
                     </div>
                 </div>
                 <div class="progress mt-3" style="height: 6px;">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #ff9800, #ff6f00); width: 100%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card hover-card border-0 shadow-sm">
+        <div class="card status-card border-0" style="background: rgba(0, 212, 255, 0.08);">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-md bg-info rounded me-3">
-                        <i class="ti ti-settings text-white" style="font-size: 24px;"></i>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="status-label mb-1">Sedang Diproses</p>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_diproses']); ?>">0</h3>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-1">Sedang Diproses</p>
-                        <h4 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_diproses']); ?>">0</h4>
+                    <div class="status-icon" style="background: rgba(0, 212, 255, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="ti ti-settings" style="color: #00d4ff; font-size: 28px;"></i>
                     </div>
                 </div>
                 <div class="progress mt-3" style="height: 6px;">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #00d4ff, #00a8cc); width: 100%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card hover-card border-0 shadow-sm">
+        <div class="card status-card border-0" style="background: rgba(44, 168, 127, 0.08);">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-md bg-success rounded me-3">
-                        <i class="ti ti-circle-check text-white" style="font-size: 24px;"></i>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="status-label mb-1">Selesai</p>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_selesai']); ?>">0</h3>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-1">Selesai</p>
-                        <h4 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_selesai']); ?>">0</h4>
+                    <div class="status-icon" style="background: rgba(44, 168, 127, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="ti ti-circle-check" style="color: #2ca87f; font-size: 28px;"></i>
                     </div>
                 </div>
                 <div class="progress mt-3" style="height: 6px;">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #2ca87f, #1e7e5d); width: 100%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pengaduan Cards -->
-    <div class="col-12 mt-4">
-        <h5 class="mb-3"><i class="ti ti-message-report me-2"></i>Status Pengaduan Warga</h5>
+    <!-- Status Pengaduan Warga -->
+    <div class="col-12 mt-5">
+        <h5 class="page-subtitle-header mb-4"><i class="ti ti-message-report me-2"></i>Status Pengaduan Warga</h5>
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card hover-card border-0 shadow-sm">
+        <div class="card status-card border-0" style="background: rgba(255, 152, 0, 0.08);">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-md bg-warning rounded me-3">
-                        <i class="ti ti-alert-circle text-white" style="font-size: 24px;"></i>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="status-label mb-1">Perlu Ditanggapi</p>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_menunggu']); ?>">0</h3>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-1">Perlu Ditanggapi</p>
-                        <h4 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_menunggu']); ?>">0</h4>
+                    <div class="status-icon" style="background: rgba(255, 152, 0, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="ti ti-alert-circle" style="color: #ff9800; font-size: 28px;"></i>
                     </div>
                 </div>
                 <div class="progress mt-3" style="height: 6px;">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6 col-xl-4">
-        <div class="card hover-card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-md bg-info rounded me-3">
-                        <i class="ti ti-progress text-white" style="font-size: 24px;"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-1">Dalam Proses</p>
-                        <h4 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_diproses']); ?>">0</h4>
-                    </div>
-                </div>
-                <div class="progress mt-3" style="height: 6px;">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #ff9800, #ff6f00); width: 100%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-md-6 col-xl-4">
-        <div class="card hover-card border-0 shadow-sm">
+        <div class="card status-card border-0" style="background: rgba(0, 212, 255, 0.08);">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-md bg-success rounded me-3">
-                        <i class="ti ti-check text-white" style="font-size: 24px;"></i>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="status-label mb-1">Sedang Diproses</p>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_diproses']); ?>">0</h3>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-1">Terselesaikan</p>
-                        <h4 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_selesai']); ?>">0</h4>
+                    <div class="status-icon" style="background: rgba(0, 212, 255, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="ti ti-settings" style="color: #00d4ff; font-size: 28px;"></i>
                     </div>
                 </div>
                 <div class="progress mt-3" style="height: 6px;">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #00d4ff, #00a8cc); width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card status-card border-0" style="background: rgba(44, 168, 127, 0.08);">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="status-label mb-1">Terselesaikan</p>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_selesai']); ?>">0</h3>
+                    </div>
+                    <div class="status-icon" style="background: rgba(44, 168, 127, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="ti ti-check" style="color: #2ca87f; font-size: 28px;"></i>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar" style="background: linear-gradient(90deg, #2ca87f, #1e7e5d); width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -209,10 +212,14 @@
 
     <!-- Charts Section -->
     <div class="col-lg-8 mt-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h5 class="mb-0"><i class="ti ti-chart-bar me-2"></i>Statistik Pengajuan & Pengaduan</h5>
+        <div class="card main-card border-0">
+            <div class="card-header-modern">
+                <div class="header-left">
+                    <h5 class="card-title">
+                        <i class="ti ti-chart-bar"></i> Statistik Pengajuan & Pengaduan
+                    </h5>
+                </div>
+                <div class="header-right">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-sm btn-outline-primary active" onclick="updateMainChart('monthly')">Bulanan</button>
                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="updateMainChart('weekly')">Mingguan</button>
@@ -226,9 +233,13 @@
     </div>
 
     <div class="col-lg-4 mt-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0">
-                <h5 class="mb-0"><i class="ti ti-chart-pie me-2"></i>Status Keseluruhan</h5>
+        <div class="card main-card border-0">
+            <div class="card-header-modern">
+                <div class="header-left">
+                    <h5 class="card-title">
+                        <i class="ti ti-chart-pie"></i> Status Keseluruhan
+                    </h5>
+                </div>
             </div>
             <div class="card-body">
                 <canvas id="statusPieChart" height="280"></canvas>
@@ -236,55 +247,201 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <script>
+        let mainChart = null;
+        let pieChart = null;
+        const statsUrl = '<?php echo e(route("dashboard.stats")); ?>';
+
+        // Wait for Chart.js to load
+        function initCharts() {
+            if (typeof Chart === 'undefined') {
+                console.log('Chart.js loading...');
+                setTimeout(initCharts, 100);
+                return;
+            }
+
+            const mainCtx = document.getElementById('mainStatsChart');
+            const pieCtx = document.getElementById('statusPieChart');
+
+            if (mainCtx) {
+                mainChart = new Chart(mainCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                        datasets: [
+                            {
+                                label: 'Pengajuan Surat',
+                                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                backgroundColor: 'rgba(70, 128, 255, 0.8)',
+                                borderColor: 'rgba(70, 128, 255, 1)',
+                                borderWidth: 2,
+                                borderRadius: 5
+                            },
+                            {
+                                label: 'Pengaduan',
+                                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                backgroundColor: 'rgba(44, 168, 127, 0.8)',
+                                borderColor: 'rgba(44, 168, 127, 1)',
+                                borderWidth: 2,
+                                borderRadius: 5
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: { mode: 'index', intersect: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+            }
+
+            if (pieCtx) {
+                pieChart = new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Menunggu', 'Diproses', 'Selesai'],
+                        datasets: [{
+                            data: [0, 0, 0],
+                            backgroundColor: [
+                                'rgba(255, 152, 0, 0.8)',
+                                'rgba(0, 212, 255, 0.8)',
+                                'rgba(44, 168, 127, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 152, 0, 1)',
+                                'rgba(0, 212, 255, 1)',
+                                'rgba(44, 168, 127, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Fetch and update data
+            fetchAndUpdateCharts();
+            setInterval(fetchAndUpdateCharts, 5 * 60 * 1000);
+        }
+
+        async function fetchAndUpdateCharts() {
+            try {
+                const response = await fetch(statsUrl, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    console.error('Response status:', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Stats data:', data);
+
+                // Update bar chart
+                if (mainChart && data.pengajuan && data.pengaduan) {
+                    mainChart.data.datasets[0].data = data.pengajuan.monthly || new Array(12).fill(0);
+                    mainChart.data.datasets[1].data = data.pengaduan.monthly || new Array(12).fill(0);
+                    mainChart.update('none');
+                }
+
+                // Update pie chart
+                if (pieChart && data.combined) {
+                    pieChart.data.datasets[0].data = [
+                        data.combined.menunggu || 0,
+                        data.combined.diproses || 0,
+                        data.combined.selesai || 0
+                    ];
+                    pieChart.update('none');
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        function updateMainChart(mode) {
+            document.querySelectorAll('.btn-group button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            fetchAndUpdateCharts();
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCharts);
+        } else {
+            initCharts();
+        }
+    </script>
+
     <!-- Quick Actions -->
     <div class="col-12 mt-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0">
-                <h5 class="mb-0"><i class="ti ti-bolt me-2"></i>Quick Actions</h5>
+        <div class="card main-card border-0">
+            <div class="card-header-modern">
+                <div class="header-left">
+                    <h5 class="card-title">
+                        <i class="ti ti-bolt"></i> Quick Actions
+                    </h5>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <a href="<?php echo e(route('admin.penduduk.create')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-primary rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-user-plus text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('admin.penduduk.create')); ?>" class="quick-action-link">
+                            <div class="quick-action-body">
+                                <div class="quick-action-icon" style="background: linear-gradient(135deg, #4680ff, #357abd);">
+                                    <i class="ti ti-user-plus"></i>
                                 </div>
-                                <h6 class="mb-0">Tambah Penduduk</h6>
-                                <small class="text-muted">Data kependudukan baru</small>
+                                <h6 class="quick-action-title">Tambah Penduduk</h6>
+                                <small class="quick-action-desc">Data kependudukan baru</small>
                             </div>
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?php echo e(route('admin.berita.create')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-success rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-news text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('admin.berita.create')); ?>" class="quick-action-link">
+                            <div class="quick-action-body">
+                                <div class="quick-action-icon" style="background: linear-gradient(135deg, #2ca87f, #1e7e5d);">
+                                    <i class="ti ti-news"></i>
                                 </div>
-                                <h6 class="mb-0">Buat Berita</h6>
-                                <small class="text-muted">Publikasi informasi desa</small>
+                                <h6 class="quick-action-title">Buat Berita</h6>
+                                <small class="quick-action-desc">Publikasi informasi desa</small>
                             </div>
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-warning rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-file-text text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="quick-action-link">
+                            <div class="quick-action-body">
+                                <div class="quick-action-icon" style="background: linear-gradient(135deg, #ff9800, #ff6f00);">
+                                    <i class="ti ti-file-text"></i>
                                 </div>
-                                <h6 class="mb-0">Kelola Surat</h6>
-                                <small class="text-muted">Verifikasi pengajuan</small>
+                                <h6 class="quick-action-title">Kelola Surat</h6>
+                                <small class="quick-action-desc">Verifikasi pengajuan</small>
                             </div>
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?php echo e(route('admin.pengaduan.index')); ?>" class="quick-action-card">
-                            <div class="text-center p-3">
-                                <div class="avatar-lg bg-info rounded-circle mx-auto mb-3">
-                                    <i class="ti ti-message-report text-white" style="font-size: 32px;"></i>
+                        <a href="<?php echo e(route('admin.pengaduan.index')); ?>" class="quick-action-link">
+                            <div class="quick-action-body">
+                                <div class="quick-action-icon" style="background: linear-gradient(135deg, #00d4ff, #00a8cc);">
+                                    <i class="ti ti-message-report"></i>
                                 </div>
-                                <h6 class="mb-0">Tanggapi Pengaduan</h6>
-                                <small class="text-muted">Respon laporan warga</small>
+                                <h6 class="quick-action-title">Tanggapi Pengaduan</h6>
+                                <small class="quick-action-desc">Respon laporan warga</small>
                             </div>
                         </a>
                     </div>
@@ -295,10 +452,16 @@
 
     <!-- Recent Activities -->
     <div class="col-lg-6 mt-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="ti ti-activity me-2"></i>Aktivitas Terbaru</h5>
-                <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+        <div class="card main-card border-0">
+            <div class="card-header-modern">
+                <div class="header-left">
+                    <h5 class="card-title">
+                        <i class="ti ti-activity"></i> Aktivitas Pengajuan Terbaru
+                    </h5>
+                </div>
+                <div class="header-right">
+                    <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                </div>
             </div>
             <div class="card-body p-0">
                 <div class="activity-timeline">
@@ -336,10 +499,16 @@
     </div>
 
     <div class="col-lg-6 mt-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="ti ti-alert-triangle me-2"></i>Pengaduan Perlu Perhatian</h5>
-                <a href="<?php echo e(route('admin.pengaduan.index')); ?>" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
+        <div class="card main-card border-0">
+            <div class="card-header-modern">
+                <div class="header-left">
+                    <h5 class="card-title">
+                        <i class="ti ti-alert-triangle"></i> Pengaduan Perlu Perhatian
+                    </h5>
+                </div>
+                <div class="header-right">
+                    <a href="<?php echo e(route('admin.pengaduan.index')); ?>" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
+                </div>
             </div>
             <div class="card-body p-0">
                 <div class="activity-timeline">
@@ -379,58 +548,243 @@
 </div>
 
 <style>
-/* Card Animations */
-.stat-card {
+/* ============================================
+   ADMIN DASHBOARD - MODERN GRADIENT STYLING
+   ============================================ */
+
+/* Page Subtitle Header */
+.page-subtitle-header {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-subtitle-header i {
+    color: #4680ff;
+    font-size: 18px;
+}
+
+/* Main Card Styling */
+.main-card {
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
     transition: all 0.3s ease;
-    cursor: pointer;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+.main-card:hover {
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
 }
 
-.hover-card {
+/* Card Header Modern */
+.card-header-modern {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(70, 128, 255, 0.05) 100%);
+    border-bottom: 1px solid rgba(70, 128, 255, 0.1);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left .card-title,
+.header-right .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-left .card-title i,
+.header-right .card-title i {
+    color: #4680ff;
+    font-size: 18px;
+}
+
+/* Stat Cards Styling */
+.stat-card-admin {
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
 }
 
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+.stat-card-admin:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
 }
 
-/* Avatar Styles */
-.avatar-lg {
-    width: 60px;
-    height: 60px;
+.stat-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    z-index: 0;
+    opacity: 0.08;
+}
+
+.stat-card-penduduk .stat-card-bg {
+    background: linear-gradient(135deg, #4680ff 0%, #357abd 100%);
+}
+
+.stat-card-kelahiran .stat-card-bg {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e7e5d 100%);
+}
+
+.stat-card-kematian .stat-card-bg {
+    background: linear-gradient(135deg, #ff5370 0%, #dc2626 100%);
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat-number .text-success {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.stat-number .text-danger {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 36px;
+    color: white;
+    box-shadow: 0 8px 30px rgba(70, 128, 255, 0.25);
 }
 
-.avatar-md {
+.stat-icon-blue {
+    background: linear-gradient(135deg, #4680ff 0%, #357abd 100%);
+}
+
+.stat-icon-green {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e7e5d 100%);
+}
+
+.stat-icon-red {
+    background: linear-gradient(135deg, #ff5370 0%, #dc2626 100%);
+}
+
+/* Status Cards */
+.status-card {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.status-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+}
+
+.status-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.status-icon {
     width: 50px;
     height: 50px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 24px;
+    color: white;
 }
 
-/* Quick Action Cards */
-.quick-action-card {
+/* Quick Action Link */
+.quick-action-link {
     display: block;
     text-decoration: none;
     color: inherit;
-    border: 2px solid #e9ecef;
+    border: 1px solid rgba(70, 128, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.quick-action-link:hover {
+    border-color: rgba(70, 128, 255, 0.3);
+    background: rgba(70, 128, 255, 0.05);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(70, 128, 255, 0.15);
+}
+
+.quick-action-body {
+    text-align: center;
+}
+
+.quick-action-icon {
+    width: 50px;
+    height: 50px;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    margin: 0 auto 15px;
+    box-shadow: 0 6px 20px rgba(70, 128, 255, 0.25);
     transition: all 0.3s ease;
 }
 
-.quick-action-card:hover {
-    border-color: #4680ff;
-    background: #f8f9ff;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(70, 128, 255, 0.15);
+.quick-action-link:hover .quick-action-icon {
+    transform: scale(1.1) translateY(-3px);
+}
+
+.quick-action-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 6px;
+}
+
+.quick-action-desc {
+    font-size: 12px;
+    color: #6c757d;
+    display: block;
 }
 
 /* Activity Timeline */
@@ -440,14 +794,14 @@
 
 .activity-item {
     display: flex;
-    align-items: start;
+    align-items: center;
     padding: 20px;
-    border-bottom: 1px solid #e9ecef;
-    transition: background 0.3s ease;
+    border-bottom: 1px solid rgba(70, 128, 255, 0.1);
+    transition: all 0.3s ease;
 }
 
 .activity-item:hover {
-    background: #f8f9fa;
+    background: rgba(70, 128, 255, 0.03);
 }
 
 .activity-item:last-child {
@@ -463,10 +817,49 @@
     justify-content: center;
     margin-right: 15px;
     flex-shrink: 0;
+    font-size: 20px;
+}
+
+.bg-light-primary {
+    background: rgba(70, 128, 255, 0.1);
+}
+
+.bg-light-warning {
+    background: rgba(255, 152, 0, 0.1);
+}
+
+.text-primary {
+    color: #4680ff !important;
+}
+
+.text-warning {
+    color: #ff9800 !important;
+}
+
+.text-success {
+    color: #2ca87f !important;
 }
 
 .activity-content {
     flex-grow: 1;
+}
+
+.activity-content h6 {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.activity-content p {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.activity-content small {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 /* Counter Animation */
@@ -474,177 +867,55 @@
     display: inline-block;
 }
 
-/* Pulse Animation for Important Cards */
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 0 0 0 rgba(70, 128, 255, 0.4);
-    }
-    50% {
-        box-shadow: 0 0 0 10px rgba(70, 128, 255, 0);
-    }
+/* Button Group */
+.btn-group {
+    gap: 6px;
 }
 
-.stat-card:hover .avatar-lg {
-    animation: pulse 2s infinite;
+.btn-outline-primary {
+    border: 1px solid rgba(70, 128, 255, 0.3);
+    color: #4680ff;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary.active {
+    background: linear-gradient(135deg, #4680ff 0%, #357abd 100%);
+    border-color: #4680ff;
+    color: white;
+}
+
+.btn-outline-warning {
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    color: #ff9800;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-warning:hover {
+    background: rgba(255, 152, 0, 0.1);
+    border-color: #ff9800;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-header-modern {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .header-left,
+    .header-right {
+        width: 100%;
+    }
+    
+    .btn-group {
+        width: 100%;
+    }
+    
+    .btn-group button {
+        flex: 1;
+    }
 }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Counter Animation
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-count'));
-        const duration = 1500;
-        const increment = target / (duration / 16);
-        let current = 0;
-        const updateCounter = () => {
-            current += increment;
-            if (current < target) {
-                counter.textContent = Math.floor(current);
-                requestAnimationFrame(updateCounter);
-            } else {
-                counter.textContent = target;
-            }
-        };
-        updateCounter();
-    });
-
-    // Main Stats Chart (Harian, 7 hari terakhir)
-    const mainCtx = document.getElementById('mainStatsChart');
-    // Default label: 7 hari terakhir (akan diupdate dari backend)
-    let defaultLabels = [];
-    for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        defaultLabels.push(d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }));
-    }
-    const mainChart = new Chart(mainCtx, {
-        type: 'bar',
-        data: {
-            labels: defaultLabels,
-            datasets: [
-                {
-                    label: 'Pengajuan Surat',
-                    data: new Array(7).fill(0),
-                    backgroundColor: 'rgba(70, 128, 255, 0.8)',
-                    borderColor: 'rgba(70, 128, 255, 1)',
-                    borderWidth: 2,
-                    borderRadius: 5
-                },
-                {
-                    label: 'Pengaduan',
-                    data: new Array(7).fill(0),
-                    backgroundColor: 'rgba(44, 202, 127, 0.8)',
-                    borderColor: 'rgba(44, 202, 127, 1)',
-                    borderWidth: 2,
-                    borderRadius: 5
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: { mode: 'index', intersect: false }
-            },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // Status Pie Chart (tidak berubah)
-    const pieCtx = document.getElementById('statusPieChart');
-    const pieChart = new Chart(pieCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Menunggu', 'Diproses', 'Selesai'],
-            datasets: [{
-                data: [0, 0, 0],
-                backgroundColor: [
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(59, 130, 246, 0.8)',
-                    'rgba(34, 197, 94, 0.8)'
-                ],
-                borderWidth: 3,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
-
-    // Function to fetch stats via AJAX and update charts
-    async function fetchAndUpdateStats() {
-        try {
-            const res = await fetch('<?php echo e(route('dashboard.stats')); ?>', { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            if (!res.ok) throw new Error('Network response was not ok');
-            const data = await res.json();
-
-            // Update main chart datasets (harian)
-            if (data.pengajuan && data.pengaduan && data.labels) {
-                mainChart.data.labels = data.labels; // label: tanggal (misal 7 hari terakhir)
-                mainChart.data.datasets[0].data = data.pengajuan.daily; // array jumlah pengajuan per hari
-                mainChart.data.datasets[1].data = data.pengaduan.daily; // array jumlah pengaduan per hari
-                mainChart.update();
-            }
-
-            // Update pie chart using combined totals
-            if (data.combined) {
-                pieChart.data.datasets[0].data = [
-                    data.combined.menunggu || 0,
-                    data.combined.diproses || 0,
-                    data.combined.selesai || 0
-                ];
-                pieChart.update();
-            }
-
-            // Update numeric counters in the DOM (if present)
-            const counters = document.querySelectorAll('.counter');
-            counters.forEach(node => {
-                const key = node.getAttribute('data-key');
-                if (!key) return;
-                let value = 0;
-                if (key === 'total_penduduk' && data.totals) value = data.totals.total_penduduk || 0;
-                // other keys can be added as needed
-                node.textContent = value;
-            });
-
-        } catch (err) {
-            console.error('Failed to fetch dashboard stats:', err);
-        }
-    }
-
-    // Initial fetch and periodic refresh every 15s
-    fetchAndUpdateStats();
-    setInterval(fetchAndUpdateStats, 15000);
-
-    // Function to update main chart
-    window.updateMainChart = function(period) {
-        // Toggle active button
-        document.querySelectorAll('.btn-group button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-
-        // Update chart data based on period
-        if (period === 'weekly') {
-            mainChart.data.labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-            mainChart.data.datasets[0].data = [5, 7, 6, 9, 8, 4, 3];
-            mainChart.data.datasets[1].data = [3, 4, 5, 6, 5, 2, 1];
-        } else {
-            mainChart.data.labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
-            mainChart.data.datasets[0].data = [12, 19, 15, 25, 22, 30, 28, 35, 32, 38, 40, 45];
-            mainChart.data.datasets[1].data = [8, 11, 9, 15, 12, 18, 15, 20, 18, 22, 25, 28];
-        }
-        mainChart.update();
-    };
-});
-</script><?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>
