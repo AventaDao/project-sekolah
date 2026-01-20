@@ -30,7 +30,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="stat-label mb-1">Total Penduduk</p>
-                        <h3 class="mb-0 stat-number">{{ $stats['total_penduduk'] }}</h3>
+                        <h3 class="mb-0 counter stat-number" data-count="{{ $stats['total_penduduk'] }}">0</h3>
                         <small class="stat-badge">
                             <i class="ti ti-trending-up"></i> Data Terkini
                         </small>
@@ -50,7 +50,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="stat-label mb-1">Kelahiran Bulan Ini</p>
-                        <h3 class="mb-0 stat-number"><span class="text-success">+</span>{{ $stats['kelahiran_bulan_ini'] }}</h3>
+                        <h3 class="mb-0 stat-number"><span class="text-success">+</span><span class="counter" data-count="{{ $stats['kelahiran_bulan_ini'] }}">0</span></h3>
                         <small class="stat-badge">
                             <i class="ti ti-arrow-up"></i> {{ now()->format('F Y') }}
                         </small>
@@ -70,7 +70,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="stat-label mb-1">Kematian Bulan Ini</p>
-                        <h3 class="mb-0 stat-number"><span class="text-danger">−</span>{{ $stats['kematian_bulan_ini'] }}</h3>
+                        <h3 class="mb-0 stat-number"><span class="text-danger">−</span><span class="counter" data-count="{{ $stats['kematian_bulan_ini'] }}">0</span></h3>
                         <small class="stat-badge">
                             <i class="ti ti-circle-minus"></i> {{ now()->format('F Y') }}
                         </small>
@@ -94,7 +94,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Menunggu Verifikasi</p>
-                        <h3 class="mb-0">{{ $stats['pengajuan_menunggu'] }}</h3>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_menunggu'] }}">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(255, 152, 0, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-clock" style="color: #ff9800; font-size: 28px;"></i>
@@ -113,7 +113,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Sedang Diproses</p>
-                        <h3 class="mb-0">{{ $stats['pengajuan_diproses'] }}</h3>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_diproses'] }}">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(0, 212, 255, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-settings" style="color: #00d4ff; font-size: 28px;"></i>
@@ -132,7 +132,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Selesai</p>
-                        <h3 class="mb-0">{{ $stats['pengajuan_selesai'] }}</h3>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_selesai'] }}">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(44, 168, 127, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-circle-check" style="color: #2ca87f; font-size: 28px;"></i>
@@ -156,7 +156,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Perlu Ditanggapi</p>
-                        <h3 class="mb-0">{{ $stats['pengaduan_menunggu'] }}</h3>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['pengaduan_menunggu'] }}">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(255, 152, 0, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-alert-circle" style="color: #ff9800; font-size: 28px;"></i>
@@ -175,7 +175,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Sedang Diproses</p>
-                        <h3 class="mb-0">{{ $stats['pengaduan_diproses'] }}</h3>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_diproses'] }}">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(0, 212, 255, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-settings" style="color: #00d4ff; font-size: 28px;"></i>
@@ -194,7 +194,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Terselesaikan</p>
-                        <h3 class="mb-0">{{ $stats['pengaduan_selesai'] }}</h3>
+                        <h3 class="mb-0 counter" data-count="{{ $stats['pengaduan_selesai'] }}">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(44, 168, 127, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-check" style="color: #2ca87f; font-size: 28px;"></i>
