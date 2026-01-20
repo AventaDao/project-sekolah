@@ -7,9 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Karyawan;
 use App\Models\User;
+use App\Services\ActivityLogger;
 
 class KaryawanAuthController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct(ActivityLogger $activityLogger)
+    {
+        $this->activityLogger = $activityLogger;
+    }
     public function showLoginForm()
     {
         return view('auth.karyawan-login');
@@ -51,6 +58,14 @@ class KaryawanAuthController extends Controller
         }
 
         Auth::login($user, $request->filled('remember'));
+        
+        // Log karyawan login activity
+        $this->activityLogger->logAuthentication('login', [
+            'login_method' => 'karyawan_login',
+            'role' => $user->role ?? 'karyawan',
+            'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap,
+            'user_email' => $user->email ?? null
+        ]);
 
         return redirect()->route('karyawan.absensi.dashboard');
     }

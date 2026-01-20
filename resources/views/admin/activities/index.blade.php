@@ -34,11 +34,12 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%;">No.</th>
-                                        <th style="width: 20%;">Aktivitas</th>
-                                        <th style="width: 40%;">Deskripsi</th>
-                                        <th style="width: 18%;">Waktu</th>
-                                        <th style="width: 15%;">IP Address</th>
+                                        <th style="width: 4%;">No.</th>
+                                        <th style="width: 15%;">Pengguna</th>
+                                        <th style="width: 12%;">Aktivitas</th>
+                                        <th style="width: 35%;">Deskripsi</th>
+                                        <th style="width: 16%;">Waktu</th>
+                                        <th style="width: 12%;">IP Address</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -46,6 +47,20 @@
                                     <tr>
                                         <td>
                                             <strong>{{ $key + 1 }}</strong>
+                                        </td>
+                                        <td>
+                                            <!-- Info Pengguna (Admin atau User) -->
+                                            <div>
+                                                <strong>{{ $activity['user_name'] ?? $activity['user_email'] ?? 'Unknown' }}</strong>
+                                                @if(!empty($activity['role']))
+                                                    <br><span class="badge {{ $activity['role'] === 'admin' ? 'bg-danger' : 'bg-info' }}">
+                                                        {{ ucfirst($activity['role']) }}
+                                                    </span>
+                                                @endif
+                                                @if(!empty($activity['user_id']))
+                                                    <br><small class="text-muted">ID: {{ $activity['user_id'] }}</small>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td>
                                             @php
@@ -61,18 +76,17 @@
                                             <span class="badge {{ $badgeClass }}">
                                                 {{ ucfirst($activity['action'] ?? 'Unknown') }}
                                             </span>
-                                            @if(!empty($activity['user_name']))
-                                            <small class="text-muted d-block">{{ $activity['user_name'] }}</small>
-                                            @endif
                                         </td>
                                         <td>
-                                            {{ $activity['description'] ?? $activity['message'] ?? 'N/A' }}
-                                            @if(!empty($activity['login_method']))
-                                            <small class="text-muted d-block">Metode: {{ ucfirst(str_replace('_', ' ', $activity['login_method'])) }}</small>
-                                            @endif
-                                            @if(!empty($activity['role']))
-                                            <small class="text-muted d-block">Role: {{ ucfirst($activity['role']) }}</small>
-                                            @endif
+                                            <div>
+                                                {{ $activity['description'] ?? $activity['message'] ?? 'N/A' }}
+                                                @if(!empty($activity['login_method']))
+                                                    <br><small class="text-muted">📱 Metode: {{ ucfirst(str_replace('_', ' ', $activity['login_method'])) }}</small>
+                                                @endif
+                                                @if(!empty($activity['nik']))
+                                                    <br><small class="text-muted">📄 NIK: {{ $activity['nik'] }}</small>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td>
                                             <small>

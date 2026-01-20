@@ -107,6 +107,7 @@ class ActivityController extends Controller
 
     /**
      * Fetch all activities from Firebase REST API
+     * Termasuk aktivitas dari admin dan user
      */
     private function fetchAllActivitiesFromFirebase()
     {
@@ -126,6 +127,12 @@ class ActivityController extends Controller
                 foreach ($data['documents'] as $doc) {
                     $activity = $this->parseFirestoreDocument($doc);
                     if ($activity) {
+                        // Pastikan setiap aktivitas memiliki informasi user yang lengkap
+                        // Bahkan jika user_id kosong, tetap tampilkan berdasarkan user_name atau email
+                        if (empty($activity['user_id']) && empty($activity['user_name']) && empty($activity['user_email'])) {
+                            // Skip aktivitas yang tidak memiliki info user sama sekali
+                            continue;
+                        }
                         $activities[] = $activity;
                     }
                 }
@@ -139,7 +146,7 @@ class ActivityController extends Controller
             return $bTime <=> $aTime;  // Terbaru di atas (descending)
         });
         
-        return array_slice($activities, 0, 100);
+        return array_slice($activities, 0, 200); // Tingkatkan dari 100 menjadi 200 untuk mencakup user activities
     }
 
     /**
@@ -240,6 +247,13 @@ class ActivityController extends Controller
         
         foreach ($fields as $key => $field) {
             $result[$key] = $this->getFirestoreValue($field);
+        }
+        
+        // Jika action adalah 'login' dan tidak ada user_name, coba ambil dari user_email
+        if (($result['action'] ?? null) === 'login' && (empty($result['user_name']) || $result['user_name'] === null)) {
+            if (!empty($result['user_email'])) {
+                $result['user_name'] = explode('@', $result['user_email'])[0];
+            }
         }
         
         $result['description'] = $this->generateDescription($result);

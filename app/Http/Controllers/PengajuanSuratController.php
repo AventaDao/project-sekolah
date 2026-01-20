@@ -81,6 +81,16 @@ class PengajuanSuratController extends Controller
         $jenisSurat = $request->input('jenis_surat');
         $fields = PengajuanSurat::getFieldsForSuratType($jenisSurat);
 
+        $customMessages = [
+            'jenis_surat.required' => 'Jenis surat harus dipilih',
+            'jenis_surat.in' => 'Jenis surat tidak valid',
+            'keperluan.required' => 'Keperluan harus diisi',
+            'keperluan.min' => 'Keperluan minimal 10 karakter',
+            'surat_pengantar_rw.required' => 'Surat pengantar RW wajib dilampirkan',
+            'surat_pengantar_rw.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG',
+            'surat_pengantar_rw.max' => 'Ukuran file maksimal 2MB',
+        ];
+
         foreach ($fields as $fieldName => $fieldConfig) {
             $rule = $fieldConfig['required'] ? 'required' : 'nullable';
             
@@ -116,17 +126,34 @@ class PengajuanSuratController extends Controller
             }
             
             $rules[$fieldName] = $rule;
+
+            // Add custom error messages for each field
+            if ($fieldConfig['required']) {
+                $customMessages["{$fieldName}.required"] = "{$fieldConfig['label']} harus diisi";
+            }
+            
+            if ($fieldConfig['type'] === 'number') {
+                $customMessages["{$fieldName}.numeric"] = "{$fieldConfig['label']} harus berupa angka";
+                if (isset($fieldConfig['max'])) {
+                    $customMessages["{$fieldName}.max"] = "{$fieldConfig['label']} tidak boleh lebih dari " . number_format($fieldConfig['max'], 2, ',', '.');
+                }
+                if (isset($fieldConfig['min'])) {
+                    $customMessages["{$fieldName}.min"] = "{$fieldConfig['label']} minimal " . number_format($fieldConfig['min'], 2, ',', '.');
+                }
+            } elseif ($fieldConfig['type'] === 'file') {
+                $customMessages["{$fieldName}.file"] = "{$fieldConfig['label']} harus berupa file";
+                $customMessages["{$fieldName}.max"] = "{$fieldConfig['label']} tidak boleh lebih dari 5MB";
+                $customMessages["{$fieldName}.mimes"] = "Format {$fieldConfig['label']} tidak didukung";
+            } elseif ($fieldConfig['type'] === 'date') {
+                $customMessages["{$fieldName}.date"] = "{$fieldConfig['label']} harus berupa tanggal yang valid";
+            } elseif ($fieldConfig['type'] === 'select') {
+                $customMessages["{$fieldName}.in"] = "{$fieldConfig['label']} tidak valid";
+            } elseif ($fieldConfig['type'] === 'textarea') {
+                $customMessages["{$fieldName}.string"] = "{$fieldConfig['label']} harus berupa teks";
+            }
         }
 
-        $validated = $request->validate($rules, [
-            'jenis_surat.required' => 'Jenis surat harus dipilih',
-            'jenis_surat.in' => 'Jenis surat tidak valid',
-            'keperluan.required' => 'Keperluan harus diisi',
-            'keperluan.min' => 'Keperluan minimal 10 karakter',
-            'surat_pengantar_rw.required' => 'Surat pengantar RW wajib dilampirkan',
-            'surat_pengantar_rw.mimes' => 'Format file harus PDF, JPG, JPEG, atau PNG',
-            'surat_pengantar_rw.max' => 'Ukuran file maksimal 2MB',
-        ]);
+        $validated = $request->validate($rules, $customMessages);
 
         // Upload surat pengantar RW
         $filePath = $request->file('surat_pengantar_rw')->store('surat-pengantar-rw', 'public');

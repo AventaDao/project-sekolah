@@ -27,7 +27,7 @@ class ProfileController extends Controller
         }
         return $initials ?: '?';
     }
-    
+
     /**
      * Generate SVG placeholder avatar
      */
@@ -37,11 +37,11 @@ class ProfileController extends Controller
         $colors = ['4680ff', '2ca87f', 'ff5370', 'ffc107', '17a2b8', '6f42c1'];
         $hash = crc32($name);
         $color = $colors[abs($hash) % count($colors)];
-        
+
         // Calculate positions outside string interpolation
         $halfSize = $size / 2;
         $fontSize = $size / 2.5;
-        
+
         $svg = "
         <svg width='{$size}' height='{$size}' xmlns='http://www.w3.org/2000/svg'>
             <rect width='{$size}' height='{$size}' fill='#{$color}' rx='20'/>
@@ -50,7 +50,7 @@ class ProfileController extends Controller
             </text>
         </svg>
         ";
-        
+
         return 'data:image/svg+xml;base64,' . base64_encode($svg);
     }
 
@@ -60,19 +60,19 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        
+
         // Cache user profile data untuk 1 jam
         $cacheKey = 'user_profile_' . $user->id;
-        
-        $profileData = Cache::remember($cacheKey, 3600, function () use ($user) {
+
+        $profileData = Cache::remember($cacheKey, 300, function () use ($user) {
             // Determine avatar URL
             $avatarUrl = $user->avatar ? asset('storage/' . $user->avatar) : null;
-            
+
             // If no avatar, generate SVG placeholder with initials
             if (!$avatarUrl) {
                 $avatarUrl = $this->generatePlaceholderAvatar($user->nama_lengkap);
             }
-            
+
             return [
                 'user' => $user,
                 'tanggalLahir' => $user->tanggal_lahir ? Carbon::parse($user->tanggal_lahir) : null,
@@ -81,10 +81,10 @@ class ProfileController extends Controller
                 'avatarUrl' => $avatarUrl,
             ];
         });
-        
+
         return view('myprofile', $profileData);
     }
-    
+
     /**
      * Clear profile cache (call this after profile update)
      */

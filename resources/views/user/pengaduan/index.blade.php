@@ -179,7 +179,7 @@
 
                     <!-- Pagination -->
                     <div class="pagination-wrapper">
-                        {{ $pengaduans->links() }}
+                        {{ $pengaduans->links('vendor.pagination.modern') }}
                     </div>
                 </div>
             </div>

@@ -32,11 +32,12 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%;">No.</th>
-                                        <th style="width: 20%;">Aktivitas</th>
-                                        <th style="width: 40%;">Deskripsi</th>
-                                        <th style="width: 18%;">Waktu</th>
-                                        <th style="width: 15%;">IP Address</th>
+                                        <th style="width: 4%;">No.</th>
+                                        <th style="width: 15%;">Pengguna</th>
+                                        <th style="width: 12%;">Aktivitas</th>
+                                        <th style="width: 35%;">Deskripsi</th>
+                                        <th style="width: 16%;">Waktu</th>
+                                        <th style="width: 12%;">IP Address</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -44,6 +45,21 @@
                                     <tr>
                                         <td>
                                             <strong><?php echo e($key + 1); ?></strong>
+                                        </td>
+                                        <td>
+                                            <!-- Info Pengguna (Admin atau User) -->
+                                            <div>
+                                                <strong><?php echo e($activity['user_name'] ?? $activity['user_email'] ?? 'Unknown'); ?></strong>
+                                                <?php if(!empty($activity['role'])): ?>
+                                                    <br><span class="badge <?php echo e($activity['role'] === 'admin' ? 'bg-danger' : 'bg-info'); ?>">
+                                                        <?php echo e(ucfirst($activity['role'])); ?>
+
+                                                    </span>
+                                                <?php endif; ?>
+                                                <?php if(!empty($activity['user_id'])): ?>
+                                                    <br><small class="text-muted">ID: <?php echo e($activity['user_id']); ?></small>
+                                                <?php endif; ?>
+                                            </div>
                                         </td>
                                         <td>
                                             <?php
@@ -60,19 +76,18 @@
                                                 <?php echo e(ucfirst($activity['action'] ?? 'Unknown')); ?>
 
                                             </span>
-                                            <?php if(!empty($activity['user_name'])): ?>
-                                            <small class="text-muted d-block"><?php echo e($activity['user_name']); ?></small>
-                                            <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?php echo e($activity['description'] ?? $activity['message'] ?? 'N/A'); ?>
+                                            <div>
+                                                <?php echo e($activity['description'] ?? $activity['message'] ?? 'N/A'); ?>
 
-                                            <?php if(!empty($activity['login_method'])): ?>
-                                            <small class="text-muted d-block">Metode: <?php echo e(ucfirst(str_replace('_', ' ', $activity['login_method']))); ?></small>
-                                            <?php endif; ?>
-                                            <?php if(!empty($activity['role'])): ?>
-                                            <small class="text-muted d-block">Role: <?php echo e(ucfirst($activity['role'])); ?></small>
-                                            <?php endif; ?>
+                                                <?php if(!empty($activity['login_method'])): ?>
+                                                    <br><small class="text-muted">📱 Metode: <?php echo e(ucfirst(str_replace('_', ' ', $activity['login_method']))); ?></small>
+                                                <?php endif; ?>
+                                                <?php if(!empty($activity['nik'])): ?>
+                                                    <br><small class="text-muted">📄 NIK: <?php echo e($activity['nik']); ?></small>
+                                                <?php endif; ?>
+                                            </div>
                                         </td>
                                         <td>
                                             <small>

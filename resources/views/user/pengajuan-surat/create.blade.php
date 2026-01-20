@@ -186,13 +186,13 @@
                         </div>
 
                         <!-- Buttons -->
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-send"></i> Ajukan Surat
-                            </button>
-                            <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-secondary">
+                        <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-outline-secondary">
                                 <i class="ti ti-arrow-left"></i> Kembali
                             </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="ti ti-send"></i> Ajukan Surat
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -231,6 +231,90 @@
         </div>
     </div>
 </div>
+
+<style>
+/* ============================================
+   FORM PENGAJUAN SURAT - MODERN STYLING
+   ============================================ */
+
+/* Button Group Styling */
+.mt-4.d-flex {
+    gap: 12px;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border: 2px solid #dee2e6;
+    background-color: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-outline-secondary:hover {
+    color: #5a6268;
+    border-color: #6c757d;
+    background-color: rgba(108, 117, 125, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.15);
+}
+
+.btn-outline-secondary:active {
+    transform: translateY(0);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #2ca87f 0%, #1e8a5f 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(44, 168, 127, 0.25);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(44, 168, 127, 0.35);
+    color: white;
+}
+
+.btn-success:active {
+    transform: translateY(0);
+}
+
+.btn-success i {
+    font-size: 16px;
+}
+
+.btn-outline-secondary i {
+    font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mt-4.d-flex {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-outline-secondary,
+    .btn-success {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
 
 <!-- Embed data untuk JavaScript -->
 @php

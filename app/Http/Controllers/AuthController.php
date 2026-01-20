@@ -62,7 +62,8 @@ class AuthController extends Controller
                 'login_method' => 'nik_password',
                 'role' => $user->role ?? 'user',
                 'nik' => $user->nik,
-                'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap
+                'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap,
+                'user_email' => $user->email ?? null  // Tambahkan untuk fallback di view jika user_name kosong
             ]);
             
             Activity::log('login', 'Login berhasil');
@@ -207,6 +208,13 @@ class AuthController extends Controller
             // Auto-login for social auth, otherwise redirect to login page
             if ($isSocialAuth) {
                 Auth::login($user);
+                // Log social auth login
+                $this->activityLogger->logAuthentication('login', [
+                    'login_method' => 'social_auth',
+                    'role' => $user->role ?? 'user',
+                    'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap,
+                    'user_email' => $user->email ?? null
+                ]);
                 return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Selamat datang di Dashboard Desa.');
             }
 
@@ -346,6 +354,13 @@ class AuthController extends Controller
             if ($user) {
                 // User sudah ada, tinggal login
                 Auth::login($user);
+                // Log social auth login
+                $this->activityLogger->logAuthentication('login', [
+                    'login_method' => 'social_auth',
+                    'role' => $user->role ?? 'user',
+                    'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap,
+                    'user_email' => $user->email ?? null
+                ]);
                 return redirect('/dashboard');
             } else {
                 // User belum ada, redirect ke register dengan email pre-filled

@@ -44,14 +44,8 @@
                 margin: 30px 0;
             }
 
-            .button-container span {
-                color: black;
-                font-weight: bold;
-                font-size: 20px;
-                background-color: #eee;
-
-                padding: 1rem;
-                letter-spacing: 1rem;
+            .button-container a {
+                color: white
             }
 
             .btn {
@@ -77,20 +71,20 @@
     <body>
         <div class="container">
             <div class="header">
-                <?php echo e($subject); ?>
-
+                Reset Password
             </div>
             <div class="content">
                 <p>Halo <b><?php echo e($name); ?></b>,</p>
-                <p>Kode OTP Anda untuk verifikasi email adalah sebagai berikut:</p>
-            </div>
-            <div class="button-container">
-                <span><?php echo e($otp); ?></span>
+                <p>Anda telah meminta untuk mereset password akun Anda. Silakan klik link di bawah ini untuk
+                    melanjutkan:</p>
+                <p><a href="<?php echo e($resetLink); ?>" class="btn"><?php echo e($resetLink); ?></a></p>
+                <p style="font-size: 12px; color: #999;">Jika link di atas tidak berfungsi, copy & paste URL ini ke browser:</p>
+                <p style="word-break: break-all; background-color: #f5f5f5; padding: 10px; border-radius: 3px; font-family: monospace; font-size: 12px;"><?php echo e($resetLink); ?></p>
             </div>
             <div class="content">
-                <p>Kode ini berlaku sampai <b><?php echo e($expireAt); ?></b>. Jangan bagikan kode ini kepada siapa pun demi
-                    keamanan akun Anda.</p>
-                <p>Jika Anda tidak pernah meminta kode OTP ini, abaikan email ini.</p>
+                <p>Link ini berlaku sampai <b><?php echo e($expireAt); ?></b>. Jika sudah lewat, Anda harus membuat permintaan
+                    ulang.</p>
+                <p>Jika Anda tidak pernah meminta proses ini, abaikan email ini.</p>
             </div>
             <div class="footer">
                 &copy; <?php echo e(date('Y')); ?> Aplikasi Sistem Informasi Desa
@@ -99,4 +93,4 @@
     </body>
 
 </html>
-<?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/emails/otp.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/emails/reset-password.blade.php ENDPATH**/ ?>

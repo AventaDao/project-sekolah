@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->role === 'admin') {
             return $this->adminDashboard();
         } else {
@@ -48,20 +48,20 @@ class DashboardController extends Controller
         $pengajuanTotals = [
             'menunggu' => PengajuanSurat::where('status', 'Menunggu')->count(),
             'diproses' => PengajuanSurat::where('status', 'Diproses')->count(),
-            'selesai'  => PengajuanSurat::where('status', 'Selesai')->count(),
+            'selesai' => PengajuanSurat::where('status', 'Selesai')->count(),
         ];
 
         $pengaduanTotals = [
             'menunggu' => Pengaduan::where('status', 'Menunggu')->count(),
             'diproses' => Pengaduan::where('status', 'Diproses')->count(),
-            'selesai'  => Pengaduan::where('status', 'Selesai')->count(),
+            'selesai' => Pengaduan::where('status', 'Selesai')->count(),
         ];
 
         // Combined totals used by pie chart
         $combined = [
             'menunggu' => $pengajuanTotals['menunggu'] + $pengaduanTotals['menunggu'],
             'diproses' => $pengajuanTotals['diproses'] + $pengaduanTotals['diproses'],
-            'selesai'  => $pengajuanTotals['selesai'] + $pengaduanTotals['selesai'],
+            'selesai' => $pengajuanTotals['selesai'] + $pengaduanTotals['selesai'],
         ];
 
         return response()->json([
@@ -81,11 +81,14 @@ class DashboardController extends Controller
     private function adminDashboard()
     {
         $user = Auth::user();
-        
+
         // Statistik untuk admin
         $stats = [
             // Data Penduduk
-            'total_penduduk' => Penduduk::where('status_hidup', 'Hidup')->count(),
+            'total_penduduk' => Penduduk::where(function ($query) {
+                $query->where('status_hidup', 'Hidup')
+                    ->orWhereNull('status_hidup');
+            })->count(),
             'total_kk' => 0, // Sementara dinonaktifkan karena tidak ada data KK yang valid
             'kelahiran_bulan_ini' => Kelahiran::whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
@@ -94,12 +97,12 @@ class DashboardController extends Controller
                 ->whereMonth('tanggal_meninggal', now()->month)
                 ->whereYear('tanggal_meninggal', now()->year)
                 ->count(),
-            
+
             // Pengajuan Surat
             'pengajuan_menunggu' => PengajuanSurat::where('status', 'Menunggu')->count(),
             'pengajuan_diproses' => PengajuanSurat::where('status', 'Diproses')->count(),
             'pengajuan_selesai' => PengajuanSurat::where('status', 'Selesai')->count(),
-            
+
             // Pengaduan
             'pengaduan_menunggu' => Pengaduan::where('status', 'Menunggu')->count(),
             'pengaduan_diproses' => Pengaduan::where('status', 'Diproses')->count(),
@@ -112,13 +115,16 @@ class DashboardController extends Controller
     private function userDashboard()
     {
         $user = Auth::user();
-        
+
         // Statistik umum desa
         $stats = [
-            'total_penduduk' => Penduduk::where('status_hidup', 'Hidup')->count(),
+            'total_penduduk' => Penduduk::where(function ($query) {
+                $query->where('status_hidup', 'Hidup')
+                    ->orWhereNull('status_hidup');
+            })->count(),
             'surat_disetujui' => PengajuanSurat::where('status', 'Selesai')->count(),
             'pengaduan_selesai' => Pengaduan::where('status', 'Selesai')->count(),
-            
+
             // Statistik personal user - Pengajuan Surat
             'my_pengajuan_total' => PengajuanSurat::where('user_id', $user->id)->count(),
             'my_pengajuan_menunggu' => PengajuanSurat::where('user_id', $user->id)
@@ -127,7 +133,7 @@ class DashboardController extends Controller
                 ->where('status', 'Diproses')->count(),
             'my_pengajuan_selesai' => PengajuanSurat::where('user_id', $user->id)
                 ->where('status', 'Selesai')->count(),
-            
+
             // Statistik personal user - Pengaduan
             'my_pengaduan_total' => Pengaduan::where('user_id', $user->id)->count(),
             'my_pengaduan_menunggu' => Pengaduan::where('user_id', $user->id)
@@ -163,9 +169,9 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard', compact(
-            'stats', 
-            'beritas', 
-            'user', 
+            'stats',
+            'beritas',
+            'user',
             'penduduk_by_gender',
             'penduduk_by_agama',
             'recent_pengajuan',

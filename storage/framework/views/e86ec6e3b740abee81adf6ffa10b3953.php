@@ -215,7 +215,7 @@
                     </div>
 
                     <div class="pagination-wrapper">
-                        <?php echo e($pengaduans->links()); ?>
+                        <?php echo e($pengaduans->links('vendor.pagination.modern')); ?>
 
                     </div>
                 </div>

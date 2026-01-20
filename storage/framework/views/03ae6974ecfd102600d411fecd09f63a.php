@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', 'Tambah Data Penduduk'); ?>
+<?php $__env->startSection('title', 'Edit Data Penduduk'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="pc-content">
@@ -10,7 +10,7 @@
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo e(route('admin.penduduk.index')); ?>">Data Penduduk</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Tambah Data</li>
+                        <li class="breadcrumb-item" aria-current="page">Edit Data</li>
                     </ul>
                 </div>
             </div>
@@ -22,7 +22,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h5>Form Tambah Data Penduduk</h5>
+                    <h5>Form Edit Data Penduduk</h5>
                 </div>
                 <div class="card-body">
                     <?php if($errors->any()): ?>
@@ -54,14 +54,12 @@
                             <div class="step-counter">4</div>
                             <div class="step-name">Data Keluarga</div>
                         </div>
-                        <div class="stepper-item" data-step="5">
-                            <div class="step-counter">5</div>
-                            <div class="step-name">Data Kelahiran</div>
-                        </div>
                     </div>
 
-                    <form action="<?php echo e(route('admin.penduduk.store')); ?>" method="POST" id="formPenduduk">
+                    <form action="<?php echo e(route('admin.penduduk.update', $penduduk->id)); ?>" method="POST" id="formPenduduk">
                         <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
+                        
                         <!-- Step 1: Data Identitas -->
                         <div class="step-content active" data-step="1">
                             <h5 class="mb-3 text-primary">Data Identitas</h5>
@@ -76,8 +74,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('nik')); ?>" minlength="16" maxlength="16" pattern="[0-9]{16}" 
-                                           inputmode="numeric" required>
+                                           value="<?php echo e(old('nik', $penduduk->nik)); ?>" maxlength="16" required>
                                     <?php $__errorArgs = ['nik'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -88,7 +85,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                    <small class="text-muted">Harus tepat 16 digit angka</small>
+                                    <small class="text-muted">16 digit angka</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
@@ -100,7 +97,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('nama_lengkap')); ?>" required>
+                                           value="<?php echo e(old('nama_lengkap', $penduduk->nama_lengkap)); ?>" required>
                                     <?php $__errorArgs = ['nama_lengkap'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -122,7 +119,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('tempat_lahir')); ?>" required>
+                                           value="<?php echo e(old('tempat_lahir', $penduduk->tempat_lahir)); ?>" required>
                                     <?php $__errorArgs = ['tempat_lahir'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -144,7 +141,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('tanggal_lahir')); ?>" required>
+                                           value="<?php echo e(old('tanggal_lahir', $penduduk->tanggal_lahir->format('Y-m-d'))); ?>" required>
                                     <?php $__errorArgs = ['tanggal_lahir'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -167,8 +164,8 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                                         <option value="">Pilih Jenis Kelamin</option>
-                                        <option value="Laki-laki" <?php echo e(old('jenis_kelamin') == 'Laki-laki' ? 'selected' : ''); ?>>Laki-laki</option>
-                                        <option value="Perempuan" <?php echo e(old('jenis_kelamin') == 'Perempuan' ? 'selected' : ''); ?>>Perempuan</option>
+                                        <option value="Laki-laki" <?php echo e(old('jenis_kelamin', $penduduk->jenis_kelamin) == 'Laki-laki' ? 'selected' : ''); ?>>Laki-laki</option>
+                                        <option value="Perempuan" <?php echo e(old('jenis_kelamin', $penduduk->jenis_kelamin) == 'Perempuan' ? 'selected' : ''); ?>>Perempuan</option>
                                     </select>
                                     <?php $__errorArgs = ['jenis_kelamin'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -198,7 +195,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                              rows="3" required><?php echo e(old('alamat')); ?></textarea>
+                                              rows="3" required><?php echo e(old('alamat', $penduduk->alamat)); ?></textarea>
                                     <?php $__errorArgs = ['alamat'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -220,8 +217,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('rt')); ?>" minlength="1" maxlength="3" pattern="[0-9]{1,3}" 
-                                           inputmode="numeric" required>
+                                           value="<?php echo e(old('rt', $penduduk->rt)); ?>" maxlength="3" required>
                                     <?php $__errorArgs = ['rt'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -232,7 +228,6 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                    <small class="text-muted">1-3 digit</small>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">RW <span class="text-danger">*</span></label>
@@ -244,8 +239,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('rw')); ?>" minlength="1" maxlength="3" pattern="[0-9]{1,3}" 
-                                           inputmode="numeric" required>
+                                           value="<?php echo e(old('rw', $penduduk->rw)); ?>" maxlength="3" required>
                                     <?php $__errorArgs = ['rw'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -256,7 +250,6 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                    <small class="text-muted">1-3 digit</small>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Desa <span class="text-danger">*</span></label>
@@ -268,7 +261,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('desa')); ?>" required>
+                                           value="<?php echo e(old('desa', $penduduk->desa)); ?>" required>
                                     <?php $__errorArgs = ['desa'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -290,7 +283,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('kecamatan')); ?>" required>
+                                           value="<?php echo e(old('kecamatan', $penduduk->kecamatan)); ?>" required>
                                     <?php $__errorArgs = ['kecamatan'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -312,7 +305,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('kabupaten')); ?>" required>
+                                           value="<?php echo e(old('kabupaten', $penduduk->kabupaten)); ?>" required>
                                     <?php $__errorArgs = ['kabupaten'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -334,7 +327,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('provinsi')); ?>" required>
+                                           value="<?php echo e(old('provinsi', $penduduk->provinsi)); ?>" required>
                                     <?php $__errorArgs = ['provinsi'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -348,7 +341,7 @@ unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
-                                    <input type="number" name="kode_pos" class="form-control <?php $__errorArgs = ['kode_pos'];
+                                    <input type="text" name="kode_pos" class="form-control <?php $__errorArgs = ['kode_pos'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -356,7 +349,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('kode_pos')); ?>" min="10000" max="99999" required>
+                                           value="<?php echo e(old('kode_pos', $penduduk->kode_pos)); ?>" maxlength="5" required>
                                     <?php $__errorArgs = ['kode_pos'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -386,12 +379,12 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                                         <option value="">Pilih Agama</option>
-                                        <option value="Islam" <?php echo e(old('agama') == 'Islam' ? 'selected' : ''); ?>>Islam</option>
-                                        <option value="Kristen" <?php echo e(old('agama') == 'Kristen' ? 'selected' : ''); ?>>Kristen</option>
-                                        <option value="Katolik" <?php echo e(old('agama') == 'Katolik' ? 'selected' : ''); ?>>Katolik</option>
-                                        <option value="Hindu" <?php echo e(old('agama') == 'Hindu' ? 'selected' : ''); ?>>Hindu</option>
-                                        <option value="Buddha" <?php echo e(old('agama') == 'Buddha' ? 'selected' : ''); ?>>Buddha</option>
-                                        <option value="Konghucu" <?php echo e(old('agama') == 'Konghucu' ? 'selected' : ''); ?>>Konghucu</option>
+                                        <option value="Islam" <?php echo e(old('agama', $penduduk->agama) == 'Islam' ? 'selected' : ''); ?>>Islam</option>
+                                        <option value="Kristen" <?php echo e(old('agama', $penduduk->agama) == 'Kristen' ? 'selected' : ''); ?>>Kristen</option>
+                                        <option value="Katolik" <?php echo e(old('agama', $penduduk->agama) == 'Katolik' ? 'selected' : ''); ?>>Katolik</option>
+                                        <option value="Hindu" <?php echo e(old('agama', $penduduk->agama) == 'Hindu' ? 'selected' : ''); ?>>Hindu</option>
+                                        <option value="Buddha" <?php echo e(old('agama', $penduduk->agama) == 'Buddha' ? 'selected' : ''); ?>>Buddha</option>
+                                        <option value="Konghucu" <?php echo e(old('agama', $penduduk->agama) == 'Konghucu' ? 'selected' : ''); ?>>Konghucu</option>
                                     </select>
                                     <?php $__errorArgs = ['agama'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -415,10 +408,10 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                                         <option value="">Pilih Status</option>
-                                        <option value="Belum Kawin" <?php echo e(old('status_perkawinan') == 'Belum Kawin' ? 'selected' : ''); ?>>Belum Kawin</option>
-                                        <option value="Kawin" <?php echo e(old('status_perkawinan') == 'Kawin' ? 'selected' : ''); ?>>Kawin</option>
-                                        <option value="Cerai Hidup" <?php echo e(old('status_perkawinan') == 'Cerai Hidup' ? 'selected' : ''); ?>>Cerai Hidup</option>
-                                        <option value="Cerai Mati" <?php echo e(old('status_perkawinan') == 'Cerai Mati' ? 'selected' : ''); ?>>Cerai Mati</option>
+                                        <option value="Belum Kawin" <?php echo e(old('status_perkawinan', $penduduk->status_perkawinan) == 'Belum Kawin' ? 'selected' : ''); ?>>Belum Kawin</option>
+                                        <option value="Kawin" <?php echo e(old('status_perkawinan', $penduduk->status_perkawinan) == 'Kawin' ? 'selected' : ''); ?>>Kawin</option>
+                                        <option value="Cerai Hidup" <?php echo e(old('status_perkawinan', $penduduk->status_perkawinan) == 'Cerai Hidup' ? 'selected' : ''); ?>>Cerai Hidup</option>
+                                        <option value="Cerai Mati" <?php echo e(old('status_perkawinan', $penduduk->status_perkawinan) == 'Cerai Mati' ? 'selected' : ''); ?>>Cerai Mati</option>
                                     </select>
                                     <?php $__errorArgs = ['status_perkawinan'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -441,7 +434,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('pekerjaan')); ?>" required>
+                                           value="<?php echo e(old('pekerjaan', $penduduk->pekerjaan)); ?>" required>
                                     <?php $__errorArgs = ['pekerjaan'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -463,8 +456,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
-                                        <option value="WNI" <?php echo e(old('kewarganegaraan') == 'WNI' ? 'selected' : ''); ?>>WNI</option>
-                                        <option value="WNA" <?php echo e(old('kewarganegaraan') == 'WNA' ? 'selected' : ''); ?>>WNA</option>
+                                        <option value="WNI" <?php echo e(old('kewarganegaraan', $penduduk->kewarganegaraan) == 'WNI' ? 'selected' : ''); ?>>WNI</option>
+                                        <option value="WNA" <?php echo e(old('kewarganegaraan', $penduduk->kewarganegaraan) == 'WNA' ? 'selected' : ''); ?>>WNA</option>
                                     </select>
                                     <?php $__errorArgs = ['kewarganegaraan'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -487,7 +480,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('pendidikan_terakhir')); ?>">
+                                           value="<?php echo e(old('pendidikan_terakhir', $penduduk->pendidikan_terakhir)); ?>">
                                     <?php $__errorArgs = ['pendidikan_terakhir'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -509,7 +502,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('no_telepon')); ?>" maxlength="15">
+                                           value="<?php echo e(old('no_telepon', $penduduk->no_telepon)); ?>" maxlength="15">
                                     <?php $__errorArgs = ['no_telepon'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -531,8 +524,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" id="statusHidup" required>
-                                        <option value="Hidup" <?php echo e(old('status_hidup') == 'Hidup' ? 'selected' : 'selected'); ?>>Hidup</option>
-                                        <option value="Meninggal" <?php echo e(old('status_hidup') == 'Meninggal' ? 'selected' : ''); ?>>Meninggal</option>
+                                        <option value="Hidup" <?php echo e(old('status_hidup', $penduduk->status_hidup) == 'Hidup' ? 'selected' : ''); ?>>Hidup</option>
+                                        <option value="Meninggal" <?php echo e(old('status_hidup', $penduduk->status_hidup) == 'Meninggal' ? 'selected' : ''); ?>>Meninggal</option>
                                     </select>
                                     <?php $__errorArgs = ['status_hidup'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -547,7 +540,7 @@ unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
 
-                            <div class="row" id="tanggalMeninggalField" style="display: <?php echo e(old('status_hidup') == 'Meninggal' ? 'block' : 'none'); ?>">
+                            <div class="row" id="tanggalMeninggalField" style="display: <?php echo e(old('status_hidup', $penduduk->status_hidup) == 'Meninggal' ? 'block' : 'none'); ?>">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Tanggal Meninggal</label>
                                     <input type="date" name="tanggal_meninggal" class="form-control <?php $__errorArgs = ['tanggal_meninggal'];
@@ -558,7 +551,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('tanggal_meninggal')); ?>">
+                                           value="<?php echo e(old('tanggal_meninggal', $penduduk->tanggal_meninggal ? $penduduk->tanggal_meninggal->format('Y-m-d') : '')); ?>">
                                     <?php $__errorArgs = ['tanggal_meninggal'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -587,7 +580,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('nama_ayah')); ?>">
+                                           value="<?php echo e(old('nama_ayah', $penduduk->nama_ayah)); ?>">
                                     <?php $__errorArgs = ['nama_ayah'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -609,7 +602,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           value="<?php echo e(old('nama_ibu')); ?>">
+                                           value="<?php echo e(old('nama_ibu', $penduduk->nama_ibu)); ?>">
                                     <?php $__errorArgs = ['nama_ibu'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -622,203 +615,29 @@ endif;
 unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Step 5: Data Kelahiran -->
-                        <div class="step-content" data-step="5">
-                            <h5 class="mb-3 text-primary">Data Kelahiran (Opsional)</h5>
-                            <div class="alert alert-info mb-3">
-                                <i class="ti ti-info-circle me-2"></i>
-                                <strong>Catatan:</strong> Bagian ini bersifat opsional. Anda dapat membiarkannya kosong jika tidak ingin membuat data kelahiran baru sekarang.
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" name="buat_kelahiran_baru" id="buatKelahiranBaru" class="form-check-input" value="1">
-                                        <label class="form-check-label" for="buatKelahiranBaru">
-                                            Buat kelahiran baru untuk penduduk ini
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="kelahiranFields" style="display: none;">
-                                <hr class="my-4">
-                                <h6 class="text-secondary mb-3">Informasi Kelahiran</h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Nomor Akta Kelahiran</label>
-                                        <input type="text" name="nomor_akta_kelahiran" class="form-control <?php $__errorArgs = ['nomor_akta_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" 
-                                               value="<?php echo e(old('nomor_akta_kelahiran')); ?>" placeholder="Kosongkan jika belum memiliki nomor">
-                                        <?php $__errorArgs = ['nomor_akta_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        <small class="text-muted">Opsional</small>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Tanggal Pendaftaran Kelahiran</label>
-                                        <input type="date" name="tanggal_daftar_kelahiran" class="form-control <?php $__errorArgs = ['tanggal_daftar_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" 
-                                               value="<?php echo e(old('tanggal_daftar_kelahiran')); ?>">
-                                        <?php $__errorArgs = ['tanggal_daftar_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        <small class="text-muted">Opsional</small>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Penolong Kelahiran</label>
-                                        <select name="penolong_kelahiran" class="form-select <?php $__errorArgs = ['penolong_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>">
-                                            <option value="">Pilih Penolong</option>
-                                            <option value="Dokter" <?php echo e(old('penolong_kelahiran') == 'Dokter' ? 'selected' : ''); ?>>Dokter</option>
-                                            <option value="Bidan" <?php echo e(old('penolong_kelahiran') == 'Bidan' ? 'selected' : ''); ?>>Bidan</option>
-                                            <option value="Dukun" <?php echo e(old('penolong_kelahiran') == 'Dukun' ? 'selected' : ''); ?>>Dukun</option>
-                                            <option value="Lainnya" <?php echo e(old('penolong_kelahiran') == 'Lainnya' ? 'selected' : ''); ?>>Lainnya</option>
-                                        </select>
-                                        <?php $__errorArgs = ['penolong_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        <small class="text-muted">Opsional</small>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Tempat Kelahiran</label>
-                                        <select name="tempat_kelahiran" class="form-select <?php $__errorArgs = ['tempat_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>">
-                                            <option value="">Pilih Tempat</option>
-                                            <option value="Rumah Sakit" <?php echo e(old('tempat_kelahiran') == 'Rumah Sakit' ? 'selected' : ''); ?>>Rumah Sakit</option>
-                                            <option value="Klinik" <?php echo e(old('tempat_kelahiran') == 'Klinik' ? 'selected' : ''); ?>>Klinik</option>
-                                            <option value="Puskesmas" <?php echo e(old('tempat_kelahiran') == 'Puskesmas' ? 'selected' : ''); ?>>Puskesmas</option>
-                                            <option value="Rumah" <?php echo e(old('tempat_kelahiran') == 'Rumah' ? 'selected' : ''); ?>>Rumah</option>
-                                            <option value="Lainnya" <?php echo e(old('tempat_kelahiran') == 'Lainnya' ? 'selected' : ''); ?>>Lainnya</option>
-                                        </select>
-                                        <?php $__errorArgs = ['tempat_kelahiran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        <small class="text-muted">Opsional</small>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Berat Bayi (kg)</label>
-                                        <input type="number" name="berat_bayi" class="form-control <?php $__errorArgs = ['berat_bayi'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" 
-                                               value="<?php echo e(old('berat_bayi')); ?>" step="0.1" min="0" max="10">
-                                        <?php $__errorArgs = ['berat_bayi'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        <small class="text-muted">Opsional</small>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Panjang Bayi (cm)</label>
-                                        <input type="number" name="panjang_bayi" class="form-control <?php $__errorArgs = ['panjang_bayi'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" 
-                                               value="<?php echo e(old('panjang_bayi')); ?>" step="0.1" min="0" max="100">
-                                        <?php $__errorArgs = ['panjang_bayi'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                        <small class="text-muted">Opsional</small>
-                                    </div>
-                                </div>
-                            </div>
 
                             <!-- Informasi untuk step terakhir -->
                             <div class="alert alert-info mt-3">
                                 <i class="ti ti-info-circle me-2"></i>
-                                <strong>Informasi:</strong> Pastikan semua data yang Anda masukkan sudah benar sebelum menyimpan.
+                                <strong>Informasi:</strong> Pastikan semua data yang Anda edit sudah benar sebelum menyimpan perubahan.
                             </div>
                         </div>
 
                         <!-- Stepper Buttons -->
-                        <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="mt-4 d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
                                 <i class="ti ti-arrow-left"></i> Sebelumnya
                             </button>
-                            <div class="d-flex gap-2">
-                                <a href="<?php echo e(route('admin.penduduk.index')); ?>" class="btn btn-outline-secondary">
+                            <div>
+                                                        <div class="d-flex gap-2">
+                                <a href="<?php echo e(route('admin.penduduk.index')); ?>" class="btn btn-outline-secondary me-2">
                                     <i class="ti ti-x"></i> Batal
                                 </a>
                                 <button type="button" class="btn btn-primary" id="nextBtn">
                                     Selanjutnya <i class="ti ti-arrow-right"></i>
                                 </button>
                                 <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
-                                    <i class="ti ti-device-floppy"></i> Simpan Data
+                                    <i class="ti ti-device-floppy"></i> Update Data
                                 </button>
                             </div>
                         </div>
@@ -953,7 +772,7 @@ unset($__errorArgs, $__bag); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 1;
-    const totalSteps = 5;
+    const totalSteps = 4;
     
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -961,93 +780,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formPenduduk');
     const statusHidup = document.getElementById('statusHidup');
     const tanggalMeninggalField = document.getElementById('tanggalMeninggalField');
-    const buatKelahiranBaru = document.getElementById('buatKelahiranBaru');
-    const kelahiranFields = document.getElementById('kelahiranFields');
-    const nikInput = document.querySelector('input[name="nik"]');
-    const rtInput = document.querySelector('input[name="rt"]');
-    const rwInput = document.querySelector('input[name="rw"]');
-    
-    // Real-time validation untuk NIK
-    if (nikInput) {
-        nikInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya angka
-            
-            if (this.value.length > 16) {
-                this.value = this.value.slice(0, 16);
-            }
-            
-            // Validasi length
-            if (this.value.length < 16) {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            } else if (this.value.length === 16) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            }
-        });
-        
-        nikInput.addEventListener('blur', function() {
-            if (this.value.length !== 16) {
-                this.classList.add('is-invalid');
-                const feedbackDiv = this.nextElementSibling;
-                if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-                    feedbackDiv.textContent = 'NIK harus tepat 16 digit angka';
-                }
-            }
-        });
-    }
-    
-    // Real-time validation untuk RT
-    if (rtInput) {
-        rtInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya angka
-            
-            if (this.value.length > 3) {
-                this.value = this.value.slice(0, 3);
-            }
-            
-            // Validasi length
-            if (this.value.length === 0) {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            } else if (this.value.length <= 3) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            }
-        });
-        
-        rtInput.addEventListener('blur', function() {
-            if (this.value.length === 0) {
-                this.classList.add('is-invalid');
-            }
-        });
-    }
-    
-    // Real-time validation untuk RW
-    if (rwInput) {
-        rwInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya angka
-            
-            if (this.value.length > 3) {
-                this.value = this.value.slice(0, 3);
-            }
-            
-            // Validasi length
-            if (this.value.length === 0) {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            } else if (this.value.length <= 3) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            }
-        });
-        
-        rwInput.addEventListener('blur', function() {
-            if (this.value.length === 0) {
-                this.classList.add('is-invalid');
-            }
-        });
-    }
     
     // Toggle tanggal meninggal field
     statusHidup.addEventListener('change', function() {
@@ -1055,15 +787,6 @@ document.addEventListener('DOMContentLoaded', function() {
             tanggalMeninggalField.style.display = 'block';
         } else {
             tanggalMeninggalField.style.display = 'none';
-        }
-    });
-
-    // Toggle kelahiran fields
-    buatKelahiranBaru.addEventListener('change', function() {
-        if (this.checked) {
-            kelahiranFields.style.display = 'block';
-        } else {
-            kelahiranFields.style.display = 'none';
         }
     });
     
@@ -1106,31 +829,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let firstInvalidField = null;
         
         requiredFields.forEach(field => {
-            // Special validation untuk NIK
-            if (field.name === 'nik') {
-                if (field.value.length !== 16 || !/^[0-9]{16}$/.test(field.value)) {
-                    isValid = false;
-                    field.classList.add('is-invalid');
-                    
-                    if (!firstInvalidField) {
-                        firstInvalidField = field;
-                    }
-                    
-                    // Create feedback if not exists
-                    let feedbackDiv = field.nextElementSibling;
-                    if (!feedbackDiv || !feedbackDiv.classList.contains('invalid-feedback')) {
-                        feedbackDiv = document.createElement('div');
-                        feedbackDiv.classList.add('invalid-feedback', 'd-block');
-                        field.parentNode.insertBefore(feedbackDiv, field.nextSibling);
-                    }
-                    feedbackDiv.textContent = 'NIK harus tepat 16 digit angka';
-                } else {
-                    field.classList.remove('is-invalid');
-                    field.classList.add('is-valid');
-                }
-                return;
-            }
-            
             if (!field.value.trim()) {
                 isValid = false;
                 field.classList.add('is-invalid');
@@ -1147,12 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         if (!isValid) {
-            if (firstInvalidField && firstInvalidField.name === 'nik') {
-                alert('NIK harus tepat 16 digit angka');
-            } else {
-                alert('Mohon lengkapi semua field yang wajib diisi (bertanda *)');
-            }
-            
+            alert('Mohon lengkapi semua field yang wajib diisi (bertanda *)');
             if (firstInvalidField) {
                 firstInvalidField.focus();
             }
@@ -1187,4 +880,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/admin/penduduk/create.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\PC_\Documents\New folder\project-sekolah\resources\views/admin/penduduk/edit.blade.php ENDPATH**/ ?>
