@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
 use App\Models\Activity;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class PengaduanController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct(ActivityLogger $activityLogger)
+    {
+        $this->activityLogger = $activityLogger;
+    }
     /**
      * Display a listing of pengaduan for user
      */
@@ -86,6 +93,14 @@ class PengaduanController extends Controller
             'lampiran' => $lampiranPath,
         ]);
 
+        // Log pengaduan creation to Firebase
+        $this->activityLogger->logPengaduan('create', $pengaduan->id, [
+            'nomor_pengaduan' => $nomorPengaduan,
+            'kategori' => $validated['kategori'],
+            'judul' => $validated['judul'],
+            'status' => 'new'
+        ]);
+
         // Log activity
         Activity::log('pengaduan_create', "Membuat pengaduan: $nomorPengaduan ($validated[kategori])", $pengaduan->id, 'Pengaduan');
 
@@ -120,6 +135,8 @@ class PengaduanController extends Controller
             'tanggapan_admin' => 'nullable|string',
         ]);
 
+        $previousStatus = $pengaduan->status;
+
         $data = [
             'status' => $validated['status'],
             'tanggapan_admin' => $validated['tanggapan_admin'],
@@ -142,6 +159,24 @@ class PengaduanController extends Controller
         }
 
         $pengaduan->update($data);
+
+        // Log pengaduan status update to Firebase
+        $statusMap = [
+            'Diproses' => 'processing',
+            'Selesai' => 'completed',
+            'Ditolak' => 'rejected'
+        ];
+        $approvalStatus = $statusMap[$validated['status']] ?? 'updated';
+
+        $this->activityLogger->logApproval('update_status', $pengaduan->id, $approvalStatus, [
+            'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+            'resource_type' => 'pengaduan',
+            'previous_status' => $previousStatus,
+            'new_status' => $validated['status'],
+            'tanggapan_admin' => $validated['tanggapan_admin'] ?? null,
+            'approved_by' => Auth::user()->name,
+            'approved_by_id' => Auth::id()
+        ]);
 
         return redirect()->back()
             ->with('success', 'Tanggapan berhasil disimpan');

@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'cekRole' => CheckRole::class,
         ]);
+        
+        // Exclude CSRF check for firebase test routes
+        $middleware->validateCsrfTokens(except: [
+            'firebase-test/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

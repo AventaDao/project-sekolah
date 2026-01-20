@@ -121,24 +121,26 @@
                             <!-- Step 2: Diproses -->
                             <div class="timeline-item">
                                 <div class="timeline-bar"></div>
-                                <div class="timeline-dot {{ $pengaduan->tanggal_diproses ? 'bg-success' : 'bg-secondary' }}">
-                                    <i class="ti {{ $pengaduan->tanggal_diproses ? 'ti-check' : 'ti-hourglass' }}"></i>
+                                <div class="timeline-dot {{ ($pengaduan->status === 'Selesai' || $pengaduan->status === 'Ditolak' || $pengaduan->tanggal_diproses) ? 'bg-success' : 'bg-secondary' }}">
+                                    <i class="ti {{ ($pengaduan->status === 'Selesai' || $pengaduan->status === 'Ditolak' || $pengaduan->tanggal_diproses) ? 'ti-check' : 'ti-hourglass' }}"></i>
                                 </div>
                                 <div class="timeline-content">
                                     <div class="d-flex align-items-center mb-1">
                                         <h6 class="mb-0"><strong>Dalam Proses</strong></h6>
-                                        <span class="badge {{ $pengaduan->tanggal_diproses ? 'bg-success' : 'bg-secondary' }} ms-2">
-                                            {{ $pengaduan->tanggal_diproses ? 'Selesai' : 'Menunggu' }}
+                                        <span class="badge {{ ($pengaduan->status === 'Selesai' || $pengaduan->status === 'Ditolak' || $pengaduan->tanggal_diproses) ? 'bg-success' : 'bg-secondary' }} ms-2">
+                                            {{ ($pengaduan->status === 'Selesai' || $pengaduan->status === 'Ditolak' || $pengaduan->tanggal_diproses) ? 'Selesai' : 'Menunggu' }}
                                         </span>
                                     </div>
-                                    @if($pengaduan->tanggal_diproses)
+                                    @if($pengaduan->tanggal_diproses || $pengaduan->status === 'Selesai' || $pengaduan->status === 'Ditolak')
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-clock me-1"></i>
-                                            {{ optional($pengaduan->tanggal_diproses)->format('d F Y H:i') }} WIB
+                                            {{ optional($pengaduan->tanggal_diproses ?? $pengaduan->updated_at)->format('d F Y H:i') }} WIB
                                         </p>
+                                        @if($pengaduan->tanggal_diproses)
                                         <small class="text-muted">
                                             Waktu pemrosesan: {{ $pengaduan->tanggal_diproses->diffForHumans($pengaduan->created_at, ['parts' => 2]) }}
                                         </small>
+                                        @endif
                                     @else
                                         <p class="text-muted mb-0">
                                             <i class="ti ti-hourglass me-1"></i>

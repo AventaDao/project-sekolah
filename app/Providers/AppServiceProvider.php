@@ -8,11 +8,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ActivityLogger;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Register Activity Logger
+        $this->app->singleton('activity_logger', function () {
+            return new ActivityLogger();
+        });
+
         View::composer('*', function ($view) {
             if (Auth::check()) {
                 $user = Auth::user();

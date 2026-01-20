@@ -144,7 +144,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-500 mb-2" style="color: #333; font-size: 14px;">Nomor Telepon</label>
-                                    <input name="phone" type="text" class="form-control" value="{{ old('phone') }}" style="border-radius: 8px; border: 1.5px solid #e0e0e0; padding: 10px 14px; transition: all 0.3s ease;">
+                                    <input name="phone" type="text" class="form-control" value="{{ old('phone') }}" placeholder="Contoh: 081234567890" inputmode="numeric" pattern="[0-9]*" style="border-radius: 8px; border: 1.5px solid #e0e0e0; padding: 10px 14px; transition: all 0.3s ease;">
                                     @error('phone')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
@@ -210,6 +210,13 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Filter nomor telepon - hanya angka
+        document.querySelector('input[name="phone"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
 
 </body>
 </html>

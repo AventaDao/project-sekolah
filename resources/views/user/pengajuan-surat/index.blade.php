@@ -138,9 +138,9 @@
                                                 <i class="ti ti-eye"></i>
                                             </a>
                                             
-                                            @if($pengajuan->file_surat_jadi && $pengajuan->status === 'Selesai')
-                                            <a href="{{ route('pengajuan-surat.download-surat-jadi', $pengajuan->id) }}" 
-                                               class="btn-action btn-download" title="Download Surat">
+                                            @if($pengajuan->status === 'Selesai')
+                                            <a href="{{ route('pengajuan-surat.print', $pengajuan->id) }}?autoDownload=true" 
+                                               class="btn-action btn-download" title="Download PDF">
                                                 <i class="ti ti-download"></i>
                                             </a>
                                             @endif

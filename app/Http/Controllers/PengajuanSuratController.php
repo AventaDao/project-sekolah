@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PengajuanSurat;
 use App\Models\Activity;
 use App\Mail\SuratSelesaiMail;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,13 @@ use Endroid\QrCode\Writer\SvgWriter;
 
 class PengajuanSuratController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct(ActivityLogger $activityLogger)
+    {
+        $this->activityLogger = $activityLogger;
+    }
+
     /**
      * Display a listing of the resource for users.
      */
@@ -150,7 +158,22 @@ class PengajuanSuratController extends Controller
         // Simpan data pengajuan
         $pengajuanSurat = PengajuanSurat::create($dataToSave);
 
-        // Log activity
+        // Log activity ke Firebase
+        $this->activityLogger->logDocument('create', $pengajuanSurat->id, [
+            'nomor_pengajuan' => $nomorPengajuan,
+            'jenis_surat' => $validated['jenis_surat'],
+            'status' => $pengajuanSurat->status,
+            'user_id' => Auth::id()
+        ]);
+
+        // Log form submission
+        $this->activityLogger->logForm('submit_pengajuan', [
+            'form_name' => 'pengajuan_surat_' . $validated['jenis_surat'],
+            'nomor_pengajuan' => $nomorPengajuan,
+            'pengajuan_id' => $pengajuanSurat->id
+        ]);
+
+        // Log activity ke database (existing system)
         Activity::log('pengajuan_surat_create', "Membuat pengajuan surat: $nomorPengajuan ($validated[jenis_surat])", $pengajuanSurat->id, 'PengajuanSurat');
 
         return redirect()->route('pengajuan-surat.index')
@@ -224,6 +247,30 @@ class PengajuanSuratController extends Controller
         ]);
 
         $pengajuanSurat->update($data);
+
+        // Log approval/status update ke Firebase
+        $statusMap = [
+            'Diproses' => 'processing',
+            'Selesai' => 'completed',
+            'Ditolak' => 'rejected'
+        ];
+        $approvalStatus = $statusMap[$validated['status']] ?? 'updated';
+
+        $this->activityLogger->logApproval('update_status', $pengajuanSurat->id, $approvalStatus, [
+            'nomor_pengajuan' => $pengajuanSurat->nomor_pengajuan,
+            'previous_status' => $pengajuanSurat->getOriginal('status'),
+            'new_status' => $validated['status'],
+            'catatan_admin' => $validated['catatan_admin'] ?? null,
+            'approved_by' => Auth::user()->name,
+            'approved_by_id' => Auth::id()
+        ]);
+
+        // Log user action (who made the approval)
+        $this->activityLogger->logUser('approve_pengajuan', Auth::id(), [
+            'action' => 'update_status',
+            'target_pengajuan_id' => $pengajuanSurat->id,
+            'role' => Auth::user()->role ?? Auth::user()->roles->first()?->name ?? 'unknown'
+        ]);
 
         // Send email notification if status changed to "Selesai"
         if ($isChangingToSelesai) {

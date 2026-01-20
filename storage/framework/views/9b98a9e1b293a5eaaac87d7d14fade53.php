@@ -256,6 +256,10 @@
 </style>
 
 <script>
+    // Auto-download jika parameter autoDownload=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoDownload = urlParams.get('autoDownload');
+    
     function downloadPDF() {
         const element = document.getElementById('letterContent');
         const opt = {
@@ -272,6 +276,17 @@
         };
 
         html2pdf().set(opt).from(element).save();
+    }
+
+    // Auto-download on page load jika parameter autoDownload=true
+    if (autoDownload === 'true') {
+        window.addEventListener('load', function() {
+            setTimeout(downloadPDF, 500);
+            // Redirect back after 2 seconds
+            setTimeout(function() {
+                window.location.href = '<?php echo e(route('pengajuan-surat.index')); ?>';
+            }, 2000);
+        });
     }
 </script>
 

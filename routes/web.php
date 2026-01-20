@@ -9,6 +9,7 @@ use App\Http\Controllers\BeritaDesaController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\FirebaseTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,21 @@ Route::prefix('berita')->name('berita.')->group(function () {
     Route::get('/', [BeritaDesaController::class, 'index'])->name('index');
     Route::get('/{berita}', [BeritaDesaController::class, 'show'])->name('show');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Firebase Logging Test Routes (Development only - PUBLIC)
+|--------------------------------------------------------------------------
+*/
+if (app()->environment(['local', 'testing'])) {
+    Route::prefix('firebase-test')->name('firebase-test.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\FirebaseTestController::class, 'testPage'])->name('page');
+        Route::post('/log', [\App\Http\Controllers\FirebaseTestController::class, 'testLog'])->name('log');
+        Route::post('/log-pengajuan/{pengajuanSurat}', [\App\Http\Controllers\FirebaseTestController::class, 'testPengajuanLog'])->name('log-pengajuan');
+        Route::post('/log-approval/{pengajuanSurat}', [\App\Http\Controllers\FirebaseTestController::class, 'testApprovalLog'])->name('log-approval');
+        Route::get('/view-logs', [\App\Http\Controllers\ActivityLogController::class, 'viewFirebaseLogs'])->name('view-logs');
+    });
+}
 
 /*
 |--------------------------------------------------------------------------

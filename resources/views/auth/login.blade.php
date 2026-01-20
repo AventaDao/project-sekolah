@@ -32,6 +32,27 @@
                     }
                 });
             }
+
+            // Toggle password visibility
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            if (togglePasswordBtn && passwordInput) {
+                togglePasswordBtn.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Ubah icon
+                    const icon = this.querySelector('i');
+                    if (type === 'password') {
+                        icon.classList.remove('ti-eye-off');
+                        icon.classList.add('ti-eye');
+                    } else {
+                        icon.classList.remove('ti-eye');
+                        icon.classList.add('ti-eye-off');
+                    }
+                });
+            }
         });
     </script>
     <div class="card my-5">
@@ -61,14 +82,18 @@
                 </div>
                 <div class="form-group mb-3">
                     <label for="password" class="form-label">Password</label>
-
-                    @if (session('registered_nik'))
-                        <input id="password" type="password" class="form-control" name="password" placeholder="Password"
-                            autofocus required>
-                    @else
-                        <input id="password" type="password" class="form-control" name="password" placeholder="Password"
-                            required>
-                    @endif
+                    <div class="input-group">
+                        @if (session('registered_nik'))
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Password"
+                                autofocus required>
+                        @else
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Password"
+                                required>
+                        @endif
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="border-left: none;">
+                            <i class="ti ti-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="d-flex mt-1 justify-content-between">
                     <div class="form-check">

@@ -57,6 +57,48 @@
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
             });
+
+            // Toggle password visibility
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            if (togglePasswordBtn && passwordInput) {
+                togglePasswordBtn.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Ubah icon
+                    const icon = this.querySelector('i');
+                    if (type === 'password') {
+                        icon.classList.remove('ti-eye-off');
+                        icon.classList.add('ti-eye');
+                    } else {
+                        icon.classList.remove('ti-eye');
+                        icon.classList.add('ti-eye-off');
+                    }
+                });
+            }
+
+            // Toggle password confirmation visibility
+            const togglePasswordConfirmBtn = document.getElementById('togglePasswordConfirm');
+            const passwordConfirmInput = document.getElementById('password_confirmation');
+            
+            if (togglePasswordConfirmBtn && passwordConfirmInput) {
+                togglePasswordConfirmBtn.addEventListener('click', function() {
+                    const type = passwordConfirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordConfirmInput.setAttribute('type', type);
+                    
+                    // Ubah icon
+                    const icon = this.querySelector('i');
+                    if (type === 'password') {
+                        icon.classList.remove('ti-eye-off');
+                        icon.classList.add('ti-eye');
+                    } else {
+                        icon.classList.remove('ti-eye');
+                        icon.classList.add('ti-eye-off');
+                    }
+                });
+            }
         });
     </script>
     <div class="card my-5">
@@ -312,16 +354,26 @@
                     @if (!session('social_email'))
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" 
-                               required placeholder="Minimal 6 karakter">
+                        <div class="input-group">
+                            <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" 
+                                   required placeholder="Minimal 6 karakter">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword" style="border-left: none;">
+                                <i class="ti ti-eye"></i>
+                            </button>
+                        </div>
                         @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password_confirmation" class="form-control" 
-                               required placeholder="Ulangi password">
+                        <div class="input-group">
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" 
+                                   required placeholder="Ulangi password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirm" style="border-left: none;">
+                                <i class="ti ti-eye"></i>
+                            </button>
+                        </div>
                     </div>
                     @else
                     <!-- Hidden fields untuk social auth -->

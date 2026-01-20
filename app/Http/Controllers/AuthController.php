@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Penduduk;
 use App\Models\Activity;
+use App\Services\ActivityLogger;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -20,6 +21,13 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct(ActivityLogger $activityLogger)
+    {
+        $this->activityLogger = $activityLogger;
+    }
+
     public function showLoginForm()
     {
         return view('auth.login');
@@ -47,6 +55,16 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+            
+            // Log login activity to Firebase
+            $user = Auth::user();
+            $this->activityLogger->logAuthentication('login', [
+                'login_method' => 'nik_password',
+                'role' => $user->role ?? 'user',
+                'nik' => $user->nik,
+                'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap
+            ]);
+            
             Activity::log('login', 'Login berhasil');
             return redirect()->intended('dashboard');
         }
@@ -512,6 +530,16 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        // Log logout activity to Firebase
+        $user = Auth::user();
+        if ($user) {
+            $this->activityLogger->logAuthentication('logout', [
+                'role' => $user->role ?? 'user',
+                'nik' => $user->nik,
+                'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap
+            ]);
+        }
+        
         // Log activity sebelum logout
         Activity::log('logout', 'Logout berhasil');
         

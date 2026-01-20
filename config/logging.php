@@ -127,6 +127,11 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'firebase' => [
+            'driver' => 'custom',
+            'via' => App\Logging\FirebaseLoggerFactory::class,
+        ],
+
     ],
 
 ];

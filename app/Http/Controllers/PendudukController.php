@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Penduduk;
 use App\Models\Kelahiran;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
 class PendudukController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct(ActivityLogger $activityLogger)
+    {
+        $this->activityLogger = $activityLogger;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -112,6 +119,15 @@ class PendudukController extends Controller
         // Simpan penduduk
         $penduduk = Penduduk::create($pendudukData);
 
+        // Log penduduk creation to Firebase
+        $this->activityLogger->logPenduduk('create', $penduduk->id, [
+            'nik' => $penduduk->nik,
+            'nama_lengkap' => $penduduk->nama_lengkap,
+            'jenis_kelamin' => $penduduk->jenis_kelamin,
+            'tempat_lahir' => $penduduk->tempat_lahir,
+            'tanggal_lahir' => $penduduk->tanggal_lahir
+        ]);
+
         // Jika checkbox buat_kelahiran_baru dicentang, simpan data kelahiran
         if ($request->has('buat_kelahiran_baru') && $request->buat_kelahiran_baru) {
             $kelahiranData = [
@@ -180,6 +196,16 @@ class PendudukController extends Controller
 
         $penduduk->update($validated);
 
+        // Log penduduk update to Firebase
+        $this->activityLogger->logPenduduk('update', $penduduk->id, [
+            'nik' => $penduduk->nik,
+            'nama_lengkap' => $penduduk->nama_lengkap,
+            'jenis_kelamin' => $penduduk->jenis_kelamin,
+            'tempat_lahir' => $penduduk->tempat_lahir,
+            'tanggal_lahir' => $penduduk->tanggal_lahir,
+            'status_hidup' => $penduduk->status_hidup
+        ]);
+
         // Sync data ke akun user jika penduduk memiliki akun
         if ($penduduk->hasAccount()) {
             $user = $penduduk->user();
@@ -227,6 +253,14 @@ class PendudukController extends Controller
      */
     public function destroy(Penduduk $penduduk)
     {
+        // Log penduduk deletion to Firebase
+        $this->activityLogger->logPenduduk('delete', $penduduk->id, [
+            'nik' => $penduduk->nik,
+            'nama_lengkap' => $penduduk->nama_lengkap,
+            'jenis_kelamin' => $penduduk->jenis_kelamin,
+            'tanggal_lahir' => $penduduk->tanggal_lahir
+        ]);
+
         $penduduk->delete();
 
         return redirect()->route('admin.penduduk.index')

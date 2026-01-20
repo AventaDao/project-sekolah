@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
+use App\Services\ActivityLogger;
 use Illuminate\Support\Carbon;
 
 class ContactController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct(ActivityLogger $activityLogger)
+    {
+        $this->activityLogger = $activityLogger;
+    }
     public function send(Request $request)
     {
         $data = $request->validate([
@@ -34,6 +42,17 @@ class ContactController extends Controller
             'subject' => $data['subject'],
             'message' => $data['message'],
             'status' => 'new',
+        ]);
+
+        // Log support/contact message to Firebase
+        $this->activityLogger->logSupport('submit_contact', $supportId, [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'category' => $data['category'],
+            'subject' => $data['subject'],
+            'status' => 'new',
+            'user_id' => Auth::id() ?? null
         ]);
 
         $to = config('mail.from.address', env('MAIL_FROM_ADDRESS', 'admin@example.com'));

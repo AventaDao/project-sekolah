@@ -69,12 +69,13 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">NIK <span class="text-danger">*</span></label>
-                                    <input type="number" name="nik" class="form-control @error('nik') is-invalid @enderror" 
-                                           value="{{ old('nik') }}" maxlength="16" required>
+                                    <input type="text" name="nik" class="form-control @error('nik') is-invalid @enderror" 
+                                           value="{{ old('nik') }}" minlength="16" maxlength="16" pattern="[0-9]{16}" 
+                                           inputmode="numeric" required>
                                     @error('nik')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-muted">16 digit angka</small>
+                                    <small class="text-muted">Harus tepat 16 digit angka</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
@@ -128,19 +129,23 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">RT <span class="text-danger">*</span></label>
-                                    <input type="number" name="rt" class="form-control @error('rt') is-invalid @enderror" 
-                                           value="{{ old('rt') }}" min="1" max="999" required>
+                                    <input type="text" name="rt" class="form-control @error('rt') is-invalid @enderror" 
+                                           value="{{ old('rt') }}" minlength="1" maxlength="3" pattern="[0-9]{1,3}" 
+                                           inputmode="numeric" required>
                                     @error('rt')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <small class="text-muted">1-3 digit</small>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">RW <span class="text-danger">*</span></label>
-                                    <input type="number" name="rw" class="form-control @error('rw') is-invalid @enderror" 
-                                           value="{{ old('rw') }}" min="1" max="999" required>
+                                    <input type="text" name="rw" class="form-control @error('rw') is-invalid @enderror" 
+                                           value="{{ old('rw') }}" minlength="1" maxlength="3" pattern="[0-9]{1,3}" 
+                                           inputmode="numeric" required>
                                     @error('rw')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <small class="text-muted">1-3 digit</small>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Desa <span class="text-danger">*</span></label>
@@ -553,6 +558,91 @@ document.addEventListener('DOMContentLoaded', function() {
     const tanggalMeninggalField = document.getElementById('tanggalMeninggalField');
     const buatKelahiranBaru = document.getElementById('buatKelahiranBaru');
     const kelahiranFields = document.getElementById('kelahiranFields');
+    const nikInput = document.querySelector('input[name="nik"]');
+    const rtInput = document.querySelector('input[name="rt"]');
+    const rwInput = document.querySelector('input[name="rw"]');
+    
+    // Real-time validation untuk NIK
+    if (nikInput) {
+        nikInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya angka
+            
+            if (this.value.length > 16) {
+                this.value = this.value.slice(0, 16);
+            }
+            
+            // Validasi length
+            if (this.value.length < 16) {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            } else if (this.value.length === 16) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+        
+        nikInput.addEventListener('blur', function() {
+            if (this.value.length !== 16) {
+                this.classList.add('is-invalid');
+                const feedbackDiv = this.nextElementSibling;
+                if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
+                    feedbackDiv.textContent = 'NIK harus tepat 16 digit angka';
+                }
+            }
+        });
+    }
+    
+    // Real-time validation untuk RT
+    if (rtInput) {
+        rtInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya angka
+            
+            if (this.value.length > 3) {
+                this.value = this.value.slice(0, 3);
+            }
+            
+            // Validasi length
+            if (this.value.length === 0) {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            } else if (this.value.length <= 3) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+        
+        rtInput.addEventListener('blur', function() {
+            if (this.value.length === 0) {
+                this.classList.add('is-invalid');
+            }
+        });
+    }
+    
+    // Real-time validation untuk RW
+    if (rwInput) {
+        rwInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya angka
+            
+            if (this.value.length > 3) {
+                this.value = this.value.slice(0, 3);
+            }
+            
+            // Validasi length
+            if (this.value.length === 0) {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            } else if (this.value.length <= 3) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+        
+        rwInput.addEventListener('blur', function() {
+            if (this.value.length === 0) {
+                this.classList.add('is-invalid');
+            }
+        });
+    }
     
     // Toggle tanggal meninggal field
     statusHidup.addEventListener('change', function() {
@@ -611,6 +701,31 @@ document.addEventListener('DOMContentLoaded', function() {
         let firstInvalidField = null;
         
         requiredFields.forEach(field => {
+            // Special validation untuk NIK
+            if (field.name === 'nik') {
+                if (field.value.length !== 16 || !/^[0-9]{16}$/.test(field.value)) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                    
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                    
+                    // Create feedback if not exists
+                    let feedbackDiv = field.nextElementSibling;
+                    if (!feedbackDiv || !feedbackDiv.classList.contains('invalid-feedback')) {
+                        feedbackDiv = document.createElement('div');
+                        feedbackDiv.classList.add('invalid-feedback', 'd-block');
+                        field.parentNode.insertBefore(feedbackDiv, field.nextSibling);
+                    }
+                    feedbackDiv.textContent = 'NIK harus tepat 16 digit angka';
+                } else {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+                return;
+            }
+            
             if (!field.value.trim()) {
                 isValid = false;
                 field.classList.add('is-invalid');
@@ -627,7 +742,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         if (!isValid) {
-            alert('Mohon lengkapi semua field yang wajib diisi (bertanda *)');
+            if (firstInvalidField && firstInvalidField.name === 'nik') {
+                alert('NIK harus tepat 16 digit angka');
+            } else {
+                alert('Mohon lengkapi semua field yang wajib diisi (bertanda *)');
+            }
+            
             if (firstInvalidField) {
                 firstInvalidField.focus();
             }

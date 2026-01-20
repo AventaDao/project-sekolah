@@ -139,9 +139,9 @@
                                                 <i class="ti ti-eye"></i>
                                             </a>
                                             
-                                            <?php if($pengajuan->file_surat_jadi && $pengajuan->status === 'Selesai'): ?>
-                                            <a href="<?php echo e(route('pengajuan-surat.download-surat-jadi', $pengajuan->id)); ?>" 
-                                               class="btn-action btn-download" title="Download Surat">
+                                            <?php if($pengajuan->status === 'Selesai'): ?>
+                                            <a href="<?php echo e(route('pengajuan-surat.print', $pengajuan->id)); ?>?autoDownload=true" 
+                                               class="btn-action btn-download" title="Download PDF">
                                                 <i class="ti ti-download"></i>
                                             </a>
                                             <?php endif; ?>
