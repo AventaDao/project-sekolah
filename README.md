@@ -113,7 +113,7 @@ cd sistem-desa
 
 ### 2. Install Dependencies
 ```bash
-composer install
+composer install --ignore-platform-req=ext-grpc // pakai ini karena composer install biasa mengharuskan install dependensi grpc
 npm install
 ```
 
