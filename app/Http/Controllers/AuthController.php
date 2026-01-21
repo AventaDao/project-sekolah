@@ -56,8 +56,22 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             
-            // Log login activity to Firebase
+            // Check if user is verified
             $user = Auth::user();
+            if (!$user->is_verified) {
+                // User not verified, logout and redirect to OTP verification
+                Auth::logout();
+                
+                // Store email in session for OTP resend
+                session(['verify_email' => $user->email]);
+                
+                return redirect()->route('verify.form')
+                    ->with('unverified', true)
+                    ->with('unverified_email', $user->email)
+                    ->withErrors(['email' => 'Akun Anda belum diverifikasi. Silakan masukkan kode OTP yang telah dikirim ke email Anda.']);
+            }
+            
+            // Log login activity to Firebase
             $this->activityLogger->logAuthentication('login', [
                 'login_method' => 'nik_password',
                 'role' => $user->role ?? 'user',
@@ -89,7 +103,7 @@ class AuthController extends Controller
             'nik' => 'required|numeric|digits:16|unique:users,nik|unique:penduduks,nik',
             'nama_lengkap' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required|date',
+            'tanggal_lahir' => 'required|date|before:-17 years',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'alamat' => 'required|string',
             'rt' => 'required|string|max:3',
@@ -118,6 +132,7 @@ class AuthController extends Controller
             'nik.digits' => 'NIK harus tepat 16 digit',
             'nik.unique' => 'NIK sudah terdaftar',
             'nama_lengkap.required' => 'Nama lengkap harus diisi',
+            'tanggal_lahir.before' => 'Usia minimal untuk mendaftar adalah 17 tahun',
             'email.required' => 'Email harus diisi',
             'email.email' => 'Email harus valid',
             'email.unique' => 'Email sudah terdaftar',
@@ -160,13 +175,15 @@ class AuthController extends Controller
                 'role' => 'user',
             ];
 
-            // Add social auth fields if applicable
+            // Add social auth fields if applicable (but don't auto-verify)
             if ($isSocialAuth) {
                 $userData['provider'] = $request->provider;
                 $userData['provider_id'] = $request->provider_id;
                 $userData['avatar'] = $request->avatar;
-                $userData['email_verified_at'] = now();
             }
+            
+            // All new users start as unverified
+            $userData['is_verified'] = false;
 
             // Simpan data ke tabel users
             $user = User::create($userData);
@@ -202,23 +219,11 @@ class AuthController extends Controller
 
             $request->session()->flash('registered_nik', $request->nik);
 
-            // Log activity - login sebagai user baru (auth belum dilakukan, jadi manual set user)
+            // Log activity - registration
             Activity::log('register', 'Pendaftaran akun baru', $user->id, 'User');
 
-            // Auto-login for social auth, otherwise redirect to login page
-            if ($isSocialAuth) {
-                Auth::login($user);
-                // Log social auth login
-                $this->activityLogger->logAuthentication('login', [
-                    'login_method' => 'social_auth',
-                    'role' => $user->role ?? 'user',
-                    'user_name' => $user->name ?? $user->username ?? $user->nama_lengkap,
-                    'user_email' => $user->email ?? null
-                ]);
-                return redirect()->route('dashboard')->with('success', 'Registrasi berhasil! Selamat datang di Dashboard Desa.');
-            }
-
-            return redirect()->route('login')->with('success', 'Registrasi berhasil! Data Anda telah tercatat sebagai penduduk desa. Silakan login menggunakan NIK dan password Anda.');
+            // Send OTP immediately after registration (for both regular and social auth)
+            return $this->sendOtp($user, true);
             
         } catch (\Exception $e) {
             DB::rollback();
@@ -241,7 +246,7 @@ class AuthController extends Controller
             }
         }
 
-        $setResendOtp = 60;
+        $setResendOtp = 30;
 
         if (session('last_otp_sent') && abs((int)now()->diffInSeconds(session('last_otp_sent'))) < $setResendOtp) {
             return back()->withErrors(['otp' => 'Tunggu ' . $setResendOtp . ' detik sebelum mengirim ulang OTP.']);
@@ -250,7 +255,7 @@ class AuthController extends Controller
         $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
         $user->otp_code = bcrypt($otp);
-        $user->otp_expires_at = now()->addMinutes(5);
+        $user->otp_expires_at = now()->addMinutes(60);
         $user->save();
 
         $subject = 'OTP Verifikasi Email';
@@ -309,16 +314,12 @@ class AuthController extends Controller
 
     public function showVerifyForm()
     {
-        if (!session('verify_email') || !Auth::check()) {
-            if (Auth::check()) {
-                $user = Auth::user();
-                return $this->sendOtp($user, true);
-            }
+        if (!session('verify_email')) {
             return redirect()->route('login');
         }
 
         $cooldown = 0;
-        $setResendOtp = 60;
+        $setResendOtp = 30;
         if (session('last_otp_sent')) {
             $diff = (int)now()->diffInSeconds(session('last_otp_sent'));
             $cooldown = abs($diff);
@@ -352,7 +353,17 @@ class AuthController extends Controller
             $user = User::where('email', $email)->first();
 
             if ($user) {
-                // User sudah ada, tinggal login
+                // User sudah ada, check if verified
+                if (!$user->is_verified) {
+                    // User not verified, redirect to OTP verification
+                    session(['verify_email' => $user->email]);
+                    return redirect()->route('verify.form')
+                        ->with('unverified', true)
+                        ->with('unverified_email', $user->email)
+                        ->withErrors(['email' => 'Akun Anda belum diverifikasi. Silakan masukkan kode OTP yang telah dikirim ke email Anda.']);
+                }
+                
+                // User verified, login
                 Auth::login($user);
                 // Log social auth login
                 $this->activityLogger->logAuthentication('login', [

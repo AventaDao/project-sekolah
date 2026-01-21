@@ -1,48 +1,47 @@
-@extends('layouts.auth')
+<?php $__env->startSection('title', 'Verify Email'); ?>
 
-@section('title', 'Verify Email')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="card my-5">
-        @if (session('verify_email'))
+        <?php if(session('verify_email')): ?>
             <div class="card-body">
                 <div class="mb-4">
                     <h3 class="mb-2"><b>Enter Verification Code</b></h3>
 
-                    @if (session('success'))
+                    <?php if(session('success')): ?>
                         <div class="alert alert-success">
-                            {{ session('success') }}
+                            <?php echo e(session('success')); ?>
+
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="alert alert-info">
                             <i class="ti ti-mail me-2"></i>
-                            Kami telah mengirimkan kode OTP (6 digit) ke email <strong>{{ session('verify_email') }}</strong>
+                            Kami telah mengirimkan kode OTP (6 digit) ke email <strong><?php echo e(session('verify_email')); ?></strong>
                             <br><small class="text-muted">Kode berlaku selama 1 jam</small>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    @if ($errors->any())
+                    <?php if($errors->any()): ?>
                         <div class="alert alert-danger my-2">
 
-                            @foreach ($errors->all() as $error)
-                                <div>{{ $error }}</div>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div><?php echo e($error); ?></div>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
-                {{-- Form Verifikasi OTP --}}
+                
 
-                <form action="{{ route('verify.otp') }}" method="POST" id="verifyForm">
-                    @csrf
+                <form action="<?php echo e(route('verify.otp')); ?>" method="POST" id="verifyForm">
+                    <?php echo csrf_field(); ?>
                     <div class="row text-center">
-                        @for ($i = 0; $i < 6; $i++)
+                        <?php for($i = 0; $i < 6; $i++): ?>
                             <div class="col">
                                 <input type="text" maxlength="1" class="form-control text-center otp-input"
                                     style="font-size:16px;" name="otp[]" required>
                             </div>
-                        @endfor
+                        <?php endfor; ?>
                     </div>
 
                     <div class="d-grid mt-4">
@@ -51,13 +50,13 @@
                 </form>
 
 
-                {{-- Resend OTP --}}
+                
 
                 <div class="d-flex justify-content-between align-items-end mt-3">
                     <p class="mb-0" style="font-size:12px;">Did not receive the email? Check your spam filter, or</p>
-                    <form action="{{ route('send.otp') }}" method="POST" id="resendForm">
-                        @csrf
-                        <input type="hidden" name="email" value="{{ session('verify_email') }}">
+                    <form action="<?php echo e(route('send.otp')); ?>" method="POST" id="resendForm">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="email" value="<?php echo e(session('verify_email')); ?>">
                         <button style="font-size:12px;" type="submit" id="resendBtn" class="btn btn-link p-0"
                             disabled>Resend
                             code (<span id="timer"></span>s)</button>
@@ -65,27 +64,27 @@
                 </div>
 
             </div>
-        @else
+        <?php else: ?>
             <div class="card-body">
-                {{-- buat pesan bahwa ini halaman untuk memverifikasi email melalui , jadi anda harus melakukan register email dulu baru nanti bisa mengakses konten halaman ini --}}
+                
                 <div class="alert alert-warning">
                     This page is for email verification. Please register your email first before accessing this content.
                 </div>
                 <div class="d-flex justify-content-center">
-                    <a href="{{ route('register') }}" class="btn btn-primary">Go to Register</a>
+                    <a href="<?php echo e(route('register')); ?>" class="btn btn-primary">Go to Register</a>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@section('scripts_content')
+<?php $__env->startSection('scripts_content'); ?>
 
-    {{-- Script untuk OTP & Timer --}}
-    @if (session('verify_email'))
+    
+    <?php if(session('verify_email')): ?>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 // -------------------
@@ -151,8 +150,9 @@
                 let endTime = localStorage.getItem("otp_end_time");
 
 
-                let setResendOtp = {{ $timeResendOtp }}
-                let timer = {{ $cooldown }} < setResendOtp ? setResendOtp : 0
+                let setResendOtp = <?php echo e($timeResendOtp); ?>
+
+                let timer = <?php echo e($cooldown); ?> < setResendOtp ? setResendOtp : 0
                 console.log(timer)
                 if (!endTime) {
                     console.log('masuk a')
@@ -189,6 +189,8 @@
                 });
             });
         </script>
-    @endif
+    <?php endif; ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\project-sekolah\resources\views/auth/verify-email.blade.php ENDPATH**/ ?>

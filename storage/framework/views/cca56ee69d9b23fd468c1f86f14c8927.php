@@ -1,7 +1,6 @@
-@extends('layouts.dashboard')
-@section('title', 'Ajukan Surat Baru')
+<?php $__env->startSection('title', 'Ajukan Surat Baru'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <style>
         /* ============================================
            STEPPER STYLES - MODERN & RESPONSIVE
@@ -247,7 +246,7 @@
                     <div class="col-md-12">
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('pengajuan-surat.index') }}">Pengajuan Surat</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo e(route('pengajuan-surat.index')); ?>">Pengajuan Surat</a></li>
                             <li class="breadcrumb-item" aria-current="page">Ajukan Surat</li>
                         </ul>
                     </div>
@@ -283,19 +282,19 @@
                             </div>
                         </div>
 
-                        @if ($errors->any())
+                        <?php if($errors->any()): ?>
                             <div class="alert alert-danger">
                                 <strong>Terdapat kesalahan:</strong>
                                 <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
+                                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li><?php echo e($error); ?></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
-                        <form action="{{ route('pengajuan-surat.store') }}" method="POST" enctype="multipart/form-data" id="formPengajuanSurat">
-                            @csrf
+                        <form action="<?php echo e(route('pengajuan-surat.store')); ?>" method="POST" enctype="multipart/form-data" id="formPengajuanSurat">
+                            <?php echo csrf_field(); ?>
 
                             <!-- Step 1: Pilih Jenis Surat -->
                             <div class="form-step active" id="step-1">
@@ -312,17 +311,32 @@
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Jenis Surat <span class="text-danger">*</span></label>
-                                        <select name="jenis_surat" id="jenisSurat" class="form-select @error('jenis_surat') is-invalid @enderror" required onchange="updateFormFields()">
+                                        <select name="jenis_surat" id="jenisSurat" class="form-select <?php $__errorArgs = ['jenis_surat'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" required onchange="updateFormFields()">
                                             <option value="">-- Pilih Jenis Surat --</option>
-                                            @foreach($suratTypes as $key => $type)
-                                                <option value="{{ $key }}" {{ old('jenis_surat') == $key ? 'selected' : '' }}>
-                                                    {{ $type['label'] }}
+                                            <?php $__currentLoopData = $suratTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($key); ?>" <?php echo e(old('jenis_surat') == $key ? 'selected' : ''); ?>>
+                                                    <?php echo e($type['label']); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
-                                        @error('jenis_surat')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['jenis_surat'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         <small class="form-text text-muted" id="suratDeskripsi"></small>
                                     </div>
 
@@ -354,25 +368,25 @@
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">NIK <span class="text-danger">*</span></label>
-                                        <input type="text" name="nik_display" class="form-control" value="{{ $user->nik ?? '-' }}" readonly>
+                                        <input type="text" name="nik_display" class="form-control" value="<?php echo e($user->nik ?? '-'); ?>" readonly>
                                         <small class="form-text text-muted">Data dari profil akun Anda</small>
                                     </div>
 
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                                        <input type="text" name="nama_lengkap_display" class="form-control" value="{{ $user->nama_lengkap ?? '-' }}" readonly>
+                                        <input type="text" name="nama_lengkap_display" class="form-control" value="<?php echo e($user->nama_lengkap ?? '-'); ?>" readonly>
                                         <small class="form-text text-muted">Data dari profil akun Anda</small>
                                     </div>
 
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">No. Telepon</label>
-                                        <input type="text" name="no_telepon_display" class="form-control" value="{{ $user->no_telepon ?? '-' }}" readonly>
+                                        <input type="text" name="no_telepon_display" class="form-control" value="<?php echo e($user->no_telepon ?? '-'); ?>" readonly>
                                         <small class="form-text text-muted">Data dari profil akun Anda</small>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Alamat</label>
-                                        <textarea name="alamat_display" class="form-control" rows="3" readonly>{{ $user->alamat ?? '-' }}</textarea>
+                                        <textarea name="alamat_display" class="form-control" rows="3" readonly><?php echo e($user->alamat ?? '-'); ?></textarea>
                                         <small class="form-text text-muted">Data dari profil akun Anda</small>
                                     </div>
 
@@ -380,17 +394,17 @@
                                         <div class="row">
                                             <div class="col-md-4 mb-3">
                                                 <label class="form-label">RT</label>
-                                                <input type="text" name="rt_display" class="form-control" value="{{ $user->rt ?? '-' }}" readonly>
+                                                <input type="text" name="rt_display" class="form-control" value="<?php echo e($user->rt ?? '-'); ?>" readonly>
                                                 <small class="form-text text-muted">Data dari profil</small>
                                             </div>
                                             <div class="col-md-4 mb-3">
                                                 <label class="form-label">RW</label>
-                                                <input type="text" name="rw_display" class="form-control" value="{{ $user->rw ?? '-' }}" readonly>
+                                                <input type="text" name="rw_display" class="form-control" value="<?php echo e($user->rw ?? '-'); ?>" readonly>
                                                 <small class="form-text text-muted">Data dari profil</small>
                                             </div>
                                             <div class="col-md-4 mb-3">
                                                 <label class="form-label">Kode Pos</label>
-                                                <input type="text" name="kode_pos_display" class="form-control" value="{{ $user->kode_pos ?? '-' }}" readonly>
+                                                <input type="text" name="kode_pos_display" class="form-control" value="<?php echo e($user->kode_pos ?? '-'); ?>" readonly>
                                                 <small class="form-text text-muted">Data dari profil</small>
                                             </div>
                                         </div>
@@ -409,10 +423,24 @@
                                     <!-- Keperluan Umum -->
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Keperluan <span class="text-danger">*</span></label>
-                                        <textarea name="keperluan" class="form-control @error('keperluan') is-invalid @enderror" rows="4" required placeholder="Jelaskan keperluan pengajuan surat ini...">{{ old('keperluan') }}</textarea>
-                                        @error('keperluan')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <textarea name="keperluan" class="form-control <?php $__errorArgs = ['keperluan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" rows="4" required placeholder="Jelaskan keperluan pengajuan surat ini..."><?php echo e(old('keperluan')); ?></textarea>
+                                        <?php $__errorArgs = ['keperluan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         <small class="form-text text-muted">Jelaskan secara detail keperluan Anda mengajukan surat ini</small>
                                     </div>
 
@@ -424,10 +452,24 @@
                                     <!-- Keterangan Tambahan -->
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Keterangan Tambahan (Opsional)</label>
-                                        <textarea name="keterangan_tambahan" class="form-control @error('keterangan_tambahan') is-invalid @enderror" rows="3" placeholder="Masukkan keterangan tambahan jika ada...">{{ old('keterangan_tambahan') }}</textarea>
-                                        @error('keterangan_tambahan')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <textarea name="keterangan_tambahan" class="form-control <?php $__errorArgs = ['keterangan_tambahan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" rows="3" placeholder="Masukkan keterangan tambahan jika ada..."><?php echo e(old('keterangan_tambahan')); ?></textarea>
+                                        <?php $__errorArgs = ['keterangan_tambahan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         <small class="form-text text-muted">Informasi tambahan yang perlu disampaikan (opsional)</small>
                                     </div>
                                 </div>
@@ -444,10 +486,24 @@
                                     <!-- Surat Pengantar dari RW -->
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Surat Pengantar dari RW <span class="text-danger">*</span></label>
-                                        <input type="file" name="surat_pengantar_rw" class="form-control @error('surat_pengantar_rw') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png" required>
-                                        @error('surat_pengantar_rw')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <input type="file" name="surat_pengantar_rw" class="form-control <?php $__errorArgs = ['surat_pengantar_rw'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" accept=".pdf,.jpg,.jpeg,.png" required>
+                                        <?php $__errorArgs = ['surat_pengantar_rw'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         <small class="form-text text-muted">
                                             Format: PDF, JPG, JPEG, atau PNG. Maksimal 2MB.
                                         </small>
@@ -465,7 +521,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <p class="mb-1"><strong>Nama Pemohon:</strong></p>
-                                                    <p class="text-muted">{{ $user->nama_lengkap ?? '-' }}</p>
+                                                    <p class="text-muted"><?php echo e($user->nama_lengkap ?? '-'); ?></p>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <p class="mb-1"><strong>Keperluan:</strong></p>
@@ -493,7 +549,7 @@
                                     <i class="ti ti-arrow-left"></i> Sebelumnya
                                 </button>
                                 <div class="ms-auto d-flex gap-2">
-                                    <a href="{{ route('pengajuan-surat.index') }}" class="btn btn-outline-secondary btn-nav">
+                                    <a href="<?php echo e(route('pengajuan-surat.index')); ?>" class="btn btn-outline-secondary btn-nav">
                                         <i class="ti ti-x"></i> Batal
                                     </a>
                                     <button type="button" class="btn btn-primary btn-nav" id="nextBtn">
@@ -515,27 +571,29 @@
                     </div>
                     <div class="card-body">
                         <div class="accordion" id="accordionJenisSurat">
-                            @foreach($suratTypes as $key => $type)
+                            <?php $__currentLoopData = $suratTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat{{ $loop->index }}">
-                                            {{ $type['label'] }}
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#surat<?php echo e($loop->index); ?>">
+                                            <?php echo e($type['label']); ?>
+
                                         </button>
                                     </h2>
-                                    <div id="surat{{ $loop->index }}" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
+                                    <div id="surat<?php echo e($loop->index); ?>" class="accordion-collapse collapse" data-bs-parent="#accordionJenisSurat">
                                         <div class="accordion-body">
-                                            <p>{{ $type['deskripsi'] }}</p>
+                                            <p><?php echo e($type['deskripsi']); ?></p>
                                             <h6 class="mt-3">Field yang Diperlukan:</h6>
                                             <ul>
-                                                @foreach($type['fields'] as $fieldKey => $field)
-                                                    <li>{{ $field['label'] }}
-                                                        {!! $field['required'] ? '<span class="text-danger">*</span>' : '' !!}</li>
-                                                @endforeach
+                                                <?php $__currentLoopData = $type['fields']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldKey => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <li><?php echo e($field['label']); ?>
+
+                                                        <?php echo $field['required'] ? '<span class="text-danger">*</span>' : ''; ?></li>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                 </div>
@@ -544,19 +602,19 @@
     </div>
 
     <!-- Embed data untuk JavaScript -->
-    @php
+    <?php
         $userAlamatValue = isset($user) && is_object($user) ? ($user->alamat ?? '') : '';
         $userRtValue = isset($user) && is_object($user) ? ($user->rt ?? '') : '';
         $userRwValue = isset($user) && is_object($user) ? ($user->rw ?? '') : '';
-    @endphp
+    ?>
     <script>
-        const suratTypes = @json($suratTypes);
-        const oldValues = @json(old());
-        const errors = @json($errors->getMessages());
+        const suratTypes = <?php echo json_encode($suratTypes, 15, 512) ?>;
+        const oldValues = <?php echo json_encode(old(), 15, 512) ?>;
+        const errors = <?php echo json_encode($errors->getMessages(), 15, 512) ?>;
         const userData = {
-            alamat: "{{ $userAlamatValue }}",
-            rt: "{{ $userRtValue }}",
-            rw: "{{ $userRwValue }}"
+            alamat: "<?php echo e($userAlamatValue); ?>",
+            rt: "<?php echo e($userRtValue); ?>",
+            rw: "<?php echo e($userRwValue); ?>"
         };
     </script>
 
@@ -844,4 +902,5 @@
             }
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\project-sekolah\resources\views/user/pengajuan-surat/create.blade.php ENDPATH**/ ?>

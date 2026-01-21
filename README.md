@@ -107,13 +107,13 @@
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/sistem-desa.git
-cd sistem-desa
+git clone https://github.com/aventadao/project-sekolah.git
+cd project-sekolah
 ```
 
 ### 2. Install Dependencies
 ```bash
-composer install
+composer install --ignore-platform-req=ext-grpc
 npm install
 ```
 

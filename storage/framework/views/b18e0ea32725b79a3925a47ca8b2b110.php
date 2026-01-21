@@ -6,10 +6,11 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h3 class="text-white mb-2">
-                            <i class="ti ti-dashboard me-2"></i>Selamat Datang, {{ Auth::user()->name }}!
+                            <i class="ti ti-dashboard me-2"></i>Selamat Datang, <?php echo e(Auth::user()->name); ?>!
                         </h3>
                         <p class="text-white-75 mb-0">
-                            <i class="ti ti-calendar me-1"></i>{{ now()->locale('id')->isoFormat('dddd, D MMMM Y') }}
+                            <i class="ti ti-calendar me-1"></i><?php echo e(now()->locale('id')->isoFormat('dddd, D MMMM Y')); ?>
+
                         </p>
                     </div>
                     <div class="col-md-4 text-end d-none d-md-block">
@@ -30,7 +31,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="stat-label mb-1">Total Penduduk</p>
-                        <h3 class="mb-0 counter stat-number" data-count="{{ $stats['total_penduduk'] }}">0</h3>
+                        <h3 class="mb-0 counter stat-number" data-count="<?php echo e($stats['total_penduduk']); ?>">0</h3>
                         <small class="stat-badge">
                             <i class="ti ti-trending-up"></i> Data Terkini
                         </small>
@@ -50,9 +51,10 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="stat-label mb-1">Kelahiran Bulan Ini</p>
-                        <h3 class="mb-0 stat-number"><span class="text-success">+</span><span class="counter" data-count="{{ $stats['kelahiran_bulan_ini'] }}">0</span></h3>
+                        <h3 class="mb-0 stat-number"><span class="text-success">+</span><span class="counter" data-count="<?php echo e($stats['kelahiran_bulan_ini']); ?>">0</span></h3>
                         <small class="stat-badge">
-                            <i class="ti ti-arrow-up"></i> {{ now()->format('F Y') }}
+                            <i class="ti ti-arrow-up"></i> <?php echo e(now()->format('F Y')); ?>
+
                         </small>
                     </div>
                     <div class="stat-icon stat-icon-green">
@@ -70,9 +72,10 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="stat-label mb-1">Kematian Bulan Ini</p>
-                        <h3 class="mb-0 stat-number"><span class="text-danger">−</span><span class="counter" data-count="{{ $stats['kematian_bulan_ini'] }}">0</span></h3>
+                        <h3 class="mb-0 stat-number"><span class="text-danger">−</span><span class="counter" data-count="<?php echo e($stats['kematian_bulan_ini']); ?>">0</span></h3>
                         <small class="stat-badge">
-                            <i class="ti ti-circle-minus"></i> {{ now()->format('F Y') }}
+                            <i class="ti ti-circle-minus"></i> <?php echo e(now()->format('F Y')); ?>
+
                         </small>
                     </div>
                     <div class="stat-icon stat-icon-red">
@@ -94,7 +97,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Menunggu Verifikasi</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_menunggu'] }}">0</h3>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_menunggu']); ?>">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(255, 152, 0, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-clock" style="color: #ff9800; font-size: 28px;"></i>
@@ -113,7 +116,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Sedang Diproses</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_diproses'] }}">0</h3>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_diproses']); ?>">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(0, 212, 255, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-settings" style="color: #00d4ff; font-size: 28px;"></i>
@@ -132,7 +135,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Selesai</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_selesai'] }}">0</h3>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_selesai']); ?>">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(44, 168, 127, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-circle-check" style="color: #2ca87f; font-size: 28px;"></i>
@@ -156,7 +159,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Perlu Ditanggapi</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['pengaduan_menunggu'] }}">0</h3>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_menunggu']); ?>">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(255, 152, 0, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-alert-circle" style="color: #ff9800; font-size: 28px;"></i>
@@ -175,7 +178,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Sedang Diproses</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['pengajuan_diproses'] }}">0</h3>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengajuan_diproses']); ?>">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(0, 212, 255, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-settings" style="color: #00d4ff; font-size: 28px;"></i>
@@ -194,7 +197,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="status-label mb-1">Terselesaikan</p>
-                        <h3 class="mb-0 counter" data-count="{{ $stats['pengaduan_selesai'] }}">0</h3>
+                        <h3 class="mb-0 counter" data-count="<?php echo e($stats['pengaduan_selesai']); ?>">0</h3>
                     </div>
                     <div class="status-icon" style="background: rgba(44, 168, 127, 0.12); border-radius: 12px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="ti ti-check" style="color: #2ca87f; font-size: 28px;"></i>
@@ -249,7 +252,7 @@
     <script>
         let mainChart = null;
         let pieChart = null;
-        const statsUrl = '{{ route("dashboard.stats") }}';
+        const statsUrl = '<?php echo e(route("dashboard.stats")); ?>';
 
         // Wait for Chart.js to load
         function initCharts() {
@@ -399,7 +402,7 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <a href="{{ route('admin.penduduk.create') }}" class="quick-action-link">
+                        <a href="<?php echo e(route('admin.penduduk.create')); ?>" class="quick-action-link">
                             <div class="quick-action-body">
                                 <div class="quick-action-icon" style="background: linear-gradient(135deg, #4680ff, #357abd);">
                                     <i class="ti ti-user-plus"></i>
@@ -410,7 +413,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('admin.berita.create') }}" class="quick-action-link">
+                        <a href="<?php echo e(route('admin.berita.create')); ?>" class="quick-action-link">
                             <div class="quick-action-body">
                                 <div class="quick-action-icon" style="background: linear-gradient(135deg, #2ca87f, #1e7e5d);">
                                     <i class="ti ti-news"></i>
@@ -421,7 +424,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('admin.pengajuan-surat.index') }}" class="quick-action-link">
+                        <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="quick-action-link">
                             <div class="quick-action-body">
                                 <div class="quick-action-icon" style="background: linear-gradient(135deg, #ff9800, #ff6f00);">
                                     <i class="ti ti-file-text"></i>
@@ -432,7 +435,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('admin.pengaduan.index') }}" class="quick-action-link">
+                        <a href="<?php echo e(route('admin.pengaduan.index')); ?>" class="quick-action-link">
                             <div class="quick-action-body">
                                 <div class="quick-action-icon" style="background: linear-gradient(135deg, #00d4ff, #00a8cc);">
                                     <i class="ti ti-message-report"></i>
@@ -457,38 +460,39 @@
                     </h5>
                 </div>
                 <div class="header-right">
-                    <a href="{{ route('admin.pengajuan-surat.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                    <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                 </div>
             </div>
             <div class="card-body p-0">
                 <div class="activity-timeline">
-                    @php
+                    <?php
                         $recent_activities = \App\Models\PengajuanSurat::with('user')
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
-                    @endphp
+                    ?>
                     
-                    @forelse($recent_activities as $activity)
+                    <?php $__empty_1 = true; $__currentLoopData = $recent_activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="activity-item">
                         <div class="activity-icon bg-light-primary">
                             <i class="ti ti-file-text text-primary"></i>
                         </div>
                         <div class="activity-content">
-                            <h6 class="mb-1">{{ $activity->user->name }}</h6>
-                            <p class="mb-0 text-muted">Mengajukan {{ $activity->jenis_surat }}</p>
+                            <h6 class="mb-1"><?php echo e($activity->user->name); ?></h6>
+                            <p class="mb-0 text-muted">Mengajukan <?php echo e($activity->jenis_surat); ?></p>
                             <small class="text-muted">
-                                <i class="ti ti-clock me-1"></i>{{ $activity->created_at->diffForHumans() }}
+                                <i class="ti ti-clock me-1"></i><?php echo e($activity->created_at->diffForHumans()); ?>
+
                             </small>
                         </div>
-                        <span class="badge {{ $activity->status_badge }}">{{ $activity->status }}</span>
+                        <span class="badge <?php echo e($activity->status_badge); ?>"><?php echo e($activity->status); ?></span>
                     </div>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <div class="text-center p-4">
                         <i class="ti ti-info-circle f-40 text-muted"></i>
                         <p class="text-muted mb-0">Belum ada aktivitas</p>
                     </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -503,39 +507,40 @@
                     </h5>
                 </div>
                 <div class="header-right">
-                    <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
+                    <a href="<?php echo e(route('admin.pengaduan.index')); ?>" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
                 </div>
             </div>
             <div class="card-body p-0">
                 <div class="activity-timeline">
-                    @php
+                    <?php
                         $recent_pengaduan = \App\Models\Pengaduan::with('user')
                             ->where('status', 'Menunggu')
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
-                    @endphp
+                    ?>
                     
-                    @forelse($recent_pengaduan as $pengaduan)
+                    <?php $__empty_1 = true; $__currentLoopData = $recent_pengaduan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pengaduan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="activity-item">
                         <div class="activity-icon bg-light-warning">
                             <i class="ti ti-message-report text-warning"></i>
                         </div>
                         <div class="activity-content">
-                            <h6 class="mb-1">{{ $pengaduan->user->name }}</h6>
-                            <p class="mb-0 text-muted">{{ Str::limit($pengaduan->judul, 40) }}</p>
+                            <h6 class="mb-1"><?php echo e($pengaduan->user->name); ?></h6>
+                            <p class="mb-0 text-muted"><?php echo e(Str::limit($pengaduan->judul, 40)); ?></p>
                             <small class="text-muted">
-                                <i class="ti ti-clock me-1"></i>{{ $pengaduan->created_at->diffForHumans() }}
+                                <i class="ti ti-clock me-1"></i><?php echo e($pengaduan->created_at->diffForHumans()); ?>
+
                             </small>
                         </div>
-                        <span class="badge {{ $pengaduan->status_badge }}">{{ $pengaduan->status }}</span>
+                        <span class="badge <?php echo e($pengaduan->status_badge); ?>"><?php echo e($pengaduan->status); ?></span>
                     </div>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <div class="text-center p-4">
                         <i class="ti ti-circle-check f-40 text-success"></i>
                         <p class="text-muted mb-0">Tidak ada pengaduan menunggu</p>
                     </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -949,4 +954,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-</div>
+</div><?php /**PATH C:\project-sekolah\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>

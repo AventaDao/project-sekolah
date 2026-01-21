@@ -25,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
                 $name = $user->nama_lengkap;
                 $role = $user->role;
                 
-                // Handle avatar
-                if ($user->avatar) {
+                // Handle avatar - check if user has a valid avatar (not null, not empty, not whitespace)
+                if ($user->avatar && trim($user->avatar) !== '') {
                     // Check if avatar is in storage format (avatars/ folder)
                     if (strpos($user->avatar, 'avatars/') === 0) {
                         // Use Storage::url() untuk file di public storage
@@ -39,8 +39,9 @@ class AppServiceProvider extends ServiceProvider
                         $avatar = asset('assets/images/user/' . $user->avatar);
                     }
                 } else {
-                    // No avatar: use default
-                    $avatar = asset('assets/images/avatar-default.png');
+                    // No avatar: assign a default avatar from template (1-10) based on user ID
+                    $avatarNumber = ($user->id % 10) + 1;
+                    $avatar = asset("assets/images/user/avatar-{$avatarNumber}.jpg");
                 }
 
                 $view->with(compact('user', 'name', 'role', 'avatar'));

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use App\Services\ActivityLogger;
 use Carbon\Carbon;
 
@@ -65,12 +66,29 @@ class ProfileController extends Controller
         $cacheKey = 'user_profile_' . $user->id;
 
         $profileData = Cache::remember($cacheKey, 300, function () use ($user) {
-            // Determine avatar URL
-            $avatarUrl = $user->avatar ? asset('storage/' . $user->avatar) : null;
+            // Determine avatar URL - use same logic as AppServiceProvider for consistency
+            $avatarUrl = null;
+            
+            // Check if user has a valid avatar (not null, not empty, not whitespace)
+            if ($user->avatar && trim($user->avatar) !== '') {
+                // Check if avatar is in storage format (avatars/ folder)
+                if (strpos($user->avatar, 'avatars/') === 0) {
+                    // Use Storage::url() untuk file di public storage
+                    $avatarUrl = \Storage::disk('public')->url($user->avatar);
+                } elseif (strpos($user->avatar, 'http') === 0) {
+                    // Already a full URL (from social auth provider)
+                    $avatarUrl = $user->avatar;
+                } else {
+                    // Old avatar format in public/assets/images/user/
+                    $avatarUrl = asset('assets/images/user/' . $user->avatar);
+                }
+            }
 
-            // If no avatar, generate SVG placeholder with initials
+            // If no avatar, assign a default avatar from template (1-10) based on user ID
             if (!$avatarUrl) {
-                $avatarUrl = $this->generatePlaceholderAvatar($user->nama_lengkap);
+                // Use modulo to get a number between 1-10 based on user ID for consistency
+                $avatarNumber = ($user->id % 10) + 1;
+                $avatarUrl = asset("assets/images/user/avatar-{$avatarNumber}.jpg");
             }
 
             return [

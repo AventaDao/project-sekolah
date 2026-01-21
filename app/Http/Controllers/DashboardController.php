@@ -85,10 +85,7 @@ class DashboardController extends Controller
         // Statistik untuk admin
         $stats = [
             // Data Penduduk
-            'total_penduduk' => Penduduk::where(function ($query) {
-                $query->where('status_hidup', 'Hidup')
-                    ->orWhereNull('status_hidup');
-            })->count(),
+            'total_penduduk' => Penduduk::where('status_hidup', 'Hidup')->count(),
             'total_kk' => 0, // Sementara dinonaktifkan karena tidak ada data KK yang valid
             'kelahiran_bulan_ini' => Kelahiran::whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
@@ -118,10 +115,7 @@ class DashboardController extends Controller
 
         // Statistik umum desa
         $stats = [
-            'total_penduduk' => Penduduk::where(function ($query) {
-                $query->where('status_hidup', 'Hidup')
-                    ->orWhereNull('status_hidup');
-            })->count(),
+            'total_penduduk' => Penduduk::where('status_hidup', 'Hidup')->count(),
             'surat_disetujui' => PengajuanSurat::where('status', 'Selesai')->count(),
             'pengaduan_selesai' => Pengaduan::where('status', 'Selesai')->count(),
 

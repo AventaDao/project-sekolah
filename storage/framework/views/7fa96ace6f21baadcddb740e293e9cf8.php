@@ -1,7 +1,6 @@
-@extends('layouts.dashboard')
-@section('title', 'Detail & Proses Pengajuan Surat')
+<?php $__env->startSection('title', 'Detail & Proses Pengajuan Surat'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pc-content">
     <!-- Breadcrumb -->
     <div class="page-header">
@@ -10,7 +9,7 @@
                 <div class="col-md-12">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.pengajuan-surat.index') }}">Kelola Pengajuan Surat</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>">Kelola Pengajuan Surat</a></li>
                         <li class="breadcrumb-item" aria-current="page">Detail</li>
                     </ul>
                 </div>
@@ -27,17 +26,19 @@
                     <h5>Detail Pengajuan Surat</h5>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
+                    <?php if(session('success')): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
+                        <?php echo e(session('success')); ?>
+
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Status Badge -->
                     <div class="mb-4">
-                        <span class="badge {{ $pengajuanSurat->status_badge }} fs-6 px-3 py-2" id="statusBadge">
-                            <i class="ti ti-file-check me-1"></i> Status: {{ $pengajuanSurat->status }}
+                        <span class="badge <?php echo e($pengajuanSurat->status_badge); ?> fs-6 px-3 py-2" id="statusBadge">
+                            <i class="ti ti-file-check me-1"></i> Status: <?php echo e($pengajuanSurat->status); ?>
+
                         </span>
                     </div>
 
@@ -47,77 +48,78 @@
                         <tr>
                             <td width="30%" class="text-muted">Nomor Pengajuan</td>
                             <td width="5%">:</td>
-                            <td><strong>{{ $pengajuanSurat->nomor_pengajuan }}</strong></td>
+                            <td><strong><?php echo e($pengajuanSurat->nomor_pengajuan); ?></strong></td>
                         </tr>
                         <tr>
                             <td class="text-muted">Nama Pemohon</td>
                             <td>:</td>
-                            <td><strong>{{ $pengajuanSurat->user->name }}</strong></td>
+                            <td><strong><?php echo e($pengajuanSurat->user->name); ?></strong></td>
                         </tr>
                         <tr>
                             <td class="text-muted">Email</td>
                             <td>:</td>
-                            <td>{{ $pengajuanSurat->user->email }}</td>
+                            <td><?php echo e($pengajuanSurat->user->email); ?></td>
                         </tr>
                         <tr>
                             <td class="text-muted">Jenis Surat</td>
                             <td>:</td>
-                            <td><strong>{{ $pengajuanSurat->jenis_surat }}</strong></td>
+                            <td><strong><?php echo e($pengajuanSurat->jenis_surat); ?></strong></td>
                         </tr>
                         <tr>
                             <td class="text-muted">Tanggal Pengajuan</td>
                             <td>:</td>
-                            <td>{{ $pengajuanSurat->created_at->format('d F Y H:i') }} WIB</td>
+                            <td><?php echo e($pengajuanSurat->created_at->format('d F Y H:i')); ?> WIB</td>
                         </tr>
-                        @if($pengajuanSurat->tanggal_selesai)
+                        <?php if($pengajuanSurat->tanggal_selesai): ?>
                         <tr>
                             <td class="text-muted">Tanggal Selesai</td>
                             <td>:</td>
-                            <td>{{ $pengajuanSurat->tanggal_selesai->format('d F Y H:i') }} WIB</td>
+                            <td><?php echo e($pengajuanSurat->tanggal_selesai->format('d F Y H:i')); ?> WIB</td>
                         </tr>
-                        @endif
+                        <?php endif; ?>
                     </table>
 
                     <!-- Keperluan -->
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Keperluan</h5>
-                    <p class="text-muted">{{ $pengajuanSurat->keperluan }}</p>
+                    <p class="text-muted"><?php echo e($pengajuanSurat->keperluan); ?></p>
 
                     <!-- Keterangan Tambahan -->
-                    @if($pengajuanSurat->keterangan_tambahan)
+                    <?php if($pengajuanSurat->keterangan_tambahan): ?>
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Keterangan Tambahan</h5>
-                    <p class="text-muted">{{ $pengajuanSurat->keterangan_tambahan }}</p>
-                    @endif
+                    <p class="text-muted"><?php echo e($pengajuanSurat->keterangan_tambahan); ?></p>
+                    <?php endif; ?>
 
                     <!-- Detail Informasi Pengajuan (Field Teks) -->
-                    @include('component.detail-pengajuan', ['pengajuanSurat' => $pengajuanSurat])
+                    <?php echo $__env->make('component.detail-pengajuan', ['pengajuanSurat' => $pengajuanSurat], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
                     <!-- Surat Pengantar RW -->
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Surat Pengantar RW</h5>
-                    <a href="{{ route('admin.pengajuan-surat.download-pengantar', $pengajuanSurat->id) }}" 
+                    <a href="<?php echo e(route('admin.pengajuan-surat.download-pengantar', $pengajuanSurat->id)); ?>" 
                        class="btn btn-outline-primary" target="_blank">
                         <i class="ti ti-download"></i> Download Surat Pengantar RW
                     </a>
 
                     <!-- Catatan Admin -->
-                    @if($pengajuanSurat->catatan_admin)
+                    <?php if($pengajuanSurat->catatan_admin): ?>
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Catatan Admin</h5>
                     <div class="alert alert-info">
                         <i class="ti ti-info-circle me-2"></i>
-                        {{ $pengajuanSurat->catatan_admin }}
+                        <?php echo e($pengajuanSurat->catatan_admin); ?>
+
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Surat Jadi -->
-                    @if($pengajuanSurat->file_surat_jadi)
+                    <?php if($pengajuanSurat->file_surat_jadi): ?>
                     <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Surat Jadi</h5>
-                    <a href="{{ route('admin.pengajuan-surat.download-surat-jadi', $pengajuanSurat->id) }}" 
+                    <a href="<?php echo e(route('admin.pengajuan-surat.download-surat-jadi', $pengajuanSurat->id)); ?>" 
                        class="btn btn-success" target="_blank">
                         <i class="ti ti-file-download"></i> Lihat Surat Jadi
                     </a>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Preview Dokumen yang Diunggah User -->
-                    @include('component.dokumen-pengajuan', ['pengajuanSurat' => $pengajuanSurat])
+                    <?php echo $__env->make('component.dokumen-pengajuan', ['pengajuanSurat' => $pengajuanSurat], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 </div>
             </div>
         </div>
@@ -129,7 +131,7 @@
                     <h5>Update Status Pengajuan</h5>
                 </div>
                 <div class="card-body">
-                    @php
+                    <?php
                         // Progressive Status Workflow Logic
                         // Menunggu → Diproses, Ditolak
                         // Diproses → Selesai, Ditolak
@@ -153,70 +155,99 @@
                         }
                         
                         $isFinalStatus = in_array($currentStatus, ['Selesai', 'Ditolak']);
-                    @endphp
+                    ?>
 
-                    @if($isFinalStatus)
-                        {{-- Alert informasi bahwa status tidak dapat diubah lagi --}}
+                    <?php if($isFinalStatus): ?>
+                        
                         <div class="alert alert-info mb-3">
                             <i class="ti ti-info-circle me-2"></i>
                             <strong>Status Tidak Dapat Diubah</strong><br>
-                            <small>Pengajuan dengan status "{{ $currentStatus }}" tidak dapat diubah lagi. Status sudah final.</small>
+                            <small>Pengajuan dengan status "<?php echo e($currentStatus); ?>" tidak dapat diubah lagi. Status sudah final.</small>
                         </div>
-                    @else
-                        {{-- Alert informasi workflow status --}}
+                    <?php else: ?>
+                        
                         <div class="alert alert-warning mb-3">
                             <i class="ti ti-alert-triangle me-2"></i>
                             <strong>Perhatian!</strong><br>
                             <small>Status hanya dapat maju ke depan, tidak dapat dikembalikan ke status sebelumnya.</small>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    <form action="{{ route('admin.pengajuan-surat.update-status', $pengajuanSurat->id) }}" 
+                    <form action="<?php echo e(route('admin.pengajuan-surat.update-status', $pengajuanSurat->id)); ?>" 
                           method="POST" 
                           enctype="multipart/form-data"
                           id="updateStatusForm">
-                        @csrf
-                        @method('PATCH')
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PATCH'); ?>
 
                         <div class="mb-3">
                             <label class="form-label">Status <span class="text-danger">*</span></label>
                             <select name="status" 
-                                    class="form-select @error('status') is-invalid @enderror" 
+                                    class="form-select <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                     required 
                                     id="statusSelect"
-                                    {{ $isFinalStatus ? 'disabled' : '' }}>
-                                @foreach(['Menunggu', 'Diproses', 'Selesai', 'Ditolak'] as $status)
-                                    @if(in_array($status, $availableStatuses))
-                                        <option value="{{ $status }}" {{ $currentStatus == $status ? 'selected' : '' }}>
-                                            {{ $status }}
+                                    <?php echo e($isFinalStatus ? 'disabled' : ''); ?>>
+                                <?php $__currentLoopData = ['Menunggu', 'Diproses', 'Selesai', 'Ditolak']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(in_array($status, $availableStatuses)): ?>
+                                        <option value="<?php echo e($status); ?>" <?php echo e($currentStatus == $status ? 'selected' : ''); ?>>
+                                            <?php echo e($status); ?>
+
                                         </option>
-                                    @endif
-                                @endforeach
+                                    <?php endif; ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
-                            @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             <small class="form-text text-muted">
-                                @if($currentStatus == 'Menunggu')
+                                <?php if($currentStatus == 'Menunggu'): ?>
                                     Status dapat diubah ke: <strong>Diproses</strong> atau <strong>Ditolak</strong>
-                                @elseif($currentStatus == 'Diproses')
+                                <?php elseif($currentStatus == 'Diproses'): ?>
                                     Status dapat diubah ke: <strong>Selesai</strong> atau <strong>Ditolak</strong>
-                                @else
+                                <?php else: ?>
                                     Status sudah final dan tidak dapat diubah
-                                @endif
+                                <?php endif; ?>
                             </small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Catatan untuk Pemohon</label>
                             <textarea name="catatan_admin" 
-                                      class="form-control @error('catatan_admin') is-invalid @enderror" 
+                                      class="form-control <?php $__errorArgs = ['catatan_admin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                       rows="4" 
                                       placeholder="Masukkan catatan atau informasi untuk pemohon..."
-                                      {{ $isFinalStatus ? 'disabled' : '' }}>{{ old('catatan_admin', $pengajuanSurat->catatan_admin) }}</textarea>
-                            @error('catatan_admin')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                      <?php echo e($isFinalStatus ? 'disabled' : ''); ?>><?php echo e(old('catatan_admin', $pengajuanSurat->catatan_admin)); ?></textarea>
+                            <?php $__errorArgs = ['catatan_admin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             <small class="form-text text-muted">Catatan akan dilihat oleh pemohon</small>
                         </div>
 
@@ -224,10 +255,10 @@
                             <button type="submit" 
                                     class="btn btn-primary" 
                                     id="submitBtn"
-                                    {{ $isFinalStatus ? 'disabled' : '' }}>
+                                    <?php echo e($isFinalStatus ? 'disabled' : ''); ?>>
                                 <i class="ti ti-device-floppy"></i> Update Status
                             </button>
-                            <a href="{{ route('admin.pengajuan-surat.index') }}" class="btn btn-secondary">
+                            <a href="<?php echo e(route('admin.pengajuan-surat.index')); ?>" class="btn btn-secondary">
                                 <i class="ti ti-arrow-left"></i> Kembali
                             </a>
                         </div>
@@ -812,4 +843,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\project-sekolah\resources\views/admin/pengajuan-surat/show.blade.php ENDPATH**/ ?>

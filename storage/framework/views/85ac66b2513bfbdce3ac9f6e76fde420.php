@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $pengajuanSurat->jenis_surat }} - {{ $pengajuanSurat->nomor_pengajuan }}</title>
+    <title><?php echo e($pengajuanSurat->jenis_surat); ?> - <?php echo e($pengajuanSurat->nomor_pengajuan); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/tabler-icons.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -686,8 +686,8 @@
         <div id="actionBar" class="no-pdf">
             <div class="action-header">
                 <div class="action-title">
-                    <h5>{{ $pengajuanSurat->jenis_surat }}</h5>
-                    <small>{{ $pengajuanSurat->nomor_pengajuan }}</small>
+                    <h5><?php echo e($pengajuanSurat->jenis_surat); ?></h5>
+                    <small><?php echo e($pengajuanSurat->nomor_pengajuan); ?></small>
                 </div>
                 <div class="action-buttons">
                     <button class="btn btn-danger btn-action" onclick="downloadPDF()">
@@ -698,7 +698,7 @@
                         <i class="ti ti-printer"></i>
                         <span>Cetak</span>
                     </button>
-                    <a href="{{ route('pengajuan-surat.show', $pengajuanSurat->id) }}" class="btn btn-secondary btn-action">
+                    <a href="<?php echo e(route('pengajuan-surat.show', $pengajuanSurat->id)); ?>" class="btn btn-secondary btn-action">
                         <i class="ti ti-arrow-left"></i>
                         <span>Kembali</span>
                     </a>
@@ -714,7 +714,7 @@
                     <table>
                         <tr>
                             <td class="letter-logo">
-                                <img src="{{ asset('assets/images/my/icon-sda.png') }}" alt="Logo Sidoarjo" crossorigin="anonymous">
+                                <img src="<?php echo e(asset('assets/images/my/icon-sda.png')); ?>" alt="Logo Sidoarjo" crossorigin="anonymous">
                             </td>
                             <td class="letter-header-text">
                                 <h3>PEMERINTAH DESA KEDUNGKENDO</h3>
@@ -727,14 +727,14 @@
 
                 <!-- Letter Title -->
                 <div class="letter-title">
-                    <h2>{{ $pengajuanSurat->jenis_surat }}</h2>
-                    <p>No. {{ $pengajuanSurat->nomor_pengajuan }}</p>
+                    <h2><?php echo e($pengajuanSurat->jenis_surat); ?></h2>
+                    <p>No. <?php echo e($pengajuanSurat->nomor_pengajuan); ?></p>
                 </div>
 
                 <!-- Letter Body -->
                 <div class="letter-body">
                     <!-- Dynamic Fields Section -->
-                    @php
+                    <?php
                         $jenisSurat = $pengajuanSurat->jenis_surat;
                         $allSuratTypes = \App\Models\PengajuanSurat::getSuratTypes();
                         $fields = $allSuratTypes[$jenisSurat]['fields'] ?? [];
@@ -744,9 +744,9 @@
                                 $textFields[$fieldName] = $fieldConfig;
                             }
                         }
-                    @endphp
+                    ?>
 
-                    @php
+                    <?php
                         $hasFilledFields = false;
                         foreach ($textFields as $fieldName => $fieldConfig) {
                             if ($pengajuanSurat->{$fieldName} !== null && $pengajuanSurat->{$fieldName} !== '') {
@@ -755,29 +755,29 @@
                             }
                         }
                         $isSuratKematian = str_contains(strtolower($jenisSurat), 'kematian');
-                    @endphp
+                    ?>
 
-                    @if($isSuratKematian)
-                        {{-- SPECIAL FORMAT FOR SURAT KEMATIAN --}}
+                    <?php if($isSuratKematian): ?>
+                        
                         <p>Yang bertanda tangan di bawah ini Kepala Desa Kedung Kendo menerangkan sesungguhnya bahwa:</p>
 
                         <div class="data-section">
                             <table class="data-table">
-                                {{-- Reporter/Applicant Data --}}
+                                
                                 <tr>
                                     <td class="data-label">Nama</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->nama_lengkap ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->nama_lengkap ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Tempat / Tanggal Lahir</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->tempat_lahir ?? '-' }}, {{ $pengajuanSurat->user->tanggal_lahir ? \Carbon\Carbon::parse($pengajuanSurat->user->tanggal_lahir)->format('d F Y') : '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->tempat_lahir ?? '-'); ?>, <?php echo e($pengajuanSurat->user->tanggal_lahir ? \Carbon\Carbon::parse($pengajuanSurat->user->tanggal_lahir)->format('d F Y') : '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Jenis Kelamin</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->jenis_kelamin ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->jenis_kelamin ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Kewarganegaraan</td>
@@ -787,166 +787,173 @@
                                 <tr>
                                     <td class="data-label">Agama</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->agama ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->agama ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Status Perkawinan</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->status_perkawinan ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->status_perkawinan ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Pekerjaan</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->pekerjaan ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->pekerjaan ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Alamat</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->alamat ?? '-' }} RT {{ $pengajuanSurat->user->rt ?? '-' }} RW {{ $pengajuanSurat->user->rw ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->alamat ?? '-'); ?> RT <?php echo e($pengajuanSurat->user->rt ?? '-'); ?> RW <?php echo e($pengajuanSurat->user->rw ?? '-'); ?></td>
                                 </tr>
 
-                                {{-- Spacing before deceased info --}}
+                                
                                 <tr>
                                     <td colspan="3" style="height: 12px;"></td>
                                 </tr>
 
-                                {{-- Deceased Information --}}
+                                
                                 <tr>
                                     <td class="data-label">Memberitahukan bahwa Telah Meninggal</td>
                                     <td class="data-separator">:</td>
                                     <td class="data-value"></td>
                                 </tr>
 
-                                {{-- Dynamic fields for deceased data --}}
-                                @if($hasFilledFields)
-                                    @foreach($textFields as $fieldName => $fieldConfig)
-                                        @php
+                                
+                                <?php if($hasFilledFields): ?>
+                                    <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldName => $fieldConfig): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
                                             $fieldValue = $pengajuanSurat->{$fieldName};
                                             $isDate = $fieldConfig['type'] === 'date';
-                                        @endphp
+                                        ?>
 
-                                        @if($fieldValue !== null && $fieldValue !== '')
+                                        <?php if($fieldValue !== null && $fieldValue !== ''): ?>
                                             <tr>
-                                                <td class="data-label" style="padding-left: 30px;">{{ $fieldConfig['label'] }}</td>
+                                                <td class="data-label" style="padding-left: 30px;"><?php echo e($fieldConfig['label']); ?></td>
                                                 <td class="data-separator">:</td>
                                                 <td class="data-value">
-                                                    @if($isDate)
-                                                        {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
-                                                    @else
-                                                        {{ $fieldValue }}
-                                                    @endif
+                                                    <?php if($isDate): ?>
+                                                        <?php echo e(\Carbon\Carbon::parse($fieldValue)->format('d F Y')); ?>
+
+                                                    <?php else: ?>
+                                                        <?php echo e($fieldValue); ?>
+
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
-                                        @endif
-                                    @endforeach
-                                @endif
+                                        <?php endif; ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
                             </table>
                         </div>
 
                         <p style="margin-top: 15px;">Demikian surat keterangan ini kami buat sebenar-benarnya agar digunakan seperlunya.</p>
-                    @else
-                        {{-- STANDARD FORMAT FOR OTHER LETTER TYPES --}}
+                    <?php else: ?>
+                        
                         <p>Dengan ini kami beritahukan bahwa:</p>
 
                         <!-- Unified Data Table - All fields in one table for consistent alignment -->
                         <div class="data-section">
                             <table class="data-table">
-                                {{-- Personal Data --}}
+                                
                                 <tr>
                                     <td class="data-label">Nama</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->nama_lengkap ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->nama_lengkap ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">NIK</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->nik ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->nik ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Tempat, Tgl Lahir</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->tempat_lahir ?? '-' }}, {{ $pengajuanSurat->user->tanggal_lahir ? \Carbon\Carbon::parse($pengajuanSurat->user->tanggal_lahir)->format('d F Y') : '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->tempat_lahir ?? '-'); ?>, <?php echo e($pengajuanSurat->user->tanggal_lahir ? \Carbon\Carbon::parse($pengajuanSurat->user->tanggal_lahir)->format('d F Y') : '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">Alamat</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->alamat ?? '-' }} RT {{ $pengajuanSurat->user->rt ?? '-' }} RW {{ $pengajuanSurat->user->rw ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->alamat ?? '-'); ?> RT <?php echo e($pengajuanSurat->user->rt ?? '-'); ?> RW <?php echo e($pengajuanSurat->user->rw ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="data-label">No. Telepon</td>
                                     <td class="data-separator">:</td>
-                                    <td class="data-value">{{ $pengajuanSurat->user->no_telepon ?? '-' }}</td>
+                                    <td class="data-value"><?php echo e($pengajuanSurat->user->no_telepon ?? '-'); ?></td>
                                 </tr>
 
-                                @if($hasFilledFields || $pengajuanSurat->keperluan)
-                                    {{-- Spacing row before additional fields --}}
+                                <?php if($hasFilledFields || $pengajuanSurat->keperluan): ?>
+                                    
                                     <tr>
                                         <td colspan="3" style="height: 12px;"></td>
                                     </tr>
 
-                                    {{-- Dynamic fields from letter type --}}
-                                    @if($hasFilledFields)
-                                        @foreach($textFields as $fieldName => $fieldConfig)
-                                            @php
+                                    
+                                    <?php if($hasFilledFields): ?>
+                                        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldName => $fieldConfig): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
                                                 $fieldValue = $pengajuanSurat->{$fieldName};
                                                 $isTextarea = $fieldConfig['type'] === 'textarea';
                                                 $isSelect = $fieldConfig['type'] === 'select';
                                                 $isDate = $fieldConfig['type'] === 'date';
                                                 $isNumber = $fieldConfig['type'] === 'number';
-                                            @endphp
+                                            ?>
 
-                                            @if($fieldValue !== null && $fieldValue !== '')
+                                            <?php if($fieldValue !== null && $fieldValue !== ''): ?>
                                                 <tr>
-                                                    <td class="data-label">{{ $fieldConfig['label'] }}</td>
+                                                    <td class="data-label"><?php echo e($fieldConfig['label']); ?></td>
                                                     <td class="data-separator">:</td>
                                                     <td class="data-value">
-                                                        @if($isTextarea)
-                                                            {{ $fieldValue }}
-                                                        @elseif($isDate)
-                                                            {{ \Carbon\Carbon::parse($fieldValue)->format('d F Y') }}
-                                                        @elseif($isNumber)
-                                                            @if(str_contains(strtolower($fieldConfig['label']), 'luas'))
-                                                                {{ number_format($fieldValue, 2, ',', '.') }} m²
-                                                            @elseif(str_contains(strtolower($fieldConfig['label']), 'harga|nominal|jumlah'))
-                                                                Rp. {{ number_format($fieldValue, 0, ',', '.') }}
-                                                            @else
-                                                                {{ $fieldValue }}
-                                                            @endif
-                                                        @else
-                                                            {{ $fieldValue }}
-                                                        @endif
+                                                        <?php if($isTextarea): ?>
+                                                            <?php echo e($fieldValue); ?>
+
+                                                        <?php elseif($isDate): ?>
+                                                            <?php echo e(\Carbon\Carbon::parse($fieldValue)->format('d F Y')); ?>
+
+                                                        <?php elseif($isNumber): ?>
+                                                            <?php if(str_contains(strtolower($fieldConfig['label']), 'luas')): ?>
+                                                                <?php echo e(number_format($fieldValue, 2, ',', '.')); ?> m²
+                                                            <?php elseif(str_contains(strtolower($fieldConfig['label']), 'harga|nominal|jumlah')): ?>
+                                                                Rp. <?php echo e(number_format($fieldValue, 0, ',', '.')); ?>
+
+                                                            <?php else: ?>
+                                                                <?php echo e($fieldValue); ?>
+
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <?php echo e($fieldValue); ?>
+
+                                                        <?php endif; ?>
                                                     </td>
                                                 </tr>
-                                            @endif
-                                        @endforeach
-                                    @endif
+                                            <?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
 
-                                    {{-- Keperluan field --}}
-                                    @if($pengajuanSurat->keperluan)
-                                        @if($hasFilledFields)
+                                    
+                                    <?php if($pengajuanSurat->keperluan): ?>
+                                        <?php if($hasFilledFields): ?>
                                             <tr>
                                                 <td colspan="3" style="height: 8px;"></td>
                                             </tr>
-                                        @endif
+                                        <?php endif; ?>
                                         <tr>
                                             <td class="data-label">Keperluan</td>
                                             <td class="data-separator">:</td>
-                                            <td class="data-value">{{ $pengajuanSurat->keperluan }}</td>
+                                            <td class="data-value"><?php echo e($pengajuanSurat->keperluan); ?></td>
                                         </tr>
-                                        @if($pengajuanSurat->keterangan_tambahan)
+                                        <?php if($pengajuanSurat->keterangan_tambahan): ?>
                                             <tr>
                                                 <td class="data-label">Keterangan</td>
                                                 <td class="data-separator">:</td>
-                                                <td class="data-value">{{ $pengajuanSurat->keterangan_tambahan }}</td>
+                                                <td class="data-value"><?php echo e($pengajuanSurat->keterangan_tambahan); ?></td>
                                             </tr>
-                                        @endif
-                                    @endif
-                                @endif
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </table>
                         </div>
 
                         <p style="margin-top: 15px;">Dengan penuh tanggung jawab, kami nyatakan bahwa data tersebut di atas adalah benar adanya.</p>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <!-- Signature Section -->
@@ -956,14 +963,14 @@
                             <td>
                                 <p class="signature-title">Pemohon</p>
                                 <div class="signature-space"></div>
-                                <p class="signature-name">{{ $pengajuanSurat->user->nama_lengkap ?? '-' }}</p>
+                                <p class="signature-name"><?php echo e($pengajuanSurat->user->nama_lengkap ?? '-'); ?></p>
                             </td>
                             <td>
                                 <p class="signature-title">Mengetahui</p>
                                 <div class="signature-space">
-                                    @if($qrCodeUrl)
-                                        <img src="{{ $qrCodeUrl }}" alt="QR Code Verifikasi" crossorigin="anonymous">
-                                    @endif
+                                    <?php if($qrCodeUrl): ?>
+                                        <img src="<?php echo e($qrCodeUrl); ?>" alt="QR Code Verifikasi" crossorigin="anonymous">
+                                    <?php endif; ?>
                                 </div>
                                 <p class="signature-name">Kepala Desa Kedung Kendo</p>
                                 <p class="signature-note">(Scan untuk verifikasi)</p>
@@ -992,7 +999,7 @@
             
             const opt = {
                 margin: [10, 10, 10, 10],
-                filename: '{{ $pengajuanSurat->nomor_pengajuan }}.pdf',
+                filename: '<?php echo e($pengajuanSurat->nomor_pengajuan); ?>.pdf',
                 image: { 
                     type: 'jpeg', 
                     quality: 0.98 
@@ -1042,7 +1049,7 @@
             
             const opt = {
                 margin: [10, 10, 10, 10],
-                filename: '{{ $pengajuanSurat->nomor_pengajuan }}.pdf',
+                filename: '<?php echo e($pengajuanSurat->nomor_pengajuan); ?>.pdf',
                 image: { 
                     type: 'jpeg', 
                     quality: 0.98 
@@ -1108,7 +1115,7 @@
                 setTimeout(downloadPDF, 500);
                 // Redirect back after 3 seconds
                 setTimeout(function () {
-                    window.location.href = '{{ route('pengajuan-surat.index') }}';
+                    window.location.href = '<?php echo e(route('pengajuan-surat.index')); ?>';
                 }, 3000);
             });
         }
@@ -1117,4 +1124,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
-</html>
+</html><?php /**PATH C:\project-sekolah\resources\views/user/pengajuan-surat/pdf-preview.blade.php ENDPATH**/ ?>

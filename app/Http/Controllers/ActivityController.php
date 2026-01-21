@@ -216,18 +216,92 @@ class ActivityController extends Controller
         
         $url = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/activity_logs";
         
-        $response = Http::withToken($accessToken)->get($url);
+        $totalDeleted = 0;
+        $totalFailed = 0;
+        $iterations = 0;
+        $maxIterations = 100; // Safety limit to prevent infinite loops
         
-        if ($response->successful()) {
+        // Keep deleting until no more documents exist
+        do {
+            $iterations++;
+            
+            if ($iterations > $maxIterations) {
+                throw new \Exception("Batas maksimum iterasi tercapai. Total dihapus: {$totalDeleted}, gagal: {$totalFailed}");
+            }
+            
+            // Configure HTTP client with extended timeout and SSL options
+            $response = Http::timeout(60)
+                ->connectTimeout(30)
+                ->withOptions([
+                    'verify' => false, // Disable SSL verification for local development
+                ])
+                ->retry(3, 1000) // Retry 3 times with 1 second delay
+                ->withToken($accessToken)
+                ->get($url);
+            
+            if (!$response->successful()) {
+                throw new \Exception('Gagal mengambil daftar activity logs dari Firebase: ' . $response->body());
+            }
+            
             $data = $response->json();
             
-            if (isset($data['documents'])) {
-                foreach ($data['documents'] as $doc) {
-                    $docId = basename($doc['name']);
-                    $deleteUrl = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/activity_logs/{$docId}";
-                    Http::withToken($accessToken)->delete($deleteUrl);
+            // If no documents found, we're done
+            if (!isset($data['documents']) || empty($data['documents'])) {
+                break;
+            }
+            
+            $documentsInBatch = count($data['documents']);
+            $deletedInBatch = 0;
+            $failedInBatch = 0;
+            
+            foreach ($data['documents'] as $doc) {
+                $docId = basename($doc['name']);
+                $deleteUrl = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/activity_logs/{$docId}";
+                
+                try {
+                    $deleteResponse = Http::timeout(60)
+                        ->connectTimeout(30)
+                        ->withOptions([
+                            'verify' => false,
+                        ])
+                        ->retry(3, 1000)
+                        ->withToken($accessToken)
+                        ->delete($deleteUrl);
+                    
+                    if ($deleteResponse->successful()) {
+                        $deletedInBatch++;
+                        $totalDeleted++;
+                    } else {
+                        $failedInBatch++;
+                        $totalFailed++;
+                        \Log::warning("Failed to delete document {$docId}: " . $deleteResponse->body());
+                    }
+                } catch (\Exception $e) {
+                    $failedInBatch++;
+                    $totalFailed++;
+                    \Log::error("Error deleting document {$docId}: " . $e->getMessage());
                 }
             }
+            
+            \Log::info("Batch {$iterations}: Found {$documentsInBatch} docs, deleted {$deletedInBatch}, failed {$failedInBatch}. Total so far: {$totalDeleted} deleted, {$totalFailed} failed");
+            
+            // If we failed to delete any in this batch, but there are still documents, 
+            // we might be in an infinite loop
+            if ($deletedInBatch === 0 && $documentsInBatch > 0) {
+                throw new \Exception("Tidak dapat menghapus dokumen yang tersisa. Total berhasil: {$totalDeleted}, gagal: {$totalFailed}");
+            }
+            
+            // Small delay between batches to avoid rate limiting
+            if ($documentsInBatch > 0) {
+                usleep(100000); // 100ms delay
+            }
+            
+        } while (true); // Loop until break condition (no more documents)
+        
+        \Log::info("All deletion complete. Total deleted: {$totalDeleted}, failed: {$totalFailed} in {$iterations} iterations");
+        
+        if ($totalFailed > 0) {
+            throw new \Exception("Berhasil menghapus {$totalDeleted} logs, gagal {$totalFailed} logs");
         }
     }
 
@@ -416,10 +490,18 @@ class ActivityController extends Controller
 
             $jwt = $this->createJWT($claim, $credentials['private_key']);
 
-            $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                'assertion' => $jwt
-            ]);
+            // Add timeout and SSL configuration for token request
+            $response = Http::timeout(60)
+                ->connectTimeout(30)
+                ->withOptions([
+                    'verify' => false, // Disable SSL verification for local development
+                ])
+                ->retry(3, 1000)
+                ->asForm()
+                ->post('https://oauth2.googleapis.com/token', [
+                    'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                    'assertion' => $jwt
+                ]);
 
             if ($response->successful()) {
                 $token = $response->json()['access_token'];
@@ -427,7 +509,7 @@ class ActivityController extends Controller
                 return $token;
             }
 
-            throw new \Exception('Failed to get Firebase access token');
+            throw new \Exception('Failed to get Firebase access token: ' . $response->body());
 
         } catch (\Exception $e) {
             throw new \Exception('Firebase authentication error: ' . $e->getMessage());

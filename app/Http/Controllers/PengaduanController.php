@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Pengaduan;
 use App\Models\Activity;
 use App\Services\ActivityLogger;
+use App\Mail\PengaduanDiprosesMail;
+use App\Mail\PengaduanSelesaiMail;
+use App\Mail\PengaduanDitolakMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class PengaduanController extends Controller
 {
@@ -177,6 +181,62 @@ class PengaduanController extends Controller
             'approved_by' => Auth::user()->name,
             'approved_by_id' => Auth::id()
         ]);
+
+        // Send email notification based on status change
+        $statusChanged = $previousStatus !== $validated['status'];
+        
+        if ($statusChanged) {
+            try {
+                // Refresh to get updated data
+                $pengaduan->refresh();
+                
+                \Log::info('Preparing to send pengaduan notification email', [
+                    'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+                    'status_lama' => $previousStatus,
+                    'status_baru' => $validated['status'],
+                    'user_email' => $pengaduan->user->email ?? 'No email'
+                ]);
+
+                // Send email based on new status
+                if ($validated['status'] === 'Diproses') {
+                    Mail::to($pengaduan->user->email)
+                        ->send(new PengaduanDiprosesMail($pengaduan));
+                    \Log::info('✓ Email notifikasi pengaduan diproses berhasil dikirim', [
+                        'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+                        'ke_email' => $pengaduan->user->email
+                    ]);
+                } elseif ($validated['status'] === 'Selesai') {
+                    Mail::to($pengaduan->user->email)
+                        ->send(new PengaduanSelesaiMail($pengaduan));
+                    \Log::info('✓ Email notifikasi pengaduan selesai berhasil dikirim', [
+                        'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+                        'ke_email' => $pengaduan->user->email
+                    ]);
+                } elseif ($validated['status'] === 'Ditolak') {
+                    Mail::to($pengaduan->user->email)
+                        ->send(new PengaduanDitolakMail($pengaduan));
+                    \Log::info('✓ Email notifikasi pengaduan ditolak berhasil dikirim', [
+                        'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+                        'ke_email' => $pengaduan->user->email
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Log error but don't fail the request
+                \Log::error('✗ Failed to send pengaduan notification email', [
+                    'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+                    'ke_email' => $pengaduan->user->email,
+                    'status' => $validated['status'],
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]);
+            }
+        } else {
+            \Log::info('Email tidak dikirim karena status tidak berubah', [
+                'nomor_pengaduan' => $pengaduan->nomor_pengaduan,
+                'status' => $validated['status']
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', 'Tanggapan berhasil disimpan');
