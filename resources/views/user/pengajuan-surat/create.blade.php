@@ -787,9 +787,21 @@
                         <small class="form-text text-muted">Maksimal nilai: ${fieldConfig.max || '9.999.999.999'}</small>
                     `;
                 } else if (fieldConfig.type === 'date') {
+                    // Add date constraints based on field name
+                    let dateConstraints = '';
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    if (fieldName === 'tanggal_kematian') {
+                        // Death date must be today or before
+                        dateConstraints = `max="${today}"`;
+                    } else if (fieldName === 'tanggal_dibutuhkan') {
+                        // SKCK needed date must be today or after
+                        dateConstraints = `min="${today}"`;
+                    }
+                    
                     fieldHTML += `
                         <input type="date" name="${fieldName}" class="form-control ${errorClass}" 
-                               value="${autoFilledValue}" ${requiredAttr}>
+                               value="${autoFilledValue}" ${requiredAttr} ${dateConstraints}>
                     `;
                 } else if (fieldConfig.type === 'file') {
                     const acceptAttr = fieldConfig.accept ? `accept="${fieldConfig.accept}"` : '';

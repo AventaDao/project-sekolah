@@ -66,7 +66,7 @@
     <!-- [ Header ] End -->
 
     <!-- [ Stats Counter ] start -->
-    <section class="stats-section">
+    <!-- <section class="stats-section">
         <div class="container">
             <div class="row g-4">
                 <div class="col-6 col-md-3">
@@ -86,7 +86,7 @@
                         <h2 class="stat-number" data-count="50">0</h2>
                         <p class="stat-label">Layanan Surat</p>
                     </div>
-                </div>
+                </div> -->
                 <!-- <div class="col-6 col-md-3">
                     <div class="stat-card wow fadeInUp" data-wow-delay="0.3s">
                         <div class="stat-icon">
@@ -96,7 +96,7 @@
                         <p class="stat-label">Program Desa</p>
                     </div>
                 </div> -->
-                <div class="col-6 col-md-3">
+                <!-- <div class="col-6 col-md-3">
                     <div class="stat-card wow fadeInUp" data-wow-delay="0.4s">
                         <div class="stat-icon">
                             <i class="ti ti-clock"></i>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </section>
     <!-- [ Stats Counter ] End -->
 

@@ -133,7 +133,7 @@
                 <div class="card-body">
                     <?php
                         // Progressive Status Workflow Logic
-                        // Menunggu → Diproses, Ditolak
+                        // Menunggu → Diproses, Selesai, Ditolak (dapat langsung diselesaikan)
                         // Diproses → Selesai, Ditolak
                         // Selesai → Final (tidak bisa diubah)
                         // Ditolak → Final (tidak bisa diubah)
@@ -143,7 +143,7 @@
                         
                         switch($currentStatus) {
                             case 'Menunggu':
-                                $availableStatuses = ['Menunggu', 'Diproses', 'Ditolak'];
+                                $availableStatuses = ['Menunggu', 'Diproses', 'Selesai', 'Ditolak'];
                                 break;
                             case 'Diproses':
                                 $availableStatuses = ['Diproses', 'Selesai', 'Ditolak'];
@@ -215,7 +215,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             <small class="form-text text-muted">
                                 <?php if($currentStatus == 'Menunggu'): ?>
-                                    Status dapat diubah ke: <strong>Diproses</strong> atau <strong>Ditolak</strong>
+                                    Status dapat diubah ke: <strong>Diproses</strong>, <strong>Selesai</strong>, atau <strong>Ditolak</strong>
                                 <?php elseif($currentStatus == 'Diproses'): ?>
                                     Status dapat diubah ke: <strong>Selesai</strong> atau <strong>Ditolak</strong>
                                 <?php else: ?>

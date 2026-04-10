@@ -102,6 +102,17 @@
                     </div>
                     <a href="{{ route('forgot_password.email_form') }}" class="text-secondary f-w-400">Forgot Password?</a>
                 </div>
+                
+                {{-- reCAPTCHA Widget --}}
+                <div class="form-group mt-3">
+                    {!! app('captcha')->display() !!}
+                    @if ($errors->has('g-recaptcha-response'))
+                        <div class="text-danger mt-1">
+                            <small>{{ $errors->first('g-recaptcha-response') }}</small>
+                        </div>
+                    @endif
+                </div>
+                
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
@@ -112,4 +123,9 @@
             </div>
         </form>
     </div>
+@endsection
+
+{{-- reCAPTCHA Script --}}
+@section('scripts_content')
+    {!! app('captcha')->renderJs() !!}
 @endsection

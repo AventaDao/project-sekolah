@@ -60,14 +60,14 @@
 </li>
 
 <!-- Riwayat Aktivitas Menu Item -->
-<li class="pc-item sidebar-menu-item <?php echo e(request()->is('activities*') ? 'active' : ''); ?>">
+<!-- <li class="pc-item sidebar-menu-item <?php echo e(request()->is('activities*') ? 'active' : ''); ?>">
     <a href="<?php echo e(route('activities.index')); ?>" class="pc-link sidebar-link">
         <span class="pc-micon sidebar-icon">
             <i class="ti ti-history"></i>
         </span>
         <span class="pc-mtext sidebar-text">Riwayat Aktivitas</span>
     </a>
-</li>
+</li> -->
 
 <style>
 /* ============================================

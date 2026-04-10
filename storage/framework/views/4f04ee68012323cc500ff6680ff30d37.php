@@ -268,7 +268,14 @@
             }
 
             // Initialize first step
-            showStep(1);
+            <?php if($errors->any()): ?>
+                <?php if($errors->has('nik')): ?>
+                    currentStep = 1;
+                <?php else: ?>
+                    currentStep = 5;
+                <?php endif; ?>
+            <?php endif; ?>
+            showStep(currentStep);
 
             // NIK validation - max 16 digits
             const nikInput = document.querySelector('input[name="nik"]');
@@ -1012,6 +1019,17 @@ unset($__errorArgs, $__bag); ?>
                         Dengan mendaftar, Anda setuju dengan <a href="#" class="text-primary">Syarat & Ketentuan</a> 
                         dan <a href="#" class="text-primary">Kebijakan Privasi</a> kami.
                     </p>
+
+                    
+                    <div class="form-group mt-3">
+                        <?php echo app('captcha')->display(); ?>
+
+                        <?php if($errors->has('g-recaptcha-response')): ?>
+                            <div class="text-danger mt-1">
+                                <small><?php echo e($errors->first('g-recaptcha-response')); ?></small>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <!-- Navigation Buttons -->
@@ -1029,5 +1047,11 @@ unset($__errorArgs, $__bag); ?>
             </div>
         </form>
     </div>
+<?php $__env->stopSection(); ?>
+
+
+<?php $__env->startSection('scripts_content'); ?>
+    <?php echo app('captcha')->renderJs(); ?>
+
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\project-sekolah\resources\views/auth/register.blade.php ENDPATH**/ ?>

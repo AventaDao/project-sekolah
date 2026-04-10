@@ -270,7 +270,14 @@
             }
 
             // Initialize first step
-            showStep(1);
+            @if ($errors->any())
+                @if ($errors->has('nik'))
+                    currentStep = 1;
+                @else
+                    currentStep = 5;
+                @endif
+            @endif
+            showStep(currentStep);
 
             // NIK validation - max 16 digits
             const nikInput = document.querySelector('input[name="nik"]');
@@ -692,6 +699,16 @@
                         Dengan mendaftar, Anda setuju dengan <a href="#" class="text-primary">Syarat & Ketentuan</a> 
                         dan <a href="#" class="text-primary">Kebijakan Privasi</a> kami.
                     </p>
+
+                    {{-- reCAPTCHA Widget --}}
+                    <div class="form-group mt-3">
+                        {!! app('captcha')->display() !!}
+                        @if ($errors->has('g-recaptcha-response'))
+                            <div class="text-danger mt-1">
+                                <small>{{ $errors->first('g-recaptcha-response') }}</small>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Navigation Buttons -->
@@ -709,4 +726,9 @@
             </div>
         </form>
     </div>
+@endsection
+
+{{-- reCAPTCHA Script --}}
+@section('scripts_content')
+    {!! app('captcha')->renderJs() !!}
 @endsection

@@ -38,12 +38,15 @@ class AuthController extends Controller
         $request->validate([
             'nik' => 'required|numeric|digits:16',
             'password' => 'required|min:6',
+            'g-recaptcha-response' => 'required|captcha',
         ], [
             'nik.required' => 'NIK harus diisi',
             'nik.numeric' => 'NIK harus berupa angka (tidak boleh ada huruf atau karakter)',
             'nik.digits' => 'NIK harus tepat 16 digit',
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 6 karakter',
+            'g-recaptcha-response.required' => 'Silakan centang "I\'m not a robot"',
+            'g-recaptcha-response.captcha' => 'Verifikasi CAPTCHA gagal, silakan coba lagi',
         ]);
 
         $credentials = [
@@ -124,6 +127,7 @@ class AuthController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             // Password only required for non-social auth
             'password' => $isSocialAuth ? 'nullable' : 'required|string|min:6|confirmed',
+            'g-recaptcha-response' => 'required|captcha',
         ];
 
         $messages = [
@@ -139,6 +143,8 @@ class AuthController extends Controller
             'password.required' => 'Password harus diisi',
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'g-recaptcha-response.required' => 'Silakan centang "I\'m not a robot"',
+            'g-recaptcha-response.captcha' => 'Verifikasi CAPTCHA gagal, silakan coba lagi',
         ];
 
         $request->validate($rules, $messages);

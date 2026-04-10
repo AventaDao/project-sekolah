@@ -101,6 +101,18 @@
                     </div>
                     <a href="<?php echo e(route('forgot_password.email_form')); ?>" class="text-secondary f-w-400">Forgot Password?</a>
                 </div>
+                
+                
+                <div class="form-group mt-3">
+                    <?php echo app('captcha')->display(); ?>
+
+                    <?php if($errors->has('g-recaptcha-response')): ?>
+                        <div class="text-danger mt-1">
+                            <small><?php echo e($errors->first('g-recaptcha-response')); ?></small>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
@@ -111,5 +123,11 @@
             </div>
         </form>
     </div>
+<?php $__env->stopSection(); ?>
+
+
+<?php $__env->startSection('scripts_content'); ?>
+    <?php echo app('captcha')->renderJs(); ?>
+
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\project-sekolah\resources\views/auth/login.blade.php ENDPATH**/ ?>
